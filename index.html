@@ -99,6 +99,24 @@ body{background:linear-gradient(165deg,color-mix(in srgb,var(--g1) 30%,var(--bg)
 .orgc{display:flex;gap:.4rem;margin:0 0 .7rem}
 .orgc .btn{flex:1;padding:.65rem .2rem;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0;font-size:1rem}
 h2.serif{font-size:1.5rem}
+
+#dr a{color:var(--tx);text-decoration:none;font-weight:600;font-size:1.05rem}
+.vh{display:flex;align-items:center;gap:.6rem;margin-bottom:.6rem}.vh h2{flex:1;margin:0}
+.cl{flex:none;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-radius:999px;padding:.65rem 1.1rem;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.pl{display:flex;gap:.5rem;flex-wrap:wrap}
+.pl button{padding:.7rem 1.2rem;border-radius:999px;border:2px solid var(--ln);font-size:1.05rem;background:color-mix(in srgb,var(--card) 90%,transparent)}
+.pl .on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent;font-weight:700}
+.gt{display:grid;grid-template-columns:1fr 1fr;gap:.8rem}
+.gt button{height:84px;border-radius:20px;color:#fff;font-weight:700;font-size:1.05rem;text-align:left;padding:0 1rem .8rem;display:flex;align-items:flex-end;border:3px solid transparent;text-shadow:0 1px 3px rgba(0,0,0,.4)}
+.gt .on{border-color:var(--tx);box-shadow:0 0 0 2px var(--bg) inset}
+.chk{display:block;margin-top:1rem;font-size:1.05rem;padding:.4rem 0}
+.btn.pin{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0;font-weight:700}
+.pv .nm{text-decoration:underline;text-decoration-color:rgba(255,255,255,.6);text-underline-offset:4px;cursor:pointer}
+.riduci *{transition:none!important;animation:none!important}
+
+.pic{position:relative;height:170px;background:color-mix(in srgb,var(--g1) 18%,var(--bg));overflow:hidden}
+.pic img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.cap{position:absolute;left:.6rem;bottom:.5rem;background:rgba(0,0,0,.6);color:#fff;font-size:.75rem;padding:.2rem .65rem;border-radius:999px}
 </style>
 </head>
 <body>
@@ -138,7 +156,7 @@ h2.serif{font-size:1.5rem}
 
 <script>
 const N=(id,nome,dom,cont,naz,desc,rss,link)=>({id,nome,link:link||'https://'+dom,immagine_anteprima:'https://www.google.com/s2/favicons?domain='+dom+'&sz=128',continente:cont,nazione:naz,descrizione:desc,rss:rss||''});
-const DATI=[
+const BASE=[
 N('nyt','The New York Times','www.nytimes.com','Nord America','USA','Il punto di riferimento assoluto per la politica internazionale e il giornalismo d\'inchiesta.','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml'),
 N('wapo','The Washington Post','www.washingtonpost.com','Nord America','USA','Storico quotidiano della capitale statunitense, celebre per la copertura politica della Casa Bianca.','https://feeds.washingtonpost.com/rss/national'),
 N('wsj','The Wall Street Journal','www.wsj.com','Nord America','USA','La testata leader mondiale per l\'informazione economico-finanziaria e i mercati.','https://feeds.content.dowjones.io/public/rss/RSSWorldNews'),
@@ -172,22 +190,24 @@ N('aljazeera','Al Jazeera','www.aljazeera.com','Africa e Medio Oriente','Qatar',
 N('smh','The Sydney Morning Herald','www.smh.com.au','Oceania','Australia','Il quotidiano più antico e prestigioso d\'Australia, leader nella regione.'),
 N('nzh','The New Zealand Herald','www.nzherald.co.nz','Oceania','Nuova Zelanda','La testata principale e più diffusa del paese.')
 ];
-const GRAD={tramonto:['#f2709c','#ff9472'],oceano:['#1b7fa3','#5fc8e8'],foresta:['#0f766e','#34d399'],aurora:['#6d3df0','#22c1c3'],lavanda:['#8e78d8','#c3a6f0'],rubino:['#b3202f','#ef6a4a'],notte:['#1f2a44','#4b5d8a']};
+const GRAD={oceano:['#1b5fb3','#3aa0f0'],aurora:['#6d3df0','#d070b8'],foresta:['#146c43','#2f9e5e'],tramonto:['#b8324a','#f0944a'],rubino:['#a01f33','#ef5a4a'],notte:['#141d2e','#2f4c63']};
 const ld=(k,d)=>{try{return Object.assign(d,JSON.parse(localStorage.getItem(k))||{})}catch(e){return d}};
 const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
-let S=ld('tm_s',{vista:'anteprime',tema:'chiaro',grad:'tramonto',font:100,browser:'default',notif:false,ordine:[],filtro:'Tutti'});
+let S=ld('tm_s',{vista:'anteprime',tema:'chiaro',grad:'tramonto',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti'});
 let F=ld('tm_f',{cartelle:[],fav:{}});
 let T=ld('tm_t',{});
+let X=ld('tm_x',{add:[],del:[]});let DATI=[];const rebuild=()=>{DATI=BASE.filter(d=>!X.del.includes(d.id)).concat(X.add)};rebuild();
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let view='home',deferred=null,orgMode=false;const ctl=d=>`<div class="orgc"><button class="btn" data-top="${d.id}">🔝 In cima</button><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button></div>`;
-const VER='1.1';
+let view='home',deferred=null,orgMode=false;const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem" aria-label="Elimina giornale">🗑️</button></div>`;
+const VER='1.4';const CL='<button class="cl" data-x>✕ Chiudi</button>';
 
+const eff=()=>S.tema==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'scuro':'chiaro'):S.tema;
 function applica(){
   const r=document.documentElement,g=GRAD[S.grad]||GRAD.tramonto;
-  r.dataset.theme=S.tema;r.style.setProperty('--g1',g[0]);r.style.setProperty('--g2',g[1]);r.style.setProperty('--fs',S.font);
+  r.dataset.theme=eff();r.classList.toggle('riduci',!!S.anim);r.style.setProperty('--g1',g[0]);r.style.setProperty('--g2',g[1]);r.style.setProperty('--fs',S.font);
   $('meta[name=theme-color]').content=g[0];
-  $('#mt').textContent=S.tema==='chiaro'?'🌙 Tema Scuro':'☀️ Tema Chiaro';
+  $('#mt').textContent=eff()==='chiaro'?'🌙 Tema Scuro':'☀️ Tema Chiaro';
 }
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.i);toast.i=setTimeout(()=>t.classList.remove('on'),2400)}
 function ordinati(){
@@ -205,23 +225,27 @@ const sigla=n=>n.split(/\s+/).filter(w=>/^[A-Za-zÀ-ÿ]/.test(w)).slice(0,2).map
 const logo=d=>`<div class="logo"><img src="${d.immagine_anteprima}" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(sigla(d.nome))}'"></div>`;
 const titoli=d=>{const t=T[d.id];return t&&t.t&&t.t.length?t.t:null};
 
+const shot=d=>'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(d.link)+'?w=640&h=360';
+const pic=d=>{const im=T[d.id]&&T[d.id].img;return `<div class="pic"><img data-im="${d.id}" src="${esc(im||shot(d))}" alt="Anteprima di ${esc(d.nome)}" loading="lazy" referrerpolicy="no-referrer" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${im?'📰 Ultima notizia':'🖥️ Homepage'}</span></div>`};
+function imgFail(el,id){const d=DATI.find(x=>x.id===id);if(!d||el.dataset.f){el.parentNode.style.display='none';return}el.dataset.f=1;el.src=shot(d);const c=document.querySelector(`[data-cp="${id}"]`);if(c)c.textContent='🖥️ Homepage'}
+function setImg(id,u){document.querySelectorAll(`[data-im="${id}"]`).forEach(e=>{e.dataset.f='';e.src=u});document.querySelectorAll(`[data-cp="${id}"]`).forEach(c=>c.textContent='📰 Ultima notizia')}
 /* ---------- HOME ---------- */
 function renderHome(){
   const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
   const lista=ordinati().filter(d=>orgMode||S.filtro==='Tutti'||d.continente===S.filtro);
   const an=S.vista==='anteprime';
-  let h=`<div class="bar"><div class="seg" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div><button class="btn ${orgMode?'p':''}" data-om>${orgMode?'✅ Fatto':'↕️ Organizza'}</button></div>${orgMode?'<p class="ds">Usa 🔝 ▲ ▼ su ogni testata per decidere l\'ordine, poi premi Fatto.</p>':''}
+  let h=`<div class="bar"><div class="seg" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div><button class="btn ${orgMode?'p':''}" data-om>${orgMode?'✅ Fatto':'↕️ Organizza'}</button><button class="btn" data-add>➕ Aggiungi</button></div>${orgMode?'<p class="ds">Usa ▲ ▼ su ogni testata per decidere l\'ordine, poi premi Fatto.</p>':''}
   <div class="chips">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>`;
   h+=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione);
     const tit=t?t.slice(0,an?2:3).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
-    return an?`<article class="card" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div><div class="cb">${orgMode?ctl(d):''}<div data-tt="${d.id}">${tit}</div><p class="ds">${esc(d.descrizione)}</p><div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st" data-pin="${d.id}" aria-label="Metti in cima">🔝</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div></div></article>`
-    :`<div class="lt" data-id="${d.id}"><div class="x" data-o="${d.id}" role="link" tabindex="0"><h3 class="nm serif">${esc(d.nome)}</h3><div class="sub">${sub}</div><div data-tt="${d.id}">${tit}</div>${orgMode?ctl(d):''}</div><button class="btn st" data-pin="${d.id}" aria-label="Metti in cima">🔝</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div>`;
+    return an?`<article class="card" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div data-tt="${d.id}">${tit}</div><p class="ds">${esc(d.descrizione)}</p><div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div></div></article>`
+    :`<div class="lt" data-id="${d.id}"><div class="x" data-o="${d.id}" role="link" tabindex="0"><h3 class="nm serif">${esc(d.nome)}</h3><div class="sub">${sub}</div><div data-tt="${d.id}">${tit}</div>${orgMode?ctl(d):''}</div><button class="btn st pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div>`;
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
   $('#v-home').innerHTML=h;
 }
 async function caricaTitoli(){
-  const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&Date.now()-T[d.id].ts<18e5));
+  const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&'img' in T[d.id]&&Date.now()-T[d.id].ts<18e5));
   const lavora=async()=>{while(coda.length){const d=coda.shift();
     try{
       const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(d.rss));
@@ -229,7 +253,11 @@ async function caricaTitoli(){
       if(j.items&&j.items.length){
         const nuovi=j.items.slice(0,3).map(i=>i.title.trim());
         const vecchio=T[d.id]&&T[d.id].t&&T[d.id].t[0];
-        T[d.id]={t:nuovi,ts:Date.now()};sv('tm_t',T);
+        const it=j.items[0];let im=it.thumbnail||'';
+        if(!im&&it.enclosure&&it.enclosure.link&&/image|\.(jpe?g|png|webp)/i.test((it.enclosure.type||'')+it.enclosure.link))im=it.enclosure.link;
+        if(!im){const m=(it.content||it.description||'').match(/<img[^>]+src=["']([^"']+)/i);if(m)im=m[1]}
+        if(im)im=im.replace(/^http:/i,'https:');
+        T[d.id]={t:nuovi,ts:Date.now(),img:im};sv('tm_t',T);if(im)setImg(d.id,im);
         document.querySelectorAll(`[data-tt="${d.id}"]`).forEach(e=>e.innerHTML=nuovi.slice(0,S.vista==='anteprime'?2:3).map(x=>`<p class="ti">${esc(x)}</p>`).join(''));
         if(S.notif&&F.fav[d.id]!==undefined&&vecchio&&vecchio!==nuovi[0])notifica(d,nuovi[0]);
       }
@@ -244,9 +272,9 @@ async function notifica(d,t){
 /* ---------- PREFERITI ---------- */
 function renderPref(){
   const ids=Object.keys(F.fav);
-  if(!ids.length&&!F.cartelle.length){$('#v-pref').innerHTML='<div class="vuoto"><h2 class="serif">Nessun preferito</h2><p>Tocca la stellina ☆ su una testata per salvarla in una cartella.</p></div>';return}
+  if(!ids.length&&!F.cartelle.length){$('#v-pref').innerHTML='<div class="vh"><h2 class="serif">Preferiti</h2>'+CL+'</div><div class="vuoto"><h2 class="serif">Nessun preferito</h2><p>Tocca la stellina ☆ su una testata per salvarla in una cartella.</p></div>';return}
   const nomi=[...new Set([...F.cartelle,...ids.map(i=>F.fav[i]).filter(Boolean)])];
-  let h='<div class="bar"><button class="btn p" data-nc>📁 Nuova cartella</button></div>';
+  let h='<div class="vh"><h2 class="serif">Preferiti</h2>${CL}</div><div class="bar"><button class="btn p" data-nc>📁 Nuova cartella</button></div>';
   [...nomi,''].forEach(c=>{
     const it=ids.filter(i=>(F.fav[i]||'')===c).map(i=>DATI.find(d=>d.id===i)).filter(Boolean);
     if(!c&&!it.length)return;
@@ -262,29 +290,35 @@ function renderOrg(){
   $('#v-org').innerHTML=`<h2 class="serif">Organizza la home</h2><p class="ds">Scegli quale giornale mettere in cima e in che ordine mostrarli.</p><div class="bar"><button class="btn" data-ro>↩️ Ripristina ordine originale</button></div>`+l.map((d,i)=>`<div class="lt"><div class="org"><button data-up="${d.id}" ${i?'':'disabled'} aria-label="Su">▲</button><button data-dn="${d.id}" ${i<l.length-1?'':'disabled'} aria-label="Giù">▼</button></div><div class="x"><h3 class="nm serif">${esc(d.nome)}</h3><div class="sub">${esc(d.nazione)}</div></div><button class="btn" data-top="${d.id}" ${i?'':'disabled'}>🔝 In cima</button></div>`).join('');
 }
 function muovi(id,m){
-  const ids=ordinati().map(d=>d.id),i=ids.indexOf(id);
-  ids.splice(i,1);
-  ids.splice(m==='top'?0:Math.max(0,i+m),0,id);
+  const ids=ordinati().map(d=>d.id);
+  if(m==='top'){ids.splice(ids.indexOf(id),1);ids.unshift(id)}
+  else{
+    const pool=ids.filter(i=>orgMode||S.filtro==='Tutti'||DATI.find(d=>d.id===i).continente===S.filtro);
+    const n=pool[pool.indexOf(id)+m];if(!n)return toast(m<0?'È già in cima':'È già in fondo');
+    const a=ids.indexOf(id),b=ids.indexOf(n);[ids[a],ids[b]]=[ids[b],ids[a]];
+  }
   S.ordine=ids;sv('tm_s',S);view==='home'?renderHome():renderOrg();
+  const el=document.querySelector('[data-id="'+id+'"]');if(el)el.scrollIntoView({block:'center'});
 }
 
 /* ---------- IMPOSTAZIONI / GUIDA / INFO ---------- */
 function renderImp(){
-  $('#v-imp').innerHTML=`<h2 class="serif">Impostazioni</h2>
-  <div class="set"><h3>🎨 Tema a gradiente</h3><div class="sw">${Object.entries(GRAD).map(([k,g])=>`<button class="${S.grad===k?'on':''}" data-g="${k}" style="background:linear-gradient(135deg,${g[0]},${g[1]})" aria-label="${k}"></button>`).join('')}</div>
-  <div class="seg"><button class="${S.tema==='chiaro'?'on':''}" data-t="chiaro">☀️ Chiaro</button><button class="${S.tema==='scuro'?'on':''}" data-t="scuro">🌙 Scuro</button></div></div>
-  <div class="set"><h3>🔠 Dimensione carattere (${S.font}%)</h3><div class="bar"><button class="btn" data-fz="-10">A−</button><input type="range" id="fr" min="85" max="150" step="5" value="${S.font}" style="flex:1" aria-label="Dimensione carattere"><button class="btn" data-fz="10">A+</button></div></div>
-  <div class="set"><h3>🌐 Apertura dei link</h3><p class="ds">Per usare il traduttore, apri le testate nel browser esterno.</p><div class="seg"><button class="${S.browser==='default'?'on':''}" data-b="default">Browser predefinito</button><button class="${S.browser==='opera'?'on':''}" data-b="opera">Opera</button></div></div>
-  <div class="set"><h3>🔔 Notifiche nuovi titoli</h3><p class="ds">Avvisi sui nuovi titoli delle testate preferite, controllati quando apri l'app.</p><div class="seg"><button class="${S.notif?'on':''}" data-n="1">Attive</button><button class="${S.notif?'':'on'}" data-n="0">Disattive</button></div></div>
-  <div class="set"><h3>💾 Dati</h3><div class="bar"><button class="btn" id="ex">⬆️ Esporta dati</button><button class="btn" id="im">⬇️ Importa dati</button></div></div>
-  <div class="set"><h3>🧹 Archivio offline</h3><button class="btn d" data-cc>Svuota titoli salvati</button></div>`;
+  const P=(k,v,l,cur)=>`<button class="${cur===v?'on':''}" data-${k}="${v}">${l}</button>`;
+  $('#v-imp').innerHTML=`<div class="vh"><h2 class="serif">Impostazioni</h2>${CL}</div>
+  <div class="set"><h3>Tema</h3><div class="pl">${P('t','auto','Automatico',S.tema)}${P('t','chiaro','Chiaro',S.tema)}${P('t','scuro','Scuro',S.tema)}</div></div>
+  <div class="set"><h3>Sfondo a gradiente</h3><div class="gt">${Object.entries(GRAD).map(([k,g])=>`<button class="${S.grad===k?'on':''}" data-g="${k}" style="background:linear-gradient(135deg,${g[0]},${g[1]})">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div></div>
+  <div class="set"><h3>Dimensione del testo</h3><div class="pl">${P('fs',90,'A−',S.font)}${P('fs',100,'A',S.font)}${P('fs',115,'A+',S.font)}${P('fs',130,'A++',S.font)}</div><button class="chk" data-an>${S.anim?'☑':'☐'} Riduci le animazioni</button></div>
+  <div class="set"><h3>Apertura dei link</h3><p class="ds">Per usare il traduttore apri le testate nel browser esterno.</p><div class="pl">${P('b','default','Browser predefinito',S.browser)}${P('b','opera','Opera',S.browser)}</div></div>
+  <div class="set"><h3>Notifiche nuovi titoli</h3><p class="ds">Controllo dei preferiti quando apri l'app.</p><div class="pl">${P('n','1','Attive',S.notif?'1':'0')}${P('n','0','Disattive',S.notif?'1':'0')}</div></div>
+  <div class="set"><h3>Dati</h3><div class="bar"><button class="btn" id="ex">⬆️ Esporta dati</button><button class="btn" id="im">⬇️ Importa dati</button><button class="btn" data-rs>♻️ Ripristina testate eliminate</button></div></div>
+  <div class="set"><h3>Archivio offline</h3><button class="btn d" data-cc>Svuota titoli salvati</button></div>`;
 }
 function renderGuida(){
   const p=[['☰','Menu laterale','Tocca ☰ in alto a sinistra, oppure scorri dal bordo sinistro, per aprire Home, Preferiti, Organizza, Impostazioni, Guida e Info.'],['🖼️','Anteprime o Titoli','In Home scegli Anteprime (schede con titoli e riassunto) oppure Titoli (solo testo). La scelta resta salvata.'],['🌍','Filtra per continente','Usa le etichette sotto lo switch per vedere solo Europa, Asia, Russia e così via.'],['☆','Salva nei preferiti','Tocca la stellina, scegli una cartella (per esempio la nazione) o creane una nuova, poi premi Salva.'],['✏️','Modifica o elimina','In Preferiti sposta una testata in un\'altra cartella, rinomina le cartelle o eliminale. Ogni azione chiede conferma con Sì o No.'],['↕️','Organizza la home','Dal menu laterale scegli Organizza la home: usa ▲ ▼ o 🔝 In cima per decidere l\'ordine.'],['🌐','Apri e traduci','Il pulsante Apri testata usa il browser esterno: in Impostazioni puoi scegliere Opera per usare il traduttore.'],['↩️','Tasto indietro','Il tasto indietro del telefono ti riporta sempre alla Home.'],['📶','Offline e notifiche','I titoli già visti restano disponibili senza rete. Attiva le notifiche in Impostazioni per i nuovi titoli dei preferiti.']];
-  $('#v-guida').innerHTML='<h2 class="serif">Guida di come funziona</h2>'+p.map(s=>`<div class="step"><b>${s[0]}</b><div><strong>${s[1]}</strong><p>${s[2]}</p></div></div>`).join('');
+  $('#v-guida').innerHTML='<div class="vh"><h2 class="serif">Guida di come funziona</h2>'+CL+'</div>'+p.map(s=>`<div class="step"><b>${s[0]}</b><div><strong>${s[1]}</strong><p>${s[2]}</p></div></div>`).join('');
 }
 function renderInfo(){
-  $('#v-info').innerHTML=`<h2 class="serif">Info App Creata da Miki</h2><div class="card"><div class="pv"><div class="logo">TM</div><div><h3 class="nm" style="color:#fff">TestateMondiali</h3><div style="opacity:.9">Versione <span id="app-version">${VER}</span></div></div></div><div class="cb"><p><strong>Scopo.</strong> Raccogliere in un'unica app le principali testate giornalistiche del mondo, divise per continente e nazione, con titoli aggiornati e link diretti alle fonti.</p><p><strong>Creatore.</strong> App Creata da Miki by Claude.</p><p class="ds">Funziona anche offline per i contenuti già visti. I titoli provengono dai feed pubblici delle testate; i marchi appartengono ai rispettivi editori.</p></div></div>`;
+  $('#v-info').innerHTML=`<div class="vh"><h2 class="serif">Info App Creata da Miki</h2>${CL}</div><div class="card"><div class="pv"><div class="logo">TM</div><div><h3 class="nm" style="color:#fff">TestateMondiali</h3><div style="opacity:.9">Versione <span id="app-version">${VER}</span></div></div></div><div class="cb"><p><strong>Scopo.</strong> Raccogliere in un'unica app le principali testate giornalistiche del mondo, divise per continente e nazione, con titoli aggiornati e link diretti alle fonti.</p><p><strong>Creatore.</strong> App Creata da Miki by Claude.</p><p class="ds">Funziona anche offline per i contenuti già visti. I titoli provengono dai feed pubblici delle testate; i marchi appartengono ai rispettivi editori.</p></div></div>`;
 }
 
 /* ---------- DIALOGHI ---------- */
@@ -309,6 +343,29 @@ function scegliCartella(id){
     };
   };
   draw();
+}
+function aggiungi(){
+  const dl=(id,a)=>`<datalist id="${id}">${[...new Set(a)].map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`;
+  sheet(`<h3 class="serif">Aggiungi un giornale</h3>
+  <input type="text" id="a1" placeholder="Nome del giornale" maxlength="60">
+  <input type="text" id="a2" placeholder="Link (https://…)" inputmode="url" style="margin-top:.5rem">
+  <input type="text" id="a3" list="d3" placeholder="Continente (scegli o scrivi)" style="margin-top:.5rem">
+  <input type="text" id="a4" list="d4" placeholder="Nazione" style="margin-top:.5rem">
+  <input type="text" id="a5" placeholder="Breve descrizione (facoltativa)" maxlength="160" style="margin-top:.5rem">
+  ${dl('d3',DATI.map(d=>d.continente))}${dl('d4',DATI.map(d=>d.nazione))}
+  <div class="row" style="margin-top:1rem"><button class="btn" id="an">Annulla</button><button class="btn p" id="ok">Aggiungi</button></div>`);
+  $('#an').onclick=chiudi;
+  $('#ok').onclick=()=>{
+    const n=$('#a1').value.trim();let l=$('#a2').value.trim();const c=$('#a3').value.trim(),z=$('#a4').value.trim(),ds=$('#a5').value.trim();
+    if(!n||!l||!c||!z)return toast('Compila nome, link, continente e nazione');
+    if(!/^https?:\/\//i.test(l))l='https://'+l;
+    let u;try{u=new URL(l)}catch(e){return toast('Il link non è valido')}
+    conferma('Aggiungere «'+esc(n)+'» alla home?',()=>{
+      const d=N('c'+Date.now(),n,u.hostname,c,z,ds||'Testata aggiunta da te.','',l);
+      X.add.push(d);sv('tm_x',X);rebuild();
+      S.ordine=[d.id,...ordinati().map(x=>x.id).filter(i=>i!==d.id)];S.filtro='Tutti';sv('tm_s',S);
+      show('home');toast('Giornale aggiunto in cima')});
+  };
 }
 function nuovaCartella(){
   sheet(`<h3 class="serif">Nuova cartella</h3><input type="text" id="nc" placeholder="Es. Italia" maxlength="40"><div class="row" style="margin-top:1rem"><button class="btn" id="an">Annulla</button><button class="btn p" id="ok">Crea</button></div>`);
@@ -346,10 +403,15 @@ document.addEventListener('click',e=>{
   if(D.v==='org'){show('home');orgMode=true;return renderHome()}
   if(D.v)return show(D.v);
   if('om' in D){orgMode=!orgMode;return renderHome()}
-  if(D.pin){muovi(D.pin,'top');scrollTo(0,0);return toast('Spostata in cima alla home')}
+  if(D.pin)return muovi(D.pin,-1);
+  if('add' in D)return aggiungi();
+  if(D.rm){const d=DATI.find(x=>x.id===D.rm);return conferma('Eliminare «'+esc(d.nome)+'» dall\'app?',()=>{
+    if(X.add.some(a=>a.id===d.id))X.add=X.add.filter(a=>a.id!==d.id);else X.del.push(d.id);
+    delete F.fav[d.id];S.ordine=S.ordine.filter(i=>i!==d.id);sv('tm_x',X);sv('tm_f',F);sv('tm_s',S);rebuild();renderHome();toast('Giornale eliminato')})}
+  if('rs' in D)return conferma('Ripristinare le testate eliminate?',()=>{X.del=[];sv('tm_x',X);rebuild();toast('Testate ripristinate')});
   if(D.a){chiudi();
     if(D.a==='inst'){if(deferred){deferred.prompt();deferred=null}else toast('Dal menu del browser scegli “Aggiungi a schermata Home”')}
-    else if(D.a==='tema'){S.tema=S.tema==='chiaro'?'scuro':'chiaro';sv('tm_s',S);applica();if(view==='imp')renderImp()}
+    else if(D.a==='tema'){S.tema=eff()==='chiaro'?'scuro':'chiaro';sv('tm_s',S);applica();if(view==='imp')renderImp()}
     else show(D.a);return}
   if(D.vi){S.vista=D.vi;sv('tm_s',S);return renderHome()}
   if(D.f){S.filtro=D.f;sv('tm_s',S);return renderHome()}
@@ -366,14 +428,16 @@ document.addEventListener('click',e=>{
   if('ro' in D)return conferma('Ripristinare l\'ordine originale?',()=>{S.ordine=[];sv('tm_s',S);renderOrg()});
   if(D.g){S.grad=D.g;sv('tm_s',S);applica();return renderImp()}
   if(D.t){S.tema=D.t;sv('tm_s',S);applica();return renderImp()}
-  if(D.fz){S.font=Math.min(150,Math.max(85,S.font+ +D.fz));sv('tm_s',S);applica();return renderImp()}
+  if(D.fs){S.font=+D.fs;sv('tm_s',S);applica();return renderImp()}
+  if('an' in D){S.anim=!S.anim;sv('tm_s',S);applica();return renderImp()}
+  if('x' in D)return show('home');
   if(D.b){S.browser=D.b;sv('tm_s',S);return renderImp()}
   if(D.n!==undefined){
     if(D.n==='1'){if(!('Notification' in window))return toast('Notifiche non supportate');
       Notification.requestPermission().then(p=>{S.notif=p==='granted';sv('tm_s',S);renderImp();if(!S.notif)toast('Permesso negato dal browser')})}
     else{S.notif=false;sv('tm_s',S);renderImp()}return}
   if('cc' in D)return conferma('Svuotare i titoli salvati?',()=>{T={};sv('tm_t',T);toast('Archivio svuotato')});
-  if(t.id==='ex'){const b=new Blob([JSON.stringify({app:'TestateMondiali',v:VER,S,F},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='TestateMondiali-dati.json';a.click();return toast('Dati esportati')}
+  if(t.id==='ex'){const b=new Blob([JSON.stringify({app:'TestateMondiali',v:VER,S,F,X},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='TestateMondiali-dati.json';a.click();return toast('Dati esportati')}
   if(t.id==='im')return $('#fi').click();
 });
 $('#ov').onclick=chiudi;
@@ -383,7 +447,7 @@ $('#fi').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=()=>{try{const j=JSON.parse(r.result);if(j.app!=='TestateMondiali')throw 0;
-    conferma('Importare i dati? Quelli attuali verranno sostituiti.',()=>{Object.assign(S,j.S||{});F=Object.assign({cartelle:[],fav:{}},j.F||{});sv('tm_s',S);sv('tm_f',F);applica();show('imp');toast('Dati importati')})}
+    conferma('Importare i dati? Quelli attuali verranno sostituiti.',()=>{Object.assign(S,j.S||{});F=Object.assign({cartelle:[],fav:{}},j.F||{});X=Object.assign({add:[],del:[]},j.X||{});sv('tm_x',X);rebuild();sv('tm_s',S);sv('tm_f',F);applica();show('imp');toast('Dati importati')})}
     catch(x){toast('File non valido')}};
   r.readAsText(f);e.target.value='';
 };
