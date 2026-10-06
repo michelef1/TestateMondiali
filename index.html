@@ -119,6 +119,26 @@ h2.serif{font-size:1.5rem}
 .cap{position:absolute;left:.6rem;bottom:.5rem;background:rgba(0,0,0,.6);color:#fff;font-size:.75rem;padding:.2rem .65rem;border-radius:999px}
 .in{padding:.7rem .9rem;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit}
 input.in{width:100%}
+.srch{display:flex;align-items:center;gap:.5rem;background:var(--card);border:2px solid color-mix(in srgb,var(--g1) 45%,transparent);border-radius:16px;padding:.2rem .4rem .2rem 1rem;margin-bottom:.7rem;box-shadow:var(--sh)}
+.srch:focus-within{border-color:var(--g1)}
+.srch input{flex:1;min-width:0;border:0;background:none;color:var(--tx);font:inherit;font-size:1.15rem;padding:.9rem .2rem;outline:0!important}
+.srch button{font-size:1.4rem;width:48px;height:48px;border-radius:12px}
+.seg3{display:flex;background:var(--card);border-radius:999px;padding:3px;box-shadow:var(--sh)}
+.seg3 button{flex:1;padding:.7rem .2rem;border-radius:999px;font-weight:600;font-size:.92rem}
+.seg3 .on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}.grid .card{margin-bottom:0}
+.g2 .pv{min-height:0;padding:.7rem;flex-direction:column;align-items:flex-start;gap:.4rem}
+.g2 .pv::before,.g2 .pv::after{display:none}
+.g2 .logo{width:40px;height:40px;border-radius:11px}.g2 .logo img{width:26px;height:26px}
+.g2 .nm{font-size:.95rem}.g2 .pv div{font-size:.78rem!important}
+.g2 .pic{height:100px}.g2 .ds{display:none}.g2 .cb{padding:.6rem}.g2 .ti{font-size:.85rem}
+.g2 .row{gap:.3rem}.g2 .row .btn{padding:.5rem .2rem;font-size:.85rem}.g2 .st{width:34px;flex:none!important}
+.g2 .orgc{flex-wrap:wrap}.g2 .orgc .btn{font-size:.8rem;padding:.5rem .2rem}
+#dr{overflow:hidden}.dsc{overflow-y:auto;flex:1}
+#dr a{padding:.75rem 1.2rem}
+.dsep{padding:.9rem 1.2rem .2rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);font-weight:700}
+.dfl{padding:0 1.2rem .4rem}.dfl h4{margin:.8rem 0 .4rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.dchips{display:flex;flex-wrap:wrap;gap:.4rem}
 </style>
 </head>
 <body>
@@ -137,12 +157,20 @@ input.in{width:100%}
 <div class="ov" id="ov"></div>
 <nav id="dr" aria-label="Menu laterale">
   <div class="dh"><h2 class="serif">TestateMondiali</h2><p>I giornali del mondo in tasca</p></div>
+  <div class="dsc">
   <a href="#" data-v="home">🏠 Home</a>
   <a href="#" data-v="pref">⭐ Preferiti</a>
+  <div id="df" class="dfl"></div>
+  <div class="dsep">Gestisci</div>
   <a href="#" data-v="org">↕️ Organizza la home</a>
+  <a href="#" data-ad>➕ Aggiungi un giornale</a>
+  <a href="#" data-cg>📚 Catalogo testate</a>
+  <a href="#" data-ag><span>🔄 Aggiorna titoli<small id="up" style="display:block;color:var(--mu);font-weight:400"></small></span></a>
+  <div class="dsep">App</div>
   <a href="#" data-v="imp">⚙️ Impostazioni</a>
   <a href="#" data-v="guida">📖 Guida</a>
   <a href="#" data-v="info">ℹ️ Info</a>
+  </div>
 </nav>
 <main>
   <section class="view on" id="v-home"></section>
@@ -202,7 +230,7 @@ let X=ld('tm_x',{add:[],del:[]});let DATI=[];const TIPO={ft:'Economia',wsj:'Econ
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let view='home',deferred=null,orgMode=false;const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem" aria-label="Elimina giornale">🗑️</button></div>`;
-const VER='1.5';const CL='<button class="cl" data-x>✕ Chiudi</button>';
+const VER='1.6';const CL='<button class="cl" data-x>✕ Chiudi</button>';
 
 const eff=()=>S.tema==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'scuro':'chiaro'):S.tema;
 function applica(){
@@ -235,23 +263,31 @@ let Q='';
 const norm=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const visibile=d=>orgMode||((S.filtro==='Tutti'||d.continente===S.filtro)&&(S.naz==='Tutti'||d.nazione===S.naz)&&(S.tipo==='Tutti'||d.tipo===S.tipo));
 const updTxt=()=>{const t=+localStorage.getItem('tm_u');return t?'Titoli aggiornati alle '+new Date(t).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):''};
-const ricerca=()=>`<div class="bar"><input type="text" id="q" class="in" placeholder="🔎 Cerca testata…" value="${esc(Q)}" style="flex:1;min-width:0" aria-label="Cerca testata"><select id="ty" class="in" aria-label="Tipo di testata">${['Tutti','Quotidiano','Sport','Economia','Agenzia'].map(t=>`<option value="${t}" ${S.tipo===t?'selected':''}>${t==='Tutti'?'Tutti i tipi':t}</option>`).join('')}</select><button class="btn" data-ag aria-label="Aggiorna ora">🔄</button></div><div class="ds" id="up" style="margin:-.2rem 0 .5rem">${updTxt()}</div>`;
+const ricerca=()=>`<div class="srch"><span aria-hidden="true">🔎</span><input type="search" id="q" placeholder="Cerca una testata…" value="${esc(Q)}" aria-label="Cerca testata" autocomplete="off"><button data-ag aria-label="Aggiorna titoli">🔄</button></div>`;
+const rh=()=>view==='home'?renderHome():show('home');
+function renderDr(){
+  const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
+  const nz=S.filtro==='Tutti'?[]:[...new Set(DATI.filter(d=>d.continente===S.filtro).map(d=>d.nazione))];
+  const ch=(k,v,l,cur)=>`<button class="chip ${cur===v?'on':''}" data-${k}="${esc(v)}">${esc(l)}</button>`;
+  $('#df').innerHTML=`<h4>Tipo</h4><div class="dchips">${['Tutti','Quotidiano','Sport','Economia','Agenzia'].map(t=>ch('ty',t,t==='Tutti'?'Tutti i tipi':t,S.tipo)).join('')}</div><h4>Continente</h4><div class="dchips">${conts.map(c=>ch('f',c,c==='Tutti'?'Tutti':c,S.filtro)).join('')}</div>${nz.length>1?`<h4>Nazione</h4><div class="dchips">${['Tutti',...nz].map(z=>ch('z',z,z==='Tutti'?'Tutte':z,S.naz)).join('')}</div>`:''}`;
+  $('#up').textContent=updTxt();
+}
 const nazChips=()=>{if(S.filtro==='Tutti'||orgMode)return'';const n=[...new Set(DATI.filter(d=>d.continente===S.filtro).map(d=>d.nazione))];return n.length<2?'':`<div class="chips">${['Tutti',...n].map(z=>`<button class="chip ${S.naz===z?'on':''}" data-z="${esc(z)}">${z==='Tutti'?'Tutte le nazioni':esc(z)}</button>`).join('')}</div>`};
 function applicaQ(){const q=norm(Q.trim());let v=0;$$('#v-home [data-id]').forEach(e=>{const d=DATI.find(x=>x.id===e.dataset.id);const ok=!d||orgMode||!q||norm(d.nome+' '+d.nazione+' '+d.continente+' '+d.tipo).includes(q);e.style.display=ok?'':'none';if(ok)v++});const nr=$('#nr');if(nr)nr.style.display=v?'none':'block'}
 /* ---------- HOME ---------- */
 function renderHome(){
   const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
   const lista=ordinati().filter(visibile);
-  const an=S.vista==='anteprime';
-  let h=`<div class="bar"><div class="seg" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div><button class="btn ${orgMode?'p':''}" data-om>${orgMode?'✅ Fatto':'↕️ Organizza'}</button><button class="btn" data-add>➕ Aggiungi</button></div>${orgMode?'<p class="ds">Usa ▲ ▼ su ogni testata per decidere l\'ordine, poi premi Fatto.</p>':''}
-  ${ricerca()}<div class="chips">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
-  h+=lista.map(d=>{
+  const gr=S.vista==='griglia',an=S.vista!=='titoli';
+  let h=`${ricerca()}<div class="seg3" role="tablist"><button class="${S.vista==='anteprime'?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${gr?'on':''}" data-vi="griglia">▦ Due per riga</button><button class="${S.vista==='titoli'?'on':''}" data-vi="titoli">📰 Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
+  const cards=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione)+(d.tipo&&d.tipo!=='Quotidiano'?' · '+esc(d.tipo):'');
-    const tit=t?t.slice(0,an?2:3).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
-    return an?`<article class="card" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div data-tt="${d.id}">${tit}</div><p class="ds">${esc(d.descrizione)}</p><div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div></div></article>`
+    const tit=t?t.slice(0,gr?1:an?2:3).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
+    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div data-tt="${d.id}">${tit}</div><p class="ds">${esc(d.descrizione)}</p><div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div></div></article>`
     :`<div class="lt" data-id="${d.id}"><div class="x" data-o="${d.id}" role="link" tabindex="0"><h3 class="nm serif">${esc(d.nome)}</h3><div class="sub">${sub}</div><div data-tt="${d.id}">${tit}</div>${orgMode?ctl(d):''}</div><button class="btn st pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div>`;
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
-  h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata.</div>';$('#v-home').innerHTML=h;applicaQ();
+  h+=gr?'<div class="grid">'+cards+'</div>':cards;
+  h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata.</div>';$('#v-home').innerHTML=h;applicaQ();renderDr();
 }
 async function caricaTitoli(){
   const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&'img' in T[d.id]&&Date.now()-T[d.id].ts<18e5));
@@ -267,7 +303,7 @@ async function caricaTitoli(){
         if(!im){const m=(it.content||it.description||'').match(/<img[^>]+src=["']([^"']+)/i);if(m)im=m[1]}
         if(im)im=im.replace(/^http:/i,'https:');
         T[d.id]={t:nuovi,ts:Date.now(),img:im};sv('tm_t',T);if(im)setImg(d.id,im);
-        document.querySelectorAll(`[data-tt="${d.id}"]`).forEach(e=>e.innerHTML=nuovi.slice(0,S.vista==='anteprime'?2:3).map(x=>`<p class="ti">${esc(x)}</p>`).join(''));
+        document.querySelectorAll(`[data-tt="${d.id}"]`).forEach(e=>e.innerHTML=nuovi.slice(0,S.vista==='titoli'?3:S.vista==='griglia'?1:2).map(x=>`<p class="ti">${esc(x)}</p>`).join(''));
         if(S.notif&&F.fav[d.id]!==undefined&&vecchio&&vecchio!==nuovi[0])notifica(d,nuovi[0]);
       }
     }catch(e){document.querySelectorAll(`[data-ti="${d.id}"]`).forEach(x=>x.textContent=navigator.onLine?'Titoli non disponibili ora':'Offline: titoli non aggiornati')}
@@ -324,7 +360,7 @@ function renderImp(){
   <div class="set"><h3>Archivio offline</h3><button class="btn d" data-cc>Svuota titoli salvati</button></div>`;
 }
 function renderGuida(){
-  const p=[['☰','Menu laterale','Tocca ☰ in alto a sinistra, oppure scorri dal bordo sinistro, per aprire Home, Preferiti, Organizza, Impostazioni, Guida e Info.'],['🖼️','Anteprime o Titoli','In Home scegli Anteprime (schede con titoli e riassunto) oppure Titoli (solo testo). La scelta resta salvata.'],['🌍','Filtra per continente','Usa le etichette sotto lo switch per vedere solo Europa, Asia, Russia e così via.'],['☆','Salva nei preferiti','Tocca la stellina, scegli una cartella (per esempio la nazione) o creane una nuova, poi premi Salva.'],['✏️','Modifica o elimina','In Preferiti sposta una testata in un\'altra cartella, rinomina le cartelle o eliminale. Ogni azione chiede conferma con Sì o No.'],['↕️','Organizza la home','Dal menu laterale scegli Organizza la home: usa ▲ ▼ o 🔝 In cima per decidere l\'ordine.'],['🌐','Apri e traduci','Il pulsante Apri testata usa il browser esterno: in Impostazioni puoi scegliere Opera per usare il traduttore.'],['↩️','Tasto indietro','Il tasto indietro del telefono ti riporta sempre alla Home.'],['📶','Offline e notifiche','I titoli già visti restano disponibili senza rete. Attiva le notifiche in Impostazioni per i nuovi titoli dei preferiti.'],['🔎','Cerca e filtra','Cerca per nome, scegli continente, nazione e tipo (quotidiano, sport, economia, agenzia). Il pulsante 🔄 aggiorna i titoli.'],['📚','Catalogo','In ➕ Aggiungi scegli “Scegli dal catalogo” per aggiungere testate già pronte con un tocco.']];
+  const p=[['☰','Menu laterale','Tocca ☰ in alto a sinistra, oppure scorri dal bordo sinistro, per aprire Home, Preferiti, Organizza, Impostazioni, Guida e Info.'],['🖼️','Anteprime o Titoli','In Home scegli Anteprime (una copertina per riga), Due per riga o Titoli (solo testo). La scelta resta salvata.'],['🌍','Filtra per continente','Usa le etichette sotto lo switch per vedere solo Europa, Asia, Russia e così via.'],['☆','Salva nei preferiti','Tocca la stellina, scegli una cartella (per esempio la nazione) o creane una nuova, poi premi Salva.'],['✏️','Modifica o elimina','In Preferiti sposta una testata in un\'altra cartella, rinomina le cartelle o eliminale. Ogni azione chiede conferma con Sì o No.'],['↕️','Organizza la home','Dal menu laterale scegli Organizza la home: usa ▲ ▼ su ogni testata per decidere l\'ordine, poi premi Fatto.'],['🌐','Apri e traduci','Il pulsante Apri testata usa il browser esterno: in Impostazioni puoi scegliere Opera per usare il traduttore.'],['↩️','Tasto indietro','Il tasto indietro del telefono ti riporta sempre alla Home.'],['📶','Offline e notifiche','I titoli già visti restano disponibili senza rete. Attiva le notifiche in Impostazioni per i nuovi titoli dei preferiti.'],['🔎','Cerca e filtra','Cerca per nome. Continente e nazione sono anche nel menu laterale, dove trovi il tipo (quotidiano, sport, economia, agenzia). Il pulsante 🔄 aggiorna i titoli.'],['📚','Catalogo','Dal menu laterale scegli Catalogo testate per aggiungere testate già pronte con un tocco, oppure Aggiungi un giornale per inserirne uno a mano.']];
   $('#v-guida').innerHTML='<div class="vh"><h2 class="serif">Guida di come funziona</h2>'+CL+'</div>'+p.map(s=>`<div class="step"><b>${s[0]}</b><div><strong>${s[1]}</strong><p>${s[2]}</p></div></div>`).join('');
 }
 function renderInfo(){
@@ -494,8 +530,11 @@ document.addEventListener('click',e=>{
     else if(D.a==='tema'){S.tema=eff()==='chiaro'?'scuro':'chiaro';sv('tm_s',S);applica();if(view==='imp')renderImp()}
     else show(D.a);return}
   if(D.vi){S.vista=D.vi;sv('tm_s',S);return renderHome()}
-  if(D.f){S.filtro=D.f;S.naz='Tutti';sv('tm_s',S);return renderHome()}
-  if(D.z){S.naz=D.z;sv('tm_s',S);return renderHome()}
+  if(D.f){S.filtro=D.f;S.naz='Tutti';sv('tm_s',S);return rh()}
+  if(D.z){S.naz=D.z;sv('tm_s',S);return rh()}
+  if(D.ty){S.tipo=D.ty;sv('tm_s',S);return rh()}
+  if('ad' in D){chiudi();return aggiungi()}
+  if('cg' in D){chiudi();return catalogo()}
   if('ag' in D){toast('Aggiornamento in corso…');Object.values(T).forEach(x=>x.ts=0);return caricaTitoli().then(()=>toast('Titoli aggiornati'))}
   if(D.o)return apri(DATI.find(d=>d.id===D.o).link);
   if(D.s)return scegliCartella(D.s);
