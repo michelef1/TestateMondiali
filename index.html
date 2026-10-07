@@ -159,12 +159,15 @@ input.in{width:100%}
 .g2 .pv>div:not(.logo){width:100%}
 .g2 .pv>div:not(.logo)>*{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .tile{padding-top:1rem}.tile.o{padding-top:2.4rem}
+.mv{display:flex;flex-direction:column;gap:3px;flex:none;width:36px}
+.mv .btn{padding:0!important;height:24px;font-size:.8rem;border-radius:8px;line-height:1;flex:none!important}
+#tt{cursor:pointer}
 </style>
 </head>
 <body>
 <header>
   <button class="ib" id="bm" aria-label="Apri menu laterale">☰</button>
-  <h1 class="serif" id="tt">TestateMondiali</h1>
+  <h1 class="serif" id="tt" role="link" tabindex="0">TestateMondiali</h1>
   <button class="ib" id="b3" aria-label="Altre funzioni">⋮</button>
 </header>
 <div class="menu" id="m3">
@@ -251,7 +254,7 @@ let X=ld('tm_x',{add:[],del:[]});let DATI=[];const TIPO={ft:'Economia',wsj:'Econ
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let view='home',deferred=null,orgMode=false;const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem" aria-label="Elimina giornale">🗑️</button></div>`;
-const VER='1.9';const CL='<button class="cl" data-x>✕ Chiudi</button>';
+const VER='1.10';const CL='<button class="cl" data-x>✕ Chiudi</button>';
 
 const eff=()=>S.tema==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'scuro':'chiaro'):S.tema;
 function applica(){
@@ -304,7 +307,7 @@ function renderHome(){
   const cards=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione)+(d.tipo&&d.tipo!=='Quotidiano'?' · '+esc(d.tipo):'');
     const tit=t?t.slice(0,an?(gr?1:2):(gr?2:3)).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
-    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div></div></article>`
+    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><div class="mv"><button class="btn pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn pin" data-pdn="${d.id}" aria-label="Sposta giù di una posizione">▼</button></div><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div></div></article>`
     :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?`<button class="xx" data-rm="${d.id}" aria-label="Elimina giornale">✕</button>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button></div>`:''}</div>`;
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
   h+=gr?'<div class="grid">'+cards+'</div>':cards;
@@ -381,7 +384,7 @@ function renderImp(){
   <div class="set"><h3>Archivio offline</h3><button class="btn d" data-cc>Svuota titoli salvati</button></div>`;
 }
 function renderGuida(){
-  const p=[['☰','Menu laterale','Tocca ☰ in alto a sinistra, oppure scorri dal bordo sinistro, per aprire Home, Preferiti, Organizza, Impostazioni, Guida e Info.'],['🖼️','Anteprime o Titoli','In Home scegli Anteprime (copertine con immagine di prima pagina, due per riga) oppure Titoli (solo nome, continente e nazione). La scelta resta salvata.'],['🌍','Filtra per continente','Usa le etichette sotto lo switch per vedere solo Europa, Asia, Russia e così via.'],['☆','Salva nei preferiti','Tocca la stellina ☆ nella vista Anteprime, scegli una cartella (per esempio la nazione) o creane una nuova, poi premi Salva.'],['✏️','Modifica o elimina','In Preferiti sposta una testata in un\'altra cartella, rinomina le cartelle o eliminale. Ogni azione chiede conferma con Sì o No.'],['↕️','Organizza la home','Dal menu laterale scegli Organizza la home: usa ▲ ▼ su ogni testata per decidere l\'ordine, poi premi Fatto.'],['🌐','Apri e traduci','Il pulsante Apri testata usa il browser esterno: in Impostazioni puoi scegliere Opera per usare il traduttore.'],['↩️','Tasto indietro','Il tasto indietro del telefono ti riporta sempre alla Home.'],['📶','Offline e notifiche','I titoli già visti restano disponibili senza rete. Attiva le notifiche in Impostazioni per i nuovi titoli dei preferiti.'],['🔎','Cerca e filtra','Cerca per nome. Continente e nazione sono anche nel menu laterale, dove trovi il tipo (quotidiano, sport, economia, agenzia). Il pulsante 🔄 aggiorna i titoli.'],['📚','Catalogo','Dal menu laterale scegli Catalogo testate per aggiungere testate già pronte con un tocco, oppure Aggiungi un giornale per inserirne uno a mano.']];
+  const p=[['☰','Menu laterale','Tocca ☰ in alto a sinistra, oppure scorri dal bordo sinistro, per aprire Home, Preferiti, Organizza, Impostazioni, Guida e Info.'],['🖼️','Anteprime o Titoli','In Home scegli Anteprime (copertine con immagine di prima pagina, due per riga) oppure Titoli (solo nome, continente e nazione). La scelta resta salvata.'],['🌍','Filtra per continente','Usa le etichette sotto lo switch per vedere solo Europa, Asia, Russia e così via.'],['☆','Salva nei preferiti','Tocca la stellina ☆ nella vista Anteprime, scegli una cartella (per esempio la nazione) o creane una nuova, poi premi Salva.'],['✏️','Modifica o elimina','In Preferiti sposta una testata in un\'altra cartella, rinomina le cartelle o eliminale. Ogni azione chiede conferma con Sì o No.'],['↕️','Organizza la home','Dal menu laterale scegli Organizza la home: usa ▲ ▼ su ogni testata per decidere l\'ordine, poi premi Fatto.'],['🌐','Apri e traduci','Il pulsante Apri testata usa il browser esterno: in Impostazioni puoi scegliere Opera per usare il traduttore.'],['↩️','Tasto indietro','Il tasto indietro del telefono ti riporta sempre alla Home, come toccare il titolo TestateMondiali in alto.'],['📶','Offline e notifiche','I titoli già visti restano disponibili senza rete. Attiva le notifiche in Impostazioni per i nuovi titoli dei preferiti.'],['🔎','Cerca e filtra','Cerca per nome. Continente e nazione sono anche nel menu laterale, dove trovi il tipo (quotidiano, sport, economia, agenzia). Il pulsante 🔄 aggiorna i titoli.'],['📚','Catalogo','Dal menu laterale scegli Catalogo testate per aggiungere testate già pronte con un tocco, oppure Aggiungi un giornale per inserirne uno a mano.']];
   $('#v-guida').innerHTML='<div class="vh"><h2 class="serif">Guida di come funziona</h2>'+CL+'</div>'+p.map(s=>`<div class="step"><b>${s[0]}</b><div><strong>${s[1]}</strong><p>${s[2]}</p></div></div>`).join('');
 }
 function renderInfo(){
@@ -541,6 +544,7 @@ document.addEventListener('click',e=>{
   if(D.v)return show(D.v);
   if('om' in D){orgMode=!orgMode;return renderHome()}
   if(D.pin)return muovi(D.pin,-1);
+  if(D.pdn)return muovi(D.pdn,1);
   if('add' in D)return aggiungi();
   if(D.rm){const d=DATI.find(x=>x.id===D.rm);return conferma('Eliminare «'+esc(d.nome)+'» dall\'app?',()=>{
     if(X.add.some(a=>a.id===d.id))X.add=X.add.filter(a=>a.id!==d.id);else X.del.push(d.id);
@@ -597,6 +601,7 @@ $('#fi').onchange=e=>{
 };
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e});
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+$('#tt').onclick=()=>show('home');$('#tt').onkeydown=e=>{if(e.key==='Enter')show('home')};
 applica();show('home');caricaTitoli();
 </script>
 </body>
