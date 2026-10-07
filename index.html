@@ -209,6 +209,12 @@ input.in{width:100%}
 .save-bar .btn{flex:1;padding:.9rem}
 .save-bar .btn.ok{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0;font-weight:700;font-size:1.05rem}
 .save-bar .btn.del{background:#d33;color:#fff;border:0;flex:0 0 auto;padding:.9rem 1.2rem}
+.nrow{display:flex;gap:.8rem;width:100%;text-align:left;background:color-mix(in srgb,var(--card) 94%,transparent);border:1px solid color-mix(in srgb,var(--g1) 30%,transparent);border-radius:16px;padding:.8rem 1rem;margin-bottom:.6rem;box-shadow:var(--sh);align-items:flex-start}
+.nf{font-size:1.6rem;line-height:1.1}
+.nb{display:flex;flex-direction:column;gap:.15rem;min-width:0}
+.nn{font-weight:800}.nt{font-size:1rem;line-height:1.35}.nm2{font-size:.78rem;color:var(--mu)}
+.newsbtn{display:flex;align-items:center;gap:.6rem;width:100%;padding:.85rem 1rem;border-radius:16px;background:linear-gradient(135deg,#d7263d,#ff5a5f);color:#fff;font-weight:800;font-size:1.05rem;margin:.1rem 0 .7rem;box-shadow:0 4px 14px rgba(215,38,61,.35)}
+.newsbtn span:last-child{margin-left:auto;font-size:1.4rem}
 </style>
 </head>
 <body>
@@ -230,6 +236,7 @@ input.in{width:100%}
   <div class="dsc">
   <a href="#" data-v="home">🏠 Home</a>
   <a href="#" data-v="pref">⭐ Preferiti</a>
+  <a href="#" data-v="ultime">🔴 Ultime notizie</a>
   <div id="df" class="dfl"></div>
   <div class="dsep">Scopri</div>
   <a href="#" data-v="mondo">🌍 Sfoglia il mondo</a>
@@ -248,6 +255,7 @@ input.in{width:100%}
   <section class="view on" id="v-home"></section>
   <section class="view" id="v-pref"></section>
   <section class="view" id="v-mondo"></section>
+  <section class="view" id="v-ultime"></section>
   <section class="view" id="v-imp"></section>
   <section class="view" id="v-guida"></section>
   <section class="view" id="v-info"></section>
@@ -319,12 +327,24 @@ function applicaEdit(d){
   if(!e)return d;
   return Object.assign({},d,e);
 }
+const FEED={
+'ansa.it':'https://www.ansa.it/sito/ansait_rss.xml','bbc.com':'https://feeds.bbci.co.uk/news/rss.xml','edition.cnn.com':'http://rss.cnn.com/rss/edition.rss',
+'lefigaro.fr':'https://www.lefigaro.fr/rss/figaro_actualites.xml','gazzetta.it':'https://www.gazzetta.it/rss/home.xml','ilsole24ore.com':'https://www.ilsole24ore.com/rss/italia.xml',
+'lastampa.it':'https://www.lastampa.it/rss.xml','ilgiornale.it':'https://www.ilgiornale.it/feed.xml','ilmessaggero.it':'https://www.ilmessaggero.it/rss/home.xml',
+'telegraph.co.uk':'https://www.telegraph.co.uk/rss.xml','independent.co.uk':'https://www.independent.co.uk/news/rss','spiegel.de':'https://www.spiegel.de/schlagzeilen/index.rss',
+'sueddeutsche.de':'https://rss.sueddeutsche.de/rss/Topthemen','welt.de':'https://www.welt.de/feeds/latest.rss','elmundo.es':'https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml',
+'marca.com':'https://e00-marca.uecdn.es/rss/portada.xml','abc.es':'https://www.abc.es/rss/feeds/abc_ultima.xml','nzz.ch':'https://www.nzz.ch/recent.rss',
+'japantimes.co.jp':'https://www.japantimes.co.jp/feed/','thehindu.com':'https://www.thehindu.com/news/feeder/default.rss','usatoday.com':'https://rssfeeds.usatoday.com/usatoday-NewsTopStories',
+'latimes.com':'https://www.latimes.com/world-nation/rss2.0.xml','tass.com':'https://tass.com/rss/v2.xml','kommersant.ru':'https://www.kommersant.ru/RSS/news.xml',
+'iz.ru':'https://iz.ru/xml/rss/all.xml','smh.com.au':'https://www.smh.com.au/rss/feed.xml','mg.co.za':'https://mg.co.za/feed/','clarin.com':'https://www.clarin.com/rss/lo-ultimo/',
+'folha.uol.com.br':'https://feeds.folha.uol.com.br/emcimadahora/rss091.xml','kyivindependent.com':'https://kyivindependent.com/news-archive/rss/'};
+const hostOf=l=>{try{return new URL(l).hostname.replace(/^www\./,'')}catch(e){return''}};
 function rebuild(){
   const seenAdd=new Set();
   X.add=X.add.filter(d=>{if(!d||!d.id)return false;if(seenAdd.has(d.id))return false;seenAdd.add(d.id);return true});
   X.del=[...new Set(X.del)];
   DATI=BASE.filter(d=>!X.del.includes(d.id)).concat(X.add).map(applicaEdit);
-  DATI.forEach(d=>{d.tipo=d.tipo||TIPO[d.id]||'Quotidiano'});
+  DATI.forEach(d=>{d.tipo=d.tipo||TIPO[d.id]||'Quotidiano';if(!d.rss){const f=FEED[hostOf(d.link)];if(f)d.rss=f}});
 }
 let DATI=[];rebuild();
 
@@ -333,7 +353,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.19';
+const VER='1.20';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -379,6 +399,7 @@ const azioni=d=>`<div class="acts"><button class="ab" data-edit="${d.id}" title=
    CATALOGO MONDIALE
    ============================================================ */
 const CAT=[
+  ['Nord America','USA','Quotidiano','CNN','edition.cnn.com'],
 ['Europa','Regno Unito','Quotidiano','The Times','thetimes.co.uk'],
 ['Europa','Regno Unito','Quotidiano','The Telegraph','telegraph.co.uk'],
 ['Europa','Regno Unito','Quotidiano','The Independent','independent.co.uk'],
@@ -774,7 +795,7 @@ function renderHome(){
   const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
   const lista=ordinati().filter(visibile);
   const gr=true,an=S.vista!=='titoli';
-  let h=`${onlineBanner()}${ricerca()}<div id="rc" style="display:none"></div><div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
+  let h=`${onlineBanner()}${ricerca()}<div id="rc" style="display:none"></div><button class="newsbtn" data-v="ultime"><span>🔴</span><span>Ultime notizie</span><span>›</span></button><div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
   const cards=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione)+(d.tipo&&d.tipo!=='Quotidiano'?' · '+esc(d.tipo):'');
     const tit=t?t.slice(0,an?(gr?1:2):(gr?2:3)).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
@@ -804,7 +825,7 @@ async function fetchRSS(rssUrl){
           const t=i.querySelector('title')?.textContent?.trim();
           const enc=i.querySelector('enclosure')?.getAttribute('url');
           const media=i.getElementsByTagName('media:content')[0]?.getAttribute('url');
-          return {title:t,thumbnail:enc||media,content:i.querySelector('description,content')?.textContent||''};
+          return {title:t,thumbnail:enc||media,content:i.querySelector('description,content')?.textContent||'',link:(i.querySelector('link')?.getAttribute('href'))||i.querySelector('link')?.textContent?.trim()||'',pubDate:i.querySelector('pubDate,published,updated')?.textContent||''};
         }).filter(x=>x.title);
         if(items.length)return {items};
       }else{
@@ -817,18 +838,21 @@ async function fetchRSS(rssUrl){
 }
 async function caricaTitoli(){
   const TTL=10*60*1000;
-  const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&'img' in T[d.id]&&Date.now()-T[d.id].ts<TTL));
+  const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&'img' in T[d.id]&&T[d.id].l&&Date.now()-T[d.id].ts<TTL));
   const lavora=async()=>{while(coda.length){const d=coda.shift();
     try{
       const j=await fetchRSS(d.rss);
       if(j.items&&j.items.length){
-        const nuovi=j.items.slice(0,3).map(i=>(i.title||'').trim()).filter(Boolean);
+        const its=j.items.slice(0,3).filter(i=>(i.title||'').trim());
+        const nuovi=its.map(i=>i.title.trim());
+        const ls=its.map(i=>i.link||i.url||'');
+        const ps=its.map(i=>pd(i.pubDate||i.published));
         const vecchio=T[d.id]&&T[d.id].t&&T[d.id].t[0];
         const it=j.items[0];let im=it.thumbnail||'';
         if(!im&&it.enclosure&&it.enclosure.link&&/image|\.(jpe?g|png|webp)/i.test((it.enclosure.type||'')+it.enclosure.link))im=it.enclosure.link;
         if(!im){const m=(it.content||it.description||'').match(/<img[^>]+src=["']([^"']+)/i);if(m)im=m[1]}
         if(im)im=im.replace(/^http:/i,'https:');
-        T[d.id]={t:nuovi,ts:Date.now(),img:im};sv('tm_t',T);if(im)setImg(d.id,im);
+        T[d.id]={t:nuovi,l:ls,p:ps,ts:Date.now(),img:im};sv('tm_t',T);if(im)setImg(d.id,im);
         if(S.notif&&F.fav[d.id]!==undefined&&vecchio&&vecchio!==nuovi[0])notifica(d,nuovi[0]);
       }
     }catch(e){document.querySelectorAll(`[data-ti="${d.id}"]`).forEach(x=>x.textContent=navigator.onLine?'Titoli non disponibili ora':'Offline')}
@@ -836,12 +860,52 @@ async function caricaTitoli(){
   await Promise.all([lavora(),lavora(),lavora()]);
   try{localStorage.setItem('tm_u',Date.now())}catch(e){}
   const u=$('#up');if(u)u.textContent=updTxt();
+  if(view==='ultime')renderUltime(true);
 }
 async function notifica(d,t){
   try{
     const reg=await Promise.race([navigator.serviceWorker.ready,new Promise((_,rj)=>setTimeout(()=>rj(new Error('timeout')),2500))]);
     reg.showNotification(d.nome,{body:t,icon:'./icons/icon-192.png',tag:d.id});
   }catch(e){}
+}
+
+/* ---------- ULTIME NOTIZIE ---------- */
+const pd=v=>{if(!v)return 0;let x=String(v).trim();if(/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(x))x=x.replace(' ','T')+'Z';const t=Date.parse(x);return isNaN(t)?0:t};
+const FLAG={'Arabia Saudita':'🇸🇦','Argentina':'🇦🇷','Australia':'🇦🇺','Austria':'🇦🇹','Bangladesh':'🇧🇩','Belgio':'🇧🇪','Bolivia':'🇧🇴','Brasile':'🇧🇷','Bulgaria':'🇧🇬','Canada':'🇨🇦','Cile':'🇨🇱','Cina':'🇨🇳','Colombia':'🇨🇴','Corea del Sud':'🇰🇷','Croazia':'🇭🇷','Danimarca':'🇩🇰','Ecuador':'🇪🇨','Egitto':'🇪🇬','Emirati Arabi':'🇦🇪','Etiopia':'🇪🇹','Figi':'🇫🇯','Filippine':'🇵🇭','Finlandia':'🇫🇮','Francia':'🇫🇷','Germania':'🇩🇪','Ghana':'🇬🇭','Giappone':'🇯🇵','Grecia':'🇬🇷','Hong Kong':'🇭🇰','India':'🇮🇳','Indonesia':'🇮🇩','Iran':'🇮🇷','Irlanda':'🇮🇪','Islanda':'🇮🇸','Israele':'🇮🇱','Italia':'🇮🇹','Kenya':'🇰🇪','Libano':'🇱🇧','Malesia':'🇲🇾','Marocco':'🇲🇦','Messico':'🇲🇽','Nigeria':'🇳🇬','Norvegia':'🇳🇴','Nuova Zelanda':'🇳🇿','Olanda':'🇳🇱','Pakistan':'🇵🇰','Perù':'🇵🇪','Polonia':'🇵🇱','Portogallo':'🇵🇹','Qatar':'🇶🇦','Regno Unito':'🇬🇧','Repubblica Ceca':'🇨🇿','Romania':'🇷🇴','Russia':'🇷🇺','Serbia':'🇷🇸','Singapore':'🇸🇬','Slovenia':'🇸🇮','Spagna':'🇪🇸','Sudafrica':'🇿🇦','Svezia':'🇸🇪','Svizzera':'🇨🇭','Taiwan':'🇹🇼','Thailandia':'🇹🇭','Tunisia':'🇹🇳','Turchia':'🇹🇷','USA':'🇺🇸','Ucraina':'🇺🇦','Ungheria':'🇭🇺','Uruguay':'🇺🇾','Venezuela':'🇻🇪','Vietnam':'🇻🇳'};
+const rel=ts=>{if(!ts)return'';const m=Math.round((Date.now()-ts)/60000);if(m<1)return'adesso';if(m<60)return m+' min fa';const h=Math.round(m/60);if(h<24)return h+(h===1?' ora fa':' ore fa');const g=Math.round(h/24);return g+(g===1?' giorno fa':' giorni fa')};
+function renderUltime(noload){
+  const UF=S.uf||'Tutte',fl=['Tutte','Italia','Europa','Mondo','Sport','Economia'];
+  const ok=d=>{
+    if(!d.rss)return false;
+    if(S.upref&&F.fav[d.id]===undefined)return false;
+    if(UF==='Italia')return d.nazione==='Italia';
+    if(UF==='Europa')return d.continente==='Europa';
+    if(UF==='Mondo')return d.continente!=='Europa';
+    if(UF==='Sport')return d.tipo==='Sport';
+    if(UF==='Economia')return d.tipo==='Economia';
+    return true;
+  };
+  const righe=DATI.filter(ok).map(d=>{const t=T[d.id]||{};return{d,t:(t.t||[])[0]||'',l:(t.l||[])[0]||'',p:(t.p||[])[0]||0}});
+  const con=righe.filter(x=>x.t).sort((a,b)=>(b.p||0)-(a.p||0));
+  const att=righe.filter(x=>!x.t);
+  const u=+localStorage.getItem('tm_u');
+  const ora=u?'Aggiornato alle '+new Date(u).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):'Aggiornamento in corso…';
+  const senza=DATI.filter(d=>!d.rss).length;
+  let h=`<div class="vh"><h2 class="serif">🔴 Ultime notizie</h2>${CL}</div>
+  <div class="bar" style="justify-content:space-between"><span class="ds" style="margin:0">${ora}</span><button class="btn" data-ag>🔄 Aggiorna</button></div>
+  <div class="chips">${fl.map(f=>`<button class="chip ${UF===f?'on':''}" data-uf="${f}">${f.toUpperCase()}</button>`).join('')}</div>
+  <div class="chips"><button class="chip ${S.upref?'on':''}" data-upref>⭐ Solo preferiti</button></div>`;
+  con.forEach(x=>{
+    const go=x.l&&/^https?:/i.test(x.l)?`data-ol="${esc(x.l)}"`:`data-o="${x.d.id}"`;
+    h+=`<button class="nrow" ${go}><span class="nf">${FLAG[x.d.nazione]||'🌐'}</span><span class="nb"><span class="nn">${esc(x.d.nome)}</span><span class="nt">${esc(x.t)}</span><span class="nm2">${esc(x.d.nazione)}${x.p?' · '+rel(x.p):''}</span></span></button>`;
+  });
+  att.forEach(x=>{
+    h+=`<div class="nrow" style="opacity:.6"><span class="nf">${FLAG[x.d.nazione]||'🌐'}</span><span class="nb"><span class="nn">${esc(x.d.nome)}</span><span class="nm2">${navigator.onLine?'Titolo in caricamento…':'Offline: nessun titolo salvato'}</span></span></div>`;
+  });
+  if(!righe.length)h+='<div class="vuoto">Nessuna testata con feed per questo filtro.</div>';
+  if(senza)h+=`<p class="ds" style="text-align:center">${senza} testate non hanno un feed e non compaiono in questa pagina.</p>`;
+  $('#v-ultime').innerHTML=h;
+  if(!noload)caricaTitoli();
 }
 
 /* ---------- PREFERITI ---------- */
@@ -874,6 +938,7 @@ function renderImp(){
 function renderGuida(){
   const p=[
     ['☰','Menu laterale','Tocca ☰ in alto a sinistra.'],
+    ["🔴","Ultime notizie","Dal pulsante rosso in home o dal menu laterale: il titolo più recente di ogni testata con feed. Filtri Italia, Europa, Mondo, Sport, Economia e solo preferiti. Toccando una riga si apre l'articolo."],
     ['🔎','Cerca nel mondo','Cerca in home + catalogo + Wikipedia.'],
     ['✏️','Modifica','Pulsante ✏️ su ogni testata per modificarne i campi.'],
     ['🗑️','Elimina','Pulsante 🗑️ su ogni testata con popup di conferma.'],
@@ -1073,17 +1138,17 @@ function scegliCartella(id){
 }
 
 /* ---------- NAVIGAZIONE ---------- */
-const TIT={home:'TestateMondiali',pref:'Preferiti',mondo:'Sfoglia il mondo',imp:'Impostazioni',guida:'Guida',info:'Info'};
+const TIT={home:'TestateMondiali',pref:'Preferiti',mondo:'Sfoglia il mondo',ultime:'Ultime notizie',imp:'Impostazioni',guida:'Guida',info:'Info'};
 function show(v){
   view=v;orgMode=false;chiudi();
   if(v!=='home'){CF={cont:'Tutti',naz:'Tutti'};sv('tm_cf',CF)}
   $$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
   $('#tt').textContent=TIT[v]||'TestateMondiali';
-  ({home:renderHome,pref:renderPref,mondo:renderMondo,imp:renderImp,guida:renderGuida,info:renderInfo})[v]();
+  ({home:renderHome,pref:renderPref,mondo:renderMondo,ultime:renderUltime,imp:renderImp,guida:renderGuida,info:renderInfo})[v]();
   scrollTo(0,0);
 }
 function refresh(){
-  ({home:renderHome,pref:renderPref,mondo:renderMondo,imp:renderImp,guida:renderGuida,info:renderInfo})[view]();
+  ({home:renderHome,pref:renderPref,mondo:renderMondo,ultime:renderUltime,imp:renderImp,guida:renderGuida,info:renderInfo})[view]();
 }
 history.replaceState({r:1},'');history.pushState({t:1},'');
 addEventListener('popstate',()=>{show('home');history.pushState({t:1},'')});
@@ -1207,6 +1272,9 @@ document.addEventListener('click',e=>{
   if(D.ty){S.tipo=D.ty;sv('tm_s',S);return rh()}
   if('cg' in D){chiudi();return catalogo()}
   if('ag' in D){toast('Aggiornamento in corso…');Object.values(T).forEach(x=>x.ts=0);return caricaTitoli().then(()=>toast('Titoli aggiornati'))}
+  if(D.uf){S.uf=D.uf;sv('tm_s',S);return renderUltime(true)}
+  if('upref' in D){S.upref=!S.upref;sv('tm_s',S);return renderUltime(true)}
+  if(D.ol)return apri(D.ol);
   if(D.o)return apri(DATI.find(d=>d.id===D.o).link);
   if(D.del)return conferma('Rimuovere dai preferiti?',()=>{delete F.fav[D.del];sv('tm_f',F);refresh()});
   if('nc' in D)return nuovaCartella();

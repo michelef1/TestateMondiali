@@ -1,5 +1,5 @@
-const CACHE='testatemondiali-v13';
-const CACHE_IMG='testatemondiali-img-v13';
+const CACHE='testatemondiali-v14';
+const CACHE_IMG='testatemondiali-img-v14';
 const SHELL=[
   './',
   './index.html',
