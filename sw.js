@@ -1,5 +1,5 @@
-const CACHE='testatemondiali-v14';
-const CACHE_IMG='testatemondiali-img-v14';
+const CACHE='testatemondiali-v15';
+const CACHE_IMG='testatemondiali-img-v15';
 const SHELL=[
   './',
   './index.html',
@@ -7,7 +7,7 @@ const SHELL=[
   './icons/icon-192.png',
   './icons/icon-512.png'
 ];
-const NO_CACHE_HOSTS=['api.rss2json.com','api.allorigins.win','www.google.com'];
+const NO_CACHE_HOSTS=['api.rss2json.com','api.allorigins.win','www.google.com','api.mymemory.translated.net'];
 
 self.addEventListener('install',e=>{
   e.waitUntil(

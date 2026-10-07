@@ -215,6 +215,7 @@ input.in{width:100%}
 .nn{font-weight:800}.nt{font-size:1rem;line-height:1.35}.nm2{font-size:.78rem;color:var(--mu)}
 .newsbtn{display:flex;align-items:center;gap:.6rem;width:100%;padding:.85rem 1rem;border-radius:16px;background:linear-gradient(135deg,#d7263d,#ff5a5f);color:#fff;font-weight:800;font-size:1.05rem;margin:.1rem 0 .7rem;box-shadow:0 4px 14px rgba(215,38,61,.35)}
 .newsbtn span:last-child{margin-left:auto;font-size:1.4rem}
+.nor{font-size:.82rem;color:var(--mu);font-style:italic;line-height:1.3}
 </style>
 </head>
 <body>
@@ -353,7 +354,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.20';
+const VER='1.21';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -869,6 +870,49 @@ async function notifica(d,t){
   }catch(e){}
 }
 
+/* ---------- TRADUZIONE TITOLI ---------- */
+let TR=ld('tm_tr',{});const TRN={};
+const LANGN={'Francia':'fr','Belgio':'fr','Spagna':'es','Messico':'es','Argentina':'es','Cile':'es','Colombia':'es','Perù':'es','Uruguay':'es','Venezuela':'es','Bolivia':'es','Ecuador':'es','Germania':'de','Austria':'de','Svizzera':'de','Brasile':'pt','Portogallo':'pt','Italia':'it','Russia':'ru','Giappone':'ja','Cina':'zh','Corea del Sud':'ko','Turchia':'tr','Grecia':'el','Polonia':'pl','Olanda':'nl','Svezia':'sv','Norvegia':'no','Danimarca':'da','Finlandia':'fi','Ungheria':'hu','Romania':'ro','Repubblica Ceca':'cs','Ucraina':'uk','Bulgaria':'bg','Croazia':'hr','Serbia':'sr','Slovenia':'sl','Islanda':'is','Iran':'fa','Arabia Saudita':'ar','Libano':'ar','Marocco':'ar','Tunisia':'ar','Emirati Arabi':'ar','Indonesia':'id','Thailandia':'th','Vietnam':'vi','Taiwan':'zh'};
+const LANGH={'themoscowtimes.com':'en','tass.com':'en','kyivindependent.com':'en','japantimes.co.jp':'en','letemps.ch':'fr','novayagazeta.eu':'ru','scmp.com':'en','aljazeera.com':'en','english.ahram.org.eg':'en','haaretz.com':'en','hurriyetdailynews.com':'en','dailysabah.com':'en','nzz.ch':'de'};
+const langDi=d=>LANGH[hostOf(d.link)]||LANGN[d.nazione]||'en';
+const dec=t=>{const e=document.createElement('textarea');e.innerHTML=t;return e.value};
+async function trad(txt,lang){
+  const k=lang+'|'+txt;
+  if(TR[k])return TR[k];
+  let out='';
+  try{
+    if(self.Translator){
+      TRN[lang]=TRN[lang]||await Translator.create({sourceLanguage:lang,targetLanguage:'it'});
+      out=await TRN[lang].translate(txt);
+    }
+  }catch(e){out=''}
+  if(!out){
+    const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(txt)+'&langpair='+lang+'|it&de=app@testatemondiali.it');
+    const j=await r.json();
+    out=(j&&j.responseData&&j.responseData.translatedText)||'';
+    if(j&&j.quotaFinished||/MYMEMORY WARNING|INVALID|QUERY LENGTH/i.test(out))out='';
+    out=dec(out);
+  }
+  if(out){if(Object.keys(TR).length>400)TR={};TR[k]=out;sv('tm_tr',TR)}
+  return out;
+}
+function setTr(r,out){
+  const nt=r.querySelector('.nt'),no=r.querySelector('.nor');
+  if(!nt||!no)return;
+  nt.textContent=out;no.textContent=r.dataset.orig;no.style.display='';
+}
+async function traduciUltime(){
+  if(!S.utr)return;
+  const rows=[...document.querySelectorAll('#v-ultime .nrow[data-trid]')].filter(r=>r.dataset.tl!=='it'&&!TR[r.dataset.tl+'|'+r.dataset.orig]);
+  if(!rows.length)return;
+  const info=$('#trinfo');if(info)info.textContent='Traduzione in corso…';
+  let fail=0;const q=[...rows];
+  const w=async()=>{while(q.length){const r=q.shift();try{const o=await trad(r.dataset.orig,r.dataset.tl);if(o)setTr(r,o);else fail++}catch(e){fail++}}};
+  await Promise.all([w(),w(),w()]);
+  const i2=$('#trinfo');if(i2)i2.textContent=fail?'Alcuni titoli non sono stati tradotti':'';
+  if(fail===rows.length)toast('Traduzione non disponibile ora');
+}
+
 /* ---------- ULTIME NOTIZIE ---------- */
 const pd=v=>{if(!v)return 0;let x=String(v).trim();if(/^\d{4}-\d\d-\d\d \d\d:\d\d:\d\d$/.test(x))x=x.replace(' ','T')+'Z';const t=Date.parse(x);return isNaN(t)?0:t};
 const FLAG={'Arabia Saudita':'🇸🇦','Argentina':'🇦🇷','Australia':'🇦🇺','Austria':'🇦🇹','Bangladesh':'🇧🇩','Belgio':'🇧🇪','Bolivia':'🇧🇴','Brasile':'🇧🇷','Bulgaria':'🇧🇬','Canada':'🇨🇦','Cile':'🇨🇱','Cina':'🇨🇳','Colombia':'🇨🇴','Corea del Sud':'🇰🇷','Croazia':'🇭🇷','Danimarca':'🇩🇰','Ecuador':'🇪🇨','Egitto':'🇪🇬','Emirati Arabi':'🇦🇪','Etiopia':'🇪🇹','Figi':'🇫🇯','Filippine':'🇵🇭','Finlandia':'🇫🇮','Francia':'🇫🇷','Germania':'🇩🇪','Ghana':'🇬🇭','Giappone':'🇯🇵','Grecia':'🇬🇷','Hong Kong':'🇭🇰','India':'🇮🇳','Indonesia':'🇮🇩','Iran':'🇮🇷','Irlanda':'🇮🇪','Islanda':'🇮🇸','Israele':'🇮🇱','Italia':'🇮🇹','Kenya':'🇰🇪','Libano':'🇱🇧','Malesia':'🇲🇾','Marocco':'🇲🇦','Messico':'🇲🇽','Nigeria':'🇳🇬','Norvegia':'🇳🇴','Nuova Zelanda':'🇳🇿','Olanda':'🇳🇱','Pakistan':'🇵🇰','Perù':'🇵🇪','Polonia':'🇵🇱','Portogallo':'🇵🇹','Qatar':'🇶🇦','Regno Unito':'🇬🇧','Repubblica Ceca':'🇨🇿','Romania':'🇷🇴','Russia':'🇷🇺','Serbia':'🇷🇸','Singapore':'🇸🇬','Slovenia':'🇸🇮','Spagna':'🇪🇸','Sudafrica':'🇿🇦','Svezia':'🇸🇪','Svizzera':'🇨🇭','Taiwan':'🇹🇼','Thailandia':'🇹🇭','Tunisia':'🇹🇳','Turchia':'🇹🇷','USA':'🇺🇸','Ucraina':'🇺🇦','Ungheria':'🇭🇺','Uruguay':'🇺🇾','Venezuela':'🇻🇪','Vietnam':'🇻🇳'};
@@ -893,11 +937,14 @@ function renderUltime(noload){
   const senza=DATI.filter(d=>!d.rss).length;
   let h=`<div class="vh"><h2 class="serif">🔴 Ultime notizie</h2>${CL}</div>
   <div class="bar" style="justify-content:space-between"><span class="ds" style="margin:0">${ora}</span><button class="btn" data-ag>🔄 Aggiorna</button></div>
+  <div class="bar"><button class="btn ${S.utr?'p':''}" data-ultr style="flex:1">🌐 ${S.utr?'Traduzione attiva (tocca per spegnere)':'Traduci titoli'}</button></div>
+  <div class="ds" id="trinfo" style="margin:-.2rem 0 .5rem"></div>
   <div class="chips">${fl.map(f=>`<button class="chip ${UF===f?'on':''}" data-uf="${f}">${f.toUpperCase()}</button>`).join('')}</div>
   <div class="chips"><button class="chip ${S.upref?'on':''}" data-upref>⭐ Solo preferiti</button></div>`;
   con.forEach(x=>{
     const go=x.l&&/^https?:/i.test(x.l)?`data-ol="${esc(x.l)}"`:`data-o="${x.d.id}"`;
-    h+=`<button class="nrow" ${go}><span class="nf">${FLAG[x.d.nazione]||'🌐'}</span><span class="nb"><span class="nn">${esc(x.d.nome)}</span><span class="nt">${esc(x.t)}</span><span class="nm2">${esc(x.d.nazione)}${x.p?' · '+rel(x.p):''}</span></span></button>`;
+    const lg=langDi(x.d),tr=S.utr&&lg!=='it'?TR[lg+'|'+x.t]:'';
+    h+=`<button class="nrow" ${go} data-trid="${x.d.id}" data-tl="${lg}" data-orig="${esc(x.t)}"><span class="nf">${FLAG[x.d.nazione]||'🌐'}</span><span class="nb"><span class="nn">${esc(x.d.nome)}</span><span class="nt">${esc(tr||x.t)}</span><span class="nor" style="${tr?'':'display:none'}">${tr?esc(x.t):''}</span><span class="nm2">${esc(x.d.nazione)}${x.p?' · '+rel(x.p):''}</span></span></button>`;
   });
   att.forEach(x=>{
     h+=`<div class="nrow" style="opacity:.6"><span class="nf">${FLAG[x.d.nazione]||'🌐'}</span><span class="nb"><span class="nn">${esc(x.d.nome)}</span><span class="nm2">${navigator.onLine?'Titolo in caricamento…':'Offline: nessun titolo salvato'}</span></span></div>`;
@@ -905,6 +952,7 @@ function renderUltime(noload){
   if(!righe.length)h+='<div class="vuoto">Nessuna testata con feed per questo filtro.</div>';
   if(senza)h+=`<p class="ds" style="text-align:center">${senza} testate non hanno un feed e non compaiono in questa pagina.</p>`;
   $('#v-ultime').innerHTML=h;
+  traduciUltime();
   if(!noload)caricaTitoli();
 }
 
@@ -938,7 +986,7 @@ function renderImp(){
 function renderGuida(){
   const p=[
     ['☰','Menu laterale','Tocca ☰ in alto a sinistra.'],
-    ["🔴","Ultime notizie","Dal pulsante rosso in home o dal menu laterale: il titolo più recente di ogni testata con feed. Filtri Italia, Europa, Mondo, Sport, Economia e solo preferiti. Toccando una riga si apre l'articolo."],
+    ["🔴","Ultime notizie","Dal pulsante rosso in home o dal menu laterale: il titolo più recente di ogni testata con feed. Filtri Italia, Europa, Mondo, Sport, Economia e solo preferiti. Con 🌐 Traduci leggi i titoli in italiano prima di aprirli. Toccando una riga si apre l'articolo."],
     ['🔎','Cerca nel mondo','Cerca in home + catalogo + Wikipedia.'],
     ['✏️','Modifica','Pulsante ✏️ su ogni testata per modificarne i campi.'],
     ['🗑️','Elimina','Pulsante 🗑️ su ogni testata con popup di conferma.'],
@@ -1273,6 +1321,7 @@ document.addEventListener('click',e=>{
   if('cg' in D){chiudi();return catalogo()}
   if('ag' in D){toast('Aggiornamento in corso…');Object.values(T).forEach(x=>x.ts=0);return caricaTitoli().then(()=>toast('Titoli aggiornati'))}
   if(D.uf){S.uf=D.uf;sv('tm_s',S);return renderUltime(true)}
+  if('ultr' in D){S.utr=!S.utr;sv('tm_s',S);return renderUltime(true)}
   if('upref' in D){S.upref=!S.upref;sv('tm_s',S);return renderUltime(true)}
   if(D.ol)return apri(D.ol);
   if(D.o)return apri(DATI.find(d=>d.id===D.o).link);
