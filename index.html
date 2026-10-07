@@ -333,7 +333,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.18';
+const VER='1.19';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -695,6 +695,7 @@ async function renderRicercaCatalogo(){
   }
   if(nq.length>=3){
     const wiki=await cercaWikipedia(Q);
+    if(!document.body.contains(box)||norm(Q.trim())!==nq)return;
     const catTitles=new Set(CAT.map(r=>norm(r[3])));
     const wikiFiltrati=wiki.filter(w=>{
       if(catTitles.has(norm(w.titolo)))return false;
@@ -1279,11 +1280,28 @@ if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWor
 addEventListener('online',()=>{toast('Connessione ripristinata');caricaTitoli()});
 addEventListener('offline',()=>{toast('Sei offline');if(view==='home')renderHome()});
 
-$('#tt').onclick=()=>{chiudi();azioneConferma=null;show('home')};
-$('#tt').onkeydown=e=>{if(e.key==='Enter'){chiudi();azioneConferma=null;show('home')}};
+function vaiHome(){
+  chiudi();azioneConferma=null;
+  if(debTimer){clearTimeout(debTimer);debTimer=null}
+  Q='';CF={cont:'Tutti',naz:'Tutti'};sv('tm_cf',CF);
+  if(document.activeElement&&document.activeElement.blur)document.activeElement.blur();
+  show('home');
+}
+$('#tt').onclick=vaiHome;
+$('#tt').onkeydown=e=>{if(e.key==='Enter')vaiHome()};
 addEventListener('resize',()=>{if($('#m3').classList.contains('on'))apriMenu()});
 
-applica();show('home');caricaTitoli();
+function apriDaHash(){
+  const h=(location.hash||'').replace('#','');
+  if(!h)return;
+  history.replaceState(history.state,'',location.pathname+location.search);
+  if(h==='pref')show('pref');
+  else if(h==='org'){show('home');orgMode=true;$('#tt').textContent='Organizza';renderHome()}
+  else if(h==='cat'){show('home');catalogo()}
+}
+addEventListener('hashchange',apriDaHash);
+
+applica();show('home');caricaTitoli();apriDaHash();
 </script>
 </body>
 </html>
