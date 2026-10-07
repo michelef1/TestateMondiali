@@ -3,16 +3,42 @@
   "short_name": "Testate",
   "description": "I principali giornali del mondo per continente e nazione",
   "lang": "it",
+  "id": "./",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
   "background_color": "#f4f5f8",
   "theme_color": "#f2709c",
+  "categories": ["news", "magazines", "education"],
   "icons": [
     {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
     {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
     {"src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable"},
     {"src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ],
+  "shortcuts": [
+    {
+      "name": "Preferiti",
+      "short_name": "Preferiti",
+      "description": "Apri le testate salvate",
+      "url": "./index.html#pref",
+      "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Organizza",
+      "short_name": "Organizza",
+      "description": "Riordina la home",
+      "url": "./index.html#org",
+      "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Catalogo",
+      "short_name": "Catalogo",
+      "description": "Sfoglia il catalogo testate",
+      "url": "./index.html#cat",
+      "icons": [{"src": "icons/icon-192.png", "sizes": "192x192"}]
+    }
   ]
 }

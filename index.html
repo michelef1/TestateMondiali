@@ -14,25 +14,29 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html{font-size:calc(16px*var(--fs)/100)}
 body{margin:0;background:var(--bg);color:var(--tx);font:1rem/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
-h1,h2,h3,.serif{font-family:"Iowan Old Style",Georgia,"Times New Roman",serif}
-button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation}
+h1,h2,h3,.serif{font-family:ui-serif,"Iowan Old Style","Source Serif Pro","Charter",Georgia,"Times New Roman",serif}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;touch-action:manipulation;transition:transform .1s}
+button:active{transform:scale(.97)}
+button:disabled{opacity:.4}
 header{position:sticky;top:0;z-index:20;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;padding:calc(env(safe-area-inset-top) + .5rem) .5rem .5rem;display:flex;align-items:center;gap:.25rem;box-shadow:0 2px 10px rgba(0,0,0,.2)}
-header h1{flex:1;margin:0;font-size:1.25rem;letter-spacing:.2px}
+header h1{flex:1;margin:0;font-size:1.25rem;letter-spacing:.2px;text-shadow:0 1px 2px rgba(0,0,0,.25)}
 .ib{width:44px;height:44px;border-radius:50%;font-size:1.4rem;color:#fff;display:grid;place-items:center}
-.ib:active{background:rgba(255,255,255,.25)}
+.ib:active{background:rgba(255,255,255,.25);transform:none}
 main{max-width:760px;margin:0 auto;padding:.75rem .75rem 5rem}
 .view{display:none}.view.on{display:block}
 .bar{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;margin-bottom:.6rem}
 .seg{display:inline-flex;background:var(--card);border-radius:999px;padding:3px;box-shadow:var(--sh)}
 .seg button{padding:.5rem 1.1rem;border-radius:999px;font-weight:600}
 .seg .on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff}
-.chips{display:flex;gap:.4rem;overflow-x:auto;padding:.1rem 0 .6rem;scrollbar-width:none}
-.chip{flex:none;padding:.4rem .85rem;border-radius:999px;background:var(--card);border:1px solid var(--ln);font-size:.9rem}
-.chip.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
-.btn{padding:.6rem 1rem;border-radius:12px;background:var(--card);border:1px solid var(--ln);font-weight:600}
+.chips{display:flex;gap:.4rem;overflow-x:auto;padding:.1rem 0 .6rem;scrollbar-width:none;scroll-snap-type:x proximity}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:none;padding:.4rem .85rem;border-radius:999px;background:var(--card);border:1px solid var(--ln);font-size:.9rem;scroll-snap-align:center;transition:transform .15s,background .15s}
+.chip.on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent;transform:scale(1.05)}
+.btn{padding:.6rem 1rem;border-radius:12px;background:var(--card);border:1px solid var(--ln);font-weight:600;box-shadow:0 1px 4px rgba(0,0,0,.06)}
 .btn.p{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0}
 .btn.d{color:#d33}
 .card{background:var(--card);border-radius:18px;box-shadow:var(--sh);margin-bottom:.8rem;overflow:hidden}
+.card:focus-within{outline:2px solid var(--g1);outline-offset:2px}
 .pv{height:96px;background:linear-gradient(135deg,var(--g1),var(--g2));display:flex;align-items:center;gap:.8rem;padding:0 1rem;color:#fff}
 .logo{width:56px;height:56px;border-radius:14px;background:#fff;display:grid;place-items:center;font:700 1.3rem Georgia,serif;color:var(--ac);overflow:hidden;flex:none}
 .logo img{width:36px;height:36px}
@@ -59,14 +63,14 @@ main{max-width:760px;margin:0 auto;padding:.75rem .75rem 5rem}
 .dh h2{margin:0;font-size:1.4rem}.dh p{margin:.2rem 0 0;opacity:.9;font-size:.9rem}
 #dr a{display:flex;gap:.8rem;padding:.9rem 1.2rem;align-items:center}
 #dr a:active{background:var(--bg)}
-.menu{position:absolute;right:.5rem;top:calc(env(safe-area-inset-top) + 3.4rem);background:var(--card);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.3);z-index:50;min-width:210px;padding:.3rem;display:none}
+.menu{position:fixed;background:var(--card);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.3);z-index:50;min-width:210px;padding:.3rem;display:none}
 .menu.on{display:block}
 .menu button{display:block;width:100%;text-align:left;padding:.8rem 1rem;border-radius:10px}
-.menu button:active{background:var(--bg)}
+.menu button:active{background:var(--bg);transform:none}
 .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);border-radius:22px 22px 0 0;padding:1.2rem;max-height:85vh;overflow:auto;transform:translateY(105%);transition:transform .25s;padding-bottom:calc(env(safe-area-inset-bottom) + 1.2rem)}
 .sheet.on{transform:none}
 @media(min-width:700px){.sheet{left:50%;right:auto;width:560px;margin-left:-280px}}
-input[type=text]{width:100%;padding:.7rem .9rem;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit}
+input[type=text],input[type=search]{width:100%;padding:.7rem .9rem;border-radius:12px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);font:inherit}
 .sw{display:flex;gap:.6rem;flex-wrap:wrap;margin:.5rem 0 1rem}
 .sw button{width:52px;height:52px;border-radius:50%;border:3px solid transparent}
 .sw .on{border-color:var(--tx)}
@@ -75,26 +79,24 @@ input[type=text]{width:100%;padding:.7rem .9rem;border-radius:12px;border:1px so
 .step{display:flex;gap:.8rem;margin:.9rem 0}
 .step b{flex:none;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;font-size:1.2rem}
 .step p{margin:.1rem 0 0;color:var(--mu);font-size:.93rem}
-#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 1.5rem);transform:translate(-50%,40px);background:var(--tx);color:var(--bg);padding:.7rem 1.1rem;border-radius:999px;opacity:0;transition:.25s;z-index:80;max-width:90vw;font-size:.92rem}
+#toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 1.5rem);transform:translate(-50%,40px);background:var(--tx);color:var(--bg);padding:.7rem 1.1rem;border-radius:999px;opacity:0;transition:.25s;z-index:80;max-width:90vw;font-size:.92rem;pointer-events:none}
 #toast.on{opacity:1;transform:translate(-50%,0)}
 .vuoto{text-align:center;color:var(--mu);padding:2.5rem 1rem}
 button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 @media(orientation:landscape) and (max-height:480px){.pv{height:72px}}
 
 body{background:linear-gradient(165deg,color-mix(in srgb,var(--g1) 30%,var(--bg)),color-mix(in srgb,var(--g2) 22%,var(--bg)) 55%,color-mix(in srgb,var(--g1) 12%,var(--bg))) fixed;min-height:100vh}
 .card,.lt{background:color-mix(in srgb,var(--card) 94%,transparent);border:1px solid color-mix(in srgb,var(--g1) 30%,transparent);box-shadow:0 6px 20px color-mix(in srgb,var(--g1) 22%,transparent)}
 .lt{border-radius:18px!important;margin-bottom:.7rem;padding:.9rem 1rem;align-items:center}
-.pv{position:relative;overflow:hidden;height:auto;min-height:100px;padding:1rem 1.1rem}
+.pv{position:relative;overflow:hidden;height:auto;min-height:100px;padding:1rem 1.1rem;background:linear-gradient(135deg,var(--g1),var(--g2) 60%,color-mix(in srgb,var(--g2) 70%,var(--card)))}
 .pv::after{content:"";position:absolute;right:-34px;top:-34px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,.18)}
 .pv::before{content:"";position:absolute;right:40px;bottom:-50px;width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,.12)}
-.logo{width:62px;height:62px;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.25);position:relative;z-index:1}
+.logo{width:62px;height:62px;border-radius:16px;box-shadow:0 4px 14px color-mix(in srgb,var(--g1) 40%,transparent);position:relative;z-index:1}
 .pv>div:not(.logo){position:relative;z-index:1}
 .nm{font-size:1.2rem;line-height:1.2}
 .ti{border-left:3px solid var(--g1);padding-left:.6rem;font-size:1rem;line-height:1.35}
-.chip.on{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border-color:transparent}
 .chip{background:color-mix(in srgb,var(--card) 92%,transparent);font-weight:600}
-.btn{box-shadow:0 1px 4px rgba(0,0,0,.08)}
 .btn.st{font-size:1.25rem}
 .orgc{display:flex;gap:.4rem;margin:0 0 .7rem}
 .orgc .btn{flex:1;padding:.65rem .2rem;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0;font-size:1rem}
@@ -116,12 +118,13 @@ h2.serif{font-size:1.5rem}
 
 .pic{position:relative;height:170px;background:color-mix(in srgb,var(--g1) 18%,var(--bg));overflow:hidden}
 .pic img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.pic::after{content:"";position:absolute;left:0;right:0;top:0;height:40px;background:linear-gradient(to bottom,color-mix(in srgb,var(--g1) 35%,transparent),transparent);pointer-events:none}
 .cap{position:absolute;left:.6rem;bottom:.5rem;background:rgba(0,0,0,.6);color:#fff;font-size:.75rem;padding:.2rem .65rem;border-radius:999px}
 .in{padding:.7rem .9rem;border-radius:12px;border:1px solid var(--ln);background:var(--card);color:var(--tx);font:inherit}
 input.in{width:100%}
 .srch{display:flex;align-items:center;gap:.5rem;background:var(--card);border:2px solid color-mix(in srgb,var(--g1) 45%,transparent);border-radius:16px;padding:.2rem .4rem .2rem 1rem;margin-bottom:.7rem;box-shadow:var(--sh)}
 .srch:focus-within{border-color:var(--g1)}
-.srch input{flex:1;min-width:0;border:0;background:none;color:var(--tx);font:inherit;font-size:1.15rem;padding:.9rem .2rem;outline:0!important}
+.srch input{flex:1;min-width:0;border:0;background:none;color:var(--tx);font:inherit;font-size:1.15rem;padding:.9rem .2rem;outline:0!important;width:auto}
 .srch button{font-size:1.4rem;width:48px;height:48px;border-radius:12px}
 .seg3{display:flex;background:var(--card);border-radius:999px;padding:3px;box-shadow:var(--sh)}
 .seg3 button{flex:1;padding:.7rem .2rem;border-radius:999px;font-weight:600;font-size:.92rem}
@@ -136,8 +139,8 @@ input.in{width:100%}
 .g2 .orgc{flex-wrap:wrap}.g2 .orgc .btn{font-size:.8rem;padding:.5rem .2rem}
 #dr{overflow:hidden}.dsc{overflow-y:auto;flex:1}
 #dr a{padding:.75rem 1.2rem}
-.dsep{padding:.9rem 1.2rem .2rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);font-weight:700}
-.dfl{padding:0 1.2rem .4rem}.dfl h4{margin:.8rem 0 .4rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mu)}
+.dsep{background:color-mix(in srgb,var(--g1) 18%,var(--card));color:var(--ac);font-weight:800;padding:.45rem 1.2rem;margin-top:.8rem;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase}
+.dfl{padding:0 1.2rem .4rem}.dfl h4{display:inline-block;background:color-mix(in srgb,var(--g1) 18%,var(--card));color:var(--ac);font-weight:800;font-size:.8rem;padding:.2rem .7rem;border-radius:999px;margin:.8rem 0 .4rem;letter-spacing:.08em;text-transform:uppercase}
 .dchips{display:flex;flex-wrap:wrap;gap:.4rem}
 .vrow{display:flex;gap:.5rem}
 .cols{flex:none}.cols button{flex:none;width:46px;padding:.7rem 0;font-size:1.2rem}
@@ -145,12 +148,12 @@ input.in{width:100%}
 .grid .lt .x{flex:1 1 100%}
 .grid .lt .btn{flex:1}.grid .lt .st{width:auto;flex:1!important}
 .grid .lt .nm{font-size:.95rem}.grid .lt .ti{font-size:.85rem}
-.dsep{background:#1f2230;color:#ffd54a;font-weight:800;padding:.45rem 1.2rem;margin-top:.8rem}
-.dfl h4{display:inline-block;background:#1f2230;color:#ffd54a;font-weight:800;font-size:.8rem;padding:.2rem .7rem;border-radius:999px}
-.tile{position:relative;background:color-mix(in srgb,var(--card) 96%,transparent);border:1px solid color-mix(in srgb,var(--g1) 30%,transparent);border-radius:18px;box-shadow:0 6px 18px color-mix(in srgb,var(--g1) 20%,transparent);min-height:128px;padding:2.2rem .6rem .9rem;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
-.tn{font:800 1.1rem/1.15 "Iowan Old Style",Georgia,serif;word-break:break-word}
-.tc{font-size:.8rem;color:var(--mu);margin-top:.55rem}
-.tz{font-size:.88rem;font-weight:700;opacity:.85}
+.tile{position:relative;background:color-mix(in srgb,var(--card) 96%,transparent);border:1px solid color-mix(in srgb,var(--g1) 30%,transparent);border-radius:18px;box-shadow:0 6px 18px color-mix(in srgb,var(--g1) 20%,transparent);min-height:110px;padding:1.6rem .5rem .8rem;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer}
+.tile::before{content:"";position:absolute;left:.55rem;top:.55rem;width:8px;height:8px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2))}
+.tile .badge{position:absolute;right:.5rem;top:.5rem;font-size:.65rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;padding:.15rem .45rem;border-radius:999px;background:color-mix(in srgb,var(--g1) 20%,var(--card));color:var(--ac)}
+.tn{font:800 1.05rem/1.15 ui-serif,Georgia,serif;word-break:break-word}
+.tc{font-size:.78rem;color:var(--mu);margin-top:.5rem}
+.tz{font-size:.85rem;font-weight:700;opacity:.85}
 .hh{position:absolute;left:.3rem;top:.3rem;width:40px;height:40px;font-size:1.3rem}
 .xx{position:absolute;right:.3rem;top:.3rem;width:40px;height:40px;font-size:1.1rem;color:var(--mu)}
 .tile .orgc{margin:.7rem 0 0;width:100%}
@@ -162,6 +165,50 @@ input.in{width:100%}
 .mv{display:flex;flex-direction:column;gap:3px;flex:none;width:36px}
 .mv .btn{padding:0!important;height:24px;font-size:.8rem;border-radius:8px;line-height:1;flex:none!important}
 #tt{cursor:pointer}
+.offline-banner{background:#d33;color:#fff;text-align:center;padding:.5rem;font-size:.9rem;border-radius:12px;margin-bottom:.6rem}
+
+#rc .lt{padding:.5rem .8rem!important;margin-bottom:.4rem;border-radius:14px!important}
+#rc .lt strong{font-size:.95rem}
+#rc .lt .sub{font-size:.78rem;margin:.1rem 0 0}
+#rc .lt .btn{padding:.45rem .8rem;font-size:1.05rem}
+#rc .dsep{margin-top:.5rem!important;padding:.3rem 1rem!important;font-size:.7rem!important;border-radius:12px}
+#rc .fh h3{margin:0}
+#rc .chips{padding:.2rem 0 .4rem}
+#rc .già{background:color-mix(in srgb,var(--g1) 12%,var(--card));color:var(--ac);font-size:.7rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;margin-left:.4rem;text-transform:uppercase;letter-spacing:.04em}
+#rc .wiki{background:color-mix(in srgb,#888 18%,var(--card));color:var(--mu);font-size:.65rem;font-weight:700;padding:.15rem .5rem;border-radius:999px;margin-left:.4rem;text-transform:uppercase;letter-spacing:.04em}
+#rc .world{text-align:center;margin:.4rem 0 .2rem}
+#rc .world button{padding:.6rem 1.2rem;border-radius:999px;background:color-mix(in srgb,var(--g1) 15%,var(--card));color:var(--ac);font-weight:700;font-size:.9rem;border:1px solid color-mix(in srgb,var(--g1) 30%,transparent);margin:.2rem}
+#rc .manual{padding:.8rem 1rem;border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 15%,var(--card)),color-mix(in srgb,var(--g2) 12%,var(--card)));border:1px dashed color-mix(in srgb,var(--g1) 50%,transparent);text-align:center;margin-top:.6rem}
+#rc .manual p{margin:0 0 .5rem;font-size:.88rem;color:var(--mu)}
+.spinner{width:14px;height:14px;border:2px solid color-mix(in srgb,var(--g1) 30%,transparent);border-top-color:var(--g1);border-radius:50%;animation:sp .8s linear infinite;flex:none}
+@keyframes sp{to{transform:rotate(360deg)}}
+
+.mondo-c{background:var(--card);border-radius:18px;margin-bottom:.6rem;overflow:hidden;border:1px solid color-mix(in srgb,var(--g1) 30%,transparent);box-shadow:0 6px 20px color-mix(in srgb,var(--g1) 22%,transparent)}
+.mondo-c>summary{padding:.9rem 1rem;font-weight:800;font-size:1.05rem;cursor:pointer;list-style:none;display:flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 18%,var(--card)),color-mix(in srgb,var(--g2) 12%,var(--card)))}
+.mondo-c>summary::-webkit-details-marker{display:none}
+.mondo-c>summary::before{content:"▶";font-size:.7rem;transition:transform .2s}
+.mondo-c[open]>summary::before{transform:rotate(90deg)}
+.mondo-c .content{padding:.5rem .8rem 1rem}
+.mondo-n{margin:.5rem 0 .3rem;font-weight:700;font-size:.95rem;color:var(--ac);display:flex;align-items:center;gap:.4rem}
+.mondo-n::before{content:"📍"}
+.mondo-row{display:flex;align-items:center;gap:.5rem;padding:.5rem .7rem;background:color-mix(in srgb,var(--card) 96%,transparent);border-radius:12px;margin-bottom:.35rem;border:1px solid color-mix(in srgb,var(--g1) 18%,transparent)}
+.mondo-row .x{flex:1;min-width:0}
+.mondo-row strong{display:block;font-size:.92rem}
+.mondo-row .sub{font-size:.75rem;margin:0}
+.mondo-row .btn{padding:.4rem .8rem;font-size:1rem;flex:none}
+
+.acts{display:flex;gap:.35rem;flex:none}
+.acts .ab{width:38px;height:38px;border-radius:10px;font-size:1.05rem;display:grid;place-items:center;background:color-mix(in srgb,var(--card) 92%,transparent);border:1px solid var(--ln)}
+.acts .ab.d{color:#d33}
+.g2 .acts{width:100%;justify-content:flex-end;margin-top:.3rem}
+.g2 .acts .ab{width:32px;height:32px;font-size:.9rem}
+.tile .acts{position:absolute;right:.3rem;top:.3rem;flex-direction:column;gap:.2rem}
+.tile .acts .ab{width:30px;height:30px;font-size:.85rem}
+
+.save-bar{display:flex;gap:.5rem;margin-top:1.2rem}
+.save-bar .btn{flex:1;padding:.9rem}
+.save-bar .btn.ok{background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;border:0;font-weight:700;font-size:1.05rem}
+.save-bar .btn.del{background:#d33;color:#fff;border:0;flex:0 0 auto;padding:.9rem 1.2rem}
 </style>
 </head>
 <body>
@@ -184,10 +231,12 @@ input.in{width:100%}
   <a href="#" data-v="home">🏠 Home</a>
   <a href="#" data-v="pref">⭐ Preferiti</a>
   <div id="df" class="dfl"></div>
+  <div class="dsep">Scopri</div>
+  <a href="#" data-v="mondo">🌍 Sfoglia il mondo</a>
+  <a href="#" data-cg>📚 Catalogo testate</a>
   <div class="dsep">Gestisci</div>
   <a href="#" data-v="org">↕️ Organizza la home</a>
   <a href="#" data-ad>➕ Aggiungi un giornale</a>
-  <a href="#" data-cg>📚 Catalogo testate</a>
   <a href="#" data-ag><span>🔄 Aggiorna titoli<small id="up" style="display:block;color:var(--mu);font-weight:400"></small></span></a>
   <div class="dsep">App</div>
   <a href="#" data-v="imp">⚙️ Impostazioni</a>
@@ -198,7 +247,7 @@ input.in{width:100%}
 <main>
   <section class="view on" id="v-home"></section>
   <section class="view" id="v-pref"></section>
-  <section class="view" id="v-org"></section>
+  <section class="view" id="v-mondo"></section>
   <section class="view" id="v-imp"></section>
   <section class="view" id="v-guida"></section>
   <section class="view" id="v-info"></section>
@@ -208,7 +257,11 @@ input.in{width:100%}
 <input type="file" id="fi" accept="application/json" hidden>
 
 <script>
+/* ============================================================
+   COSTANTI
+   ============================================================ */
 const N=(id,nome,dom,cont,naz,desc,rss,link)=>({id,nome,link:link||'https://'+dom,immagine_anteprima:'https://www.google.com/s2/favicons?domain='+dom+'&sz=128',continente:cont,nazione:naz,descrizione:desc,rss:rss||''});
+
 const BASE=[
 N('nyt','The New York Times','www.nytimes.com','Nord America','USA','Il punto di riferimento assoluto per la politica internazionale e il giornalismo d\'inchiesta.','https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml'),
 N('wapo','The Washington Post','www.washingtonpost.com','Nord America','USA','Storico quotidiano della capitale statunitense, celebre per la copertura politica della Casa Bianca.','https://feeds.washingtonpost.com/rss/national'),
@@ -243,18 +296,49 @@ N('aljazeera','Al Jazeera','www.aljazeera.com','Africa e Medio Oriente','Qatar',
 N('smh','The Sydney Morning Herald','www.smh.com.au','Oceania','Australia','Il quotidiano più antico e prestigioso d\'Australia, leader nella regione.'),
 N('nzh','The New Zealand Herald','www.nzherald.co.nz','Oceania','Nuova Zelanda','La testata principale e più diffusa del paese.')
 ];
+
 const GRAD={oceano:['#1b5fb3','#3aa0f0'],aurora:['#6d3df0','#d070b8'],foresta:['#146c43','#2f9e5e'],tramonto:['#b8324a','#f0944a'],rubino:['#a01f33','#ef5a4a'],notte:['#141d2e','#2f4c63']};
-const ld=(k,d)=>{try{return Object.assign(d,JSON.parse(localStorage.getItem(k))||{})}catch(e){return d}};
-const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+
+const ld=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v?Object.assign({},d,v):d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error('Storage error',e);return false}};
+
 let S=ld('tm_s',{vista:'anteprime',tema:'chiaro',grad:'tramonto',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti',naz:'Tutti',tipo:'Tutti',col:1});
 if(S.vista==='griglia'){S.vista='anteprime';S.col=2}
 let F=ld('tm_f',{cartelle:[],fav:{}});
 let T=ld('tm_t',{});
-let X=ld('tm_x',{add:[],del:[]});let DATI=[];const TIPO={ft:'Economia',wsj:'Economia',kommersant:'Economia',tass:'Agenzia'};const rebuild=()=>{DATI=BASE.filter(d=>!X.del.includes(d.id)).concat(X.add);DATI.forEach(d=>{d.tipo=d.tipo||TIPO[d.id]||'Quotidiano'})};rebuild();
+let X=ld('tm_x',{add:[],del:[],edit:{}});
+if(!X.edit||typeof X.edit!=='object')X.edit={};
+if(!Array.isArray(X.add))X.add=[];
+if(!Array.isArray(X.del))X.del=[];
+let CF=ld('tm_cf',{cont:'Tutti',naz:'Tutti'});
+
+const TIPO={ft:'Economia',wsj:'Economia',kommersant:'Economia',tass:'Agenzia'};
+
+function applicaEdit(d){
+  const e=X.edit[d.id];
+  if(!e)return d;
+  return Object.assign({},d,e);
+}
+function rebuild(){
+  const seenAdd=new Set();
+  X.add=X.add.filter(d=>{if(!d||!d.id)return false;if(seenAdd.has(d.id))return false;seenAdd.add(d.id);return true});
+  X.del=[...new Set(X.del)];
+  DATI=BASE.filter(d=>!X.del.includes(d.id)).concat(X.add).map(applicaEdit);
+  DATI.forEach(d=>{d.tipo=d.tipo||TIPO[d.id]||'Quotidiano'});
+}
+let DATI=[];rebuild();
+
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let view='home',deferred=null,orgMode=false;const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem" aria-label="Elimina giornale">🗑️</button></div>`;
-const VER='1.10';const CL='<button class="cl" data-x>✕ Chiudi</button>';
+let view='home',deferred=null,orgMode=false;
+
+const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
+const VER='1.18';
+
+/* Chiudi → torna alla Home (usato nelle viste) */
+const CL='<button class="cl" data-home>✕ Chiudi</button>';
+/* Chiudi solo sheet (usato negli sheet modali) */
+const CLS='<button class="cl" data-x>✕ Chiudi</button>';
 
 const eff=()=>S.tema==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'scuro':'chiaro'):S.tema;
 function applica(){
@@ -278,17 +362,392 @@ function apri(url){
 const sigla=n=>n.split(/\s+/).filter(w=>/^[A-Za-zÀ-ÿ]/.test(w)).slice(0,2).map(w=>w[0]).join('').toUpperCase();
 const logo=d=>`<div class="logo"><img src="${d.immagine_anteprima}" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(sigla(d.nome))}'"></div>`;
 const titoli=d=>{const t=T[d.id];return t&&t.t&&t.t.length?t.t:null};
-
 const shot=d=>'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(d.link)+'?w=640&h=360';
-const pic=d=>{const im=T[d.id]&&T[d.id].img;return `<div class="pic"><img data-im="${d.id}" src="${esc(im||shot(d))}" alt="Anteprima di ${esc(d.nome)}" loading="lazy" referrerpolicy="no-referrer" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${im?'📰 Ultima notizia':'🖥️ Homepage'}</span></div>`};
+const pic=d=>{const im=T[d.id]&&T[d.id].img;return `<div class="pic"><img data-im="${d.id}" src="${esc(im||shot(d))}" alt="Anteprima" loading="lazy" referrerpolicy="no-referrer" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${im?'📰 Ultima notizia':'🖥️ Homepage'}</span></div>`};
 function imgFail(el,id){const d=DATI.find(x=>x.id===id);if(!d||el.dataset.f){el.parentNode.style.display='none';return}el.dataset.f=1;el.src=shot(d);const c=document.querySelector(`[data-cp="${id}"]`);if(c)c.textContent='🖥️ Homepage'}
 function setImg(id,u){document.querySelectorAll(`[data-im="${id}"]`).forEach(e=>{e.dataset.f='';e.src=u});document.querySelectorAll(`[data-cp="${id}"]`).forEach(c=>c.textContent='📰 Ultima notizia')}
 let Q='';
 const norm=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const visibile=d=>orgMode||((S.filtro==='Tutti'||d.continente===S.filtro)&&(S.naz==='Tutti'||d.nazione===S.naz)&&(S.tipo==='Tutti'||d.tipo===S.tipo));
 const updTxt=()=>{const t=+localStorage.getItem('tm_u');return t?'Titoli aggiornati alle '+new Date(t).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):''};
-const ricerca=()=>`<div class="srch"><span aria-hidden="true">🔎</span><input type="search" id="q" placeholder="Cerca una testata…" value="${esc(Q)}" aria-label="Cerca testata" autocomplete="off"><button data-ag aria-label="Aggiorna titoli">🔄</button></div>`;
+const ricerca=()=>`<div class="srch"><span>🔎</span><input type="search" id="q" placeholder="Cerca una testata nel mondo…" value="${esc(Q)}" autocomplete="off"><button data-ag>🔄</button></div>`;
 const rh=()=>view==='home'?renderHome():show('home');
+const onlineBanner=()=>navigator.onLine?'':'<div class="offline-banner">📶 Sei offline — mostro i titoli già salvati</div>';
+const azioni=d=>`<div class="acts"><button class="ab" data-edit="${d.id}" title="Modifica">✏️</button><button class="ab d" data-rem="${d.id}" title="Elimina">🗑️</button></div>`;
+
+/* ============================================================
+   CATALOGO MONDIALE
+   ============================================================ */
+const CAT=[
+['Europa','Regno Unito','Quotidiano','The Times','thetimes.co.uk'],
+['Europa','Regno Unito','Quotidiano','The Telegraph','telegraph.co.uk'],
+['Europa','Regno Unito','Quotidiano','The Independent','independent.co.uk'],
+['Europa','Regno Unito','Quotidiano','BBC News','bbc.com'],
+['Europa','Regno Unito','Agenzia','Reuters','reuters.com'],
+['Europa','Regno Unito','Economia','The Economist','economist.com'],
+['Europa','Regno Unito','Quotidiano','The Scotsman','scotsman.co.uk'],
+['Europa','Regno Unito','Sport','Sky Sports','skysports.com'],
+['Europa','Irlanda','Quotidiano','The Irish Times','irishtimes.com'],
+['Europa','Irlanda','Quotidiano','Irish Independent','independent.ie'],
+['Europa','Francia','Quotidiano','Le Figaro','lefigaro.fr'],
+['Europa','Francia','Quotidiano','Libération','liberation.fr'],
+['Europa','Francia','Economia','Les Echos','lesechos.fr'],
+['Europa','Francia','Sport','L\'Équipe','lequipe.fr'],
+['Europa','Francia','Quotidiano','Le Parisien','leparisien.fr'],
+['Europa','Francia','Quotidiano','La Croix','la-croix.com'],
+['Europa','Germania','Quotidiano','Süddeutsche Zeitung','sueddeutsche.de'],
+['Europa','Germania','Quotidiano','Die Welt','welt.de'],
+['Europa','Germania','Quotidiano','Der Spiegel','spiegel.de'],
+['Europa','Germania','Economia','Handelsblatt','handelsblatt.com'],
+['Europa','Germania','Quotidiano','Die Zeit','zeit.de'],
+['Europa','Germania','Quotidiano','Frankfurter Rundschau','fr.de'],
+['Europa','Spagna','Quotidiano','El Mundo','elmundo.es'],
+['Europa','Spagna','Quotidiano','ABC','abc.es'],
+['Europa','Spagna','Quotidiano','La Vanguardia','lavanguardia.com'],
+['Europa','Spagna','Sport','Marca','marca.com'],
+['Europa','Spagna','Sport','AS','as.com'],
+['Europa','Spagna','Quotidiano','El Confidencial','elconfidencial.com'],
+['Europa','Italia','Economia','Il Sole 24 Ore','ilsole24ore.com'],
+['Europa','Italia','Quotidiano','La Stampa','lastampa.it'],
+['Europa','Italia','Quotidiano','Il Messaggero','ilmessaggero.it'],
+['Europa','Italia','Quotidiano','Il Giornale','ilgiornale.it'],
+['Europa','Italia','Quotidiano','Avvenire','avvenire.it'],
+['Europa','Italia','Agenzia','ANSA','ansa.it'],
+['Europa','Italia','Sport','La Gazzetta dello Sport','gazzetta.it'],
+['Europa','Italia','Sport','Corriere dello Sport','corrieredellosport.it'],
+['Europa','Italia','Quotidiano','Il Manifesto','ilmanifesto.it'],
+['Europa','Italia','Quotidiano','Libero','liberoquotidiano.it'],
+['Europa','Italia','Economia','Milano Finanza','milanofinanza.it'],
+['Europa','Portogallo','Quotidiano','Público','publico.pt'],
+['Europa','Portogallo','Quotidiano','Diário de Notícias','dn.pt'],
+['Europa','Portogallo','Sport','A Bola','abola.pt'],
+['Europa','Grecia','Quotidiano','Kathimerini','ekathimerini.com'],
+['Europa','Grecia','Quotidiano','To Vima','tovima.gr'],
+['Europa','Svizzera','Quotidiano','Neue Zürcher Zeitung','nzz.ch'],
+['Europa','Svizzera','Quotidiano','Le Temps','letemps.ch'],
+['Europa','Svizzera','Quotidiano','Corriere del Ticino','cdt.ch'],
+['Europa','Svizzera','Quotidiano','Blick','blick.ch'],
+['Europa','Belgio','Quotidiano','Le Soir','lesoir.be'],
+['Europa','Belgio','Quotidiano','De Standaard','standaard.be'],
+['Europa','Belgio','Quotidiano','La Libre Belgique','lalibre.be'],
+['Europa','Olanda','Quotidiano','de Volkskrant','volkskrant.nl'],
+['Europa','Olanda','Quotidiano','NRC','nrc.nl'],
+['Europa','Olanda','Quotidiano','De Telegraaf','telegraaf.nl'],
+['Europa','Austria','Quotidiano','Der Standard','derstandard.at'],
+['Europa','Austria','Quotidiano','Die Presse','diepresse.com'],
+['Europa','Polonia','Quotidiano','Gazeta Wyborcza','wyborcza.pl'],
+['Europa','Polonia','Quotidiano','Rzeczpospolita','rp.pl'],
+['Europa','Repubblica Ceca','Quotidiano','Hospodářské noviny','ihned.cz'],
+['Europa','Ungheria','Quotidiano','Index','index.hu'],
+['Europa','Romania','Quotidiano','Adevărul','adevarul.ro'],
+['Europa','Bulgaria','Quotidiano','Dnevnik','dnevnik.bg'],
+['Europa','Croazia','Quotidiano','Jutarnji list','jutarnji.hr'],
+['Europa','Serbia','Quotidiano','Politika','politika.rs'],
+['Europa','Slovenia','Quotidiano','Delo','delo.si'],
+['Europa','Svezia','Quotidiano','Dagens Nyheter','dn.se'],
+['Europa','Svezia','Quotidiano','Svenska Dagbladet','svd.se'],
+['Europa','Norvegia','Quotidiano','Aftenposten','aftenposten.no'],
+['Europa','Norvegia','Quotidiano','VG','vg.no'],
+['Europa','Danimarca','Quotidiano','Politiken','politiken.dk'],
+['Europa','Danimarca','Quotidiano','Berlingske','berlingske.dk'],
+['Europa','Finlandia','Quotidiano','Helsingin Sanomat','hs.fi'],
+['Europa','Islanda','Quotidiano','Morgunblaðið','mbl.is'],
+['Europa','Russia','Quotidiano','The Moscow Times','themoscowtimes.com'],
+['Europa','Russia','Quotidiano','Kommersant','kommersant.ru'],
+['Europa','Russia','Quotidiano','Novaya Gazeta','novayagazeta.eu'],
+['Europa','Russia','Quotidiano','Izvestia','iz.ru'],
+['Europa','Russia','Agenzia','TASS','tass.com'],
+['Europa','Ucraina','Quotidiano','The Kyiv Independent','kyivindependent.com'],
+['Europa','Ucraina','Quotidiano','Ukrainska Pravda','pravda.com.ua'],
+['Europa','Turchia','Quotidiano','Hürriyet Daily News','hurriyetdailynews.com'],
+['Europa','Turchia','Quotidiano','Daily Sabah','dailysabah.com'],
+['Europa','Turchia','Quotidiano','Cumhuriyet','cumhuriyet.com.tr'],
+['Nord America','USA','Quotidiano','The New York Times','nytimes.com'],
+['Nord America','USA','Quotidiano','The Washington Post','washingtonpost.com'],
+['Nord America','USA','Economia','The Wall Street Journal','wsj.com'],
+['Nord America','USA','Economia','Bloomberg','bloomberg.com'],
+['Nord America','USA','Agenzia','Associated Press','apnews.com'],
+['Nord America','USA','Quotidiano','USA Today','usatoday.com'],
+['Nord America','USA','Quotidiano','Los Angeles Times','latimes.com'],
+['Nord America','USA','Quotidiano','Chicago Tribune','chicagotribune.com'],
+['Nord America','USA','Quotidiano','The Boston Globe','bostonglobe.com'],
+['Nord America','USA','Quotidiano','New York Post','nypost.com'],
+['Nord America','USA','Economia','Forbes','forbes.com'],
+['Nord America','USA','Economia','Business Insider','businessinsider.com'],
+['Nord America','USA','Quotidiano','Politico','politico.com'],
+['Nord America','USA','Quotidiano','The Hill','thehill.com'],
+['Nord America','Canada','Quotidiano','The Globe and Mail','theglobeandmail.com'],
+['Nord America','Canada','Quotidiano','Toronto Star','thestar.com'],
+['Nord America','Canada','Quotidiano','National Post','nationalpost.com'],
+['Nord America','Canada','Quotidiano','La Presse','lapresse.ca'],
+['Nord America','Messico','Quotidiano','El Universal','eluniversal.com.mx'],
+['Nord America','Messico','Quotidiano','Reforma','reforma.com'],
+['Nord America','Messico','Quotidiano','Milenio','milenio.com'],
+['America Latina','Brasile','Quotidiano','O Globo','oglobo.globo.com'],
+['America Latina','Brasile','Quotidiano','Folha de S.Paulo','folha.uol.com.br'],
+['America Latina','Brasile','Quotidiano','Estadão','estadao.com.br'],
+['America Latina','Argentina','Quotidiano','La Nación','lanacion.com.ar'],
+['America Latina','Argentina','Quotidiano','Clarín','clarin.com'],
+['America Latina','Argentina','Quotidiano','Página/12','pagina12.com.ar'],
+['America Latina','Cile','Quotidiano','El Mercurio','elmercurio.com'],
+['America Latina','Cile','Quotidiano','La Tercera','latercera.com'],
+['America Latina','Colombia','Quotidiano','El Tiempo','eltiempo.com'],
+['America Latina','Colombia','Quotidiano','El Espectador','elespectador.com'],
+['America Latina','Perù','Quotidiano','El Comercio','elcomercio.pe'],
+['America Latina','Venezuela','Quotidiano','El Nacional','elnacional.com'],
+['America Latina','Uruguay','Quotidiano','El País','elpais.com.uy'],
+['America Latina','Ecuador','Quotidiano','El Universo','eluniverso.com'],
+['America Latina','Bolivia','Quotidiano','El Deber','eldeber.com.bo'],
+['Asia','Giappone','Quotidiano','The Japan Times','japantimes.co.jp'],
+['Asia','Giappone','Quotidiano','Asahi Shimbun','asahi.com'],
+['Asia','Giappone','Quotidiano','Yomiuri Shimbun','yomiuri.co.jp'],
+['Asia','Giappone','Economia','Nikkei','nikkei.com'],
+['Asia','Cina','Quotidiano','South China Morning Post','scmp.com'],
+['Asia','Cina','Quotidiano','China Daily','chinadaily.com.cn'],
+['Asia','Cina','Agenzia','Xinhua','english.news.cn'],
+['Asia','Hong Kong','Quotidiano','Hong Kong Free Press','hongkongfp.com'],
+['Asia','Taiwan','Quotidiano','Taipei Times','taipeitimes.com'],
+['Asia','India','Quotidiano','The Times of India','timesofindia.indiatimes.com'],
+['Asia','India','Quotidiano','The Hindu','thehindu.com'],
+['Asia','India','Quotidiano','Hindustan Times','hindustantimes.com'],
+['Asia','India','Economia','The Economic Times','economictimes.indiatimes.com'],
+['Asia','India','Quotidiano','The Indian Express','indianexpress.com'],
+['Asia','Pakistan','Quotidiano','Dawn','dawn.com'],
+['Asia','Bangladesh','Quotidiano','The Daily Star','thedailystar.net'],
+['Asia','Corea del Sud','Quotidiano','The Korea Times','koreatimes.co.kr'],
+['Asia','Corea del Sud','Quotidiano','Korea JoongAng Daily','koreajoongangdaily.joins.com'],
+['Asia','Thailandia','Quotidiano','Bangkok Post','bangkokpost.com'],
+['Asia','Thailandia','Quotidiano','The Nation','nationthailand.com'],
+['Asia','Singapore','Quotidiano','The Straits Times','straitstimes.com'],
+['Asia','Malesia','Quotidiano','The Star','thestar.com.my'],
+['Asia','Indonesia','Quotidiano','The Jakarta Post','thejakartapost.com'],
+['Asia','Filippine','Quotidiano','Philippine Daily Inquirer','inquirer.net'],
+['Asia','Vietnam','Quotidiano','VnExpress','vnexpress.net'],
+['Africa e Medio Oriente','Egitto','Quotidiano','Al Ahram','english.ahram.org.eg'],
+['Africa e Medio Oriente','Egitto','Quotidiano','Daily News Egypt','dailynewsegypt.com'],
+['Africa e Medio Oriente','Qatar','Quotidiano','Al Jazeera','aljazeera.com'],
+['Africa e Medio Oriente','Emirati Arabi','Quotidiano','The National','thenationalnews.com'],
+['Africa e Medio Oriente','Emirati Arabi','Quotidiano','Gulf News','gulfnews.com'],
+['Africa e Medio Oriente','Arabia Saudita','Quotidiano','Arab News','arabnews.com'],
+['Africa e Medio Oriente','Arabia Saudita','Quotidiano','Saudi Gazette','saudigazette.com.sa'],
+['Africa e Medio Oriente','Israele','Quotidiano','Haaretz','haaretz.com'],
+['Africa e Medio Oriente','Israele','Quotidiano','The Jerusalem Post','jpost.com'],
+['Africa e Medio Oriente','Israele','Quotidiano','The Times of Israel','timesofisrael.com'],
+['Africa e Medio Oriente','Libano','Quotidiano','L\'Orient-Le Jour','lorientlejour.com'],
+['Africa e Medio Oriente','Iran','Quotidiano','Tehran Times','tehrantimes.com'],
+['Africa e Medio Oriente','Sudafrica','Quotidiano','The Mail & Guardian','mg.co.za'],
+['Africa e Medio Oriente','Sudafrica','Quotidiano','News24','news24.com'],
+['Africa e Medio Oriente','Nigeria','Quotidiano','The Punch','punchng.com'],
+['Africa e Medio Oriente','Nigeria','Quotidiano','Vanguard','vanguardngr.com'],
+['Africa e Medio Oriente','Kenya','Quotidiano','Daily Nation','nation.africa'],
+['Africa e Medio Oriente','Kenya','Quotidiano','The Standard','standardmedia.co.ke'],
+['Africa e Medio Oriente','Ghana','Quotidiano','Graphic Online','graphic.com.gh'],
+['Africa e Medio Oriente','Etiopia','Quotidiano','Addis Standard','addisstandard.com'],
+['Africa e Medio Oriente','Marocco','Quotidiano','Le Matin','lematin.ma'],
+['Africa e Medio Oriente','Tunisia','Quotidiano','La Presse','lapresse.tn'],
+['Oceania','Australia','Quotidiano','The Sydney Morning Herald','smh.com.au'],
+['Oceania','Australia','Quotidiano','The Australian','theaustralian.com.au'],
+['Oceania','Australia','Quotidiano','The Age','theage.com.au'],
+['Oceania','Australia','Economia','Australian Financial Review','afr.com'],
+['Oceania','Australia','Quotidiano','ABC News','abc.net.au'],
+['Oceania','Nuova Zelanda','Quotidiano','The New Zealand Herald','nzherald.co.nz'],
+['Oceania','Nuova Zelanda','Quotidiano','Stuff','stuff.co.nz'],
+['Oceania','Figi','Quotidiano','Fiji Times','fijitimes.com']
+];
+const host=l=>{try{return new URL(l).hostname.replace(/^www\./,'')}catch(e){return''}};
+
+/* ============================================================
+   WIKIPEDIA
+   ============================================================ */
+const wikiCache={};
+const WIKI_TTL=10*60*1000;
+let wikiAbort=null;
+
+const NAZ_CONT={
+  'italy':'Europa','italia':'Europa','france':'Europa','francia':'Europa','germany':'Europa','germania':'Europa',
+  'spain':'Europa','spagna':'Europa','united kingdom':'Europa','regno unito':'Europa','uk':'Europa',
+  'ireland':'Europa','irlanda':'Europa','portugal':'Europa','portogallo':'Europa','greece':'Europa','grecia':'Europa',
+  'switzerland':'Europa','svizzera':'Europa','belgium':'Europa','belgio':'Europa','netherlands':'Europa','paesi bassi':'Europa',
+  'austria':'Europa','poland':'Europa','polonia':'Europa','czech republic':'Europa','repubblica ceca':'Europa',
+  'hungary':'Europa','ungheria':'Europa','romania':'Europa','bulgaria':'Europa','croatia':'Europa','croazia':'Europa',
+  'serbia':'Europa','slovenia':'Europa','sweden':'Europa','svezia':'Europa','norway':'Europa','norvegia':'Europa',
+  'denmark':'Europa','danimarca':'Europa','finland':'Europa','finlandia':'Europa','iceland':'Europa','islanda':'Europa',
+  'russia':'Europa','ukraine':'Europa','ucraina':'Europa','turkey':'Europa','turchia':'Europa',
+  'united states':'Nord America','usa':'Nord America','stati uniti':'Nord America','canada':'Nord America',
+  'mexico':'Nord America','messico':'Nord America',
+  'brazil':'America Latina','brasile':'America Latina','argentina':'America Latina','chile':'America Latina','cile':'America Latina',
+  'colombia':'America Latina','peru':'America Latina','venezuela':'America Latina','uruguay':'America Latina',
+  'ecuador':'America Latina','bolivia':'America Latina',
+  'japan':'Asia','giappone':'Asia','china':'Asia','cina':'Asia','india':'Asia','hong kong':'Asia','taiwan':'Asia',
+  'pakistan':'Asia','bangladesh':'Asia','south korea':'Asia','corea del sud':'Asia','thailand':'Asia','thailandia':'Asia',
+  'singapore':'Asia','malaysia':'Asia','malesia':'Asia','indonesia':'Asia','philippines':'Asia','filippine':'Asia','vietnam':'Asia',
+  'egypt':'Africa e Medio Oriente','egitto':'Africa e Medio Oriente','qatar':'Africa e Medio Oriente',
+  'united arab emirates':'Africa e Medio Oriente','saudi arabia':'Africa e Medio Oriente','israel':'Africa e Medio Oriente',
+  'lebanon':'Africa e Medio Oriente','iran':'Africa e Medio Oriente','south africa':'Africa e Medio Oriente','sudafrica':'Africa e Medio Oriente',
+  'nigeria':'Africa e Medio Oriente','kenya':'Africa e Medio Oriente','ghana':'Africa e Medio Oriente',
+  'ethiopia':'Africa e Medio Oriente','morocco':'Africa e Medio Oriente','marocco':'Africa e Medio Oriente','tunisia':'Africa e Medio Oriente',
+  'australia':'Oceania','new zealand':'Oceania','nuova zelanda':'Oceania','fiji':'Oceania','figi':'Oceania'
+};
+
+function estraiNazione(testo){
+  const m=testo.match(/(?:quotidiano|giornale|newspaper|daily|testata|rivista)\s+(?:italiano|francese|tedesco|spagnolo|inglese|statunitense|americano|britannico|russo|giapponese|cinese|indiano|brasiliano|argentino|messicano|australiano|canadese|svizzero|austriaco|belga|olandese|portoghese|greco|polacco|ungherese|rumeno|svedese|norvegese|danese|finlandese|turco|ucraino|israeliano|egiziano|sudafricano|nigeriano|keniano|marocchino|tunisino|qatariota|emiratino|saudita|libanese|iraniano|pakistano|bangladese|coreano|thailandese|singaporiano|malese|indonesiano|filippino|vietnamita|neozelandese)/i);
+  if(!m)return null;
+  const naz=m[0].split(/\s+/).slice(1).join(' ').toLowerCase();
+  const map={'italiano':'Italia','francese':'Francia','tedesco':'Germania','spagnolo':'Spagna','inglese':'Regno Unito','statunitense':'USA','americano':'USA','britannico':'Regno Unito','russo':'Russia','giapponese':'Giappone','cinese':'Cina','indiano':'India','brasiliano':'Brasile','argentino':'Argentina','messicano':'Messico','australiano':'Australia','canadese':'Canada','svizzero':'Svizzera','austriaco':'Austria','belga':'Belgio','olandese':'Olanda','portoghese':'Portogallo','greco':'Grecia','polacco':'Polonia','ungherese':'Ungheria','rumeno':'Romania','svedese':'Svezia','norvegese':'Norvegia','danese':'Danimarca','finlandese':'Finlandia','turco':'Turchia','ucraino':'Ucraina','israeliano':'Israele','egiziano':'Egitto','sudafricano':'Sudafrica','nigeriano':'Nigeria','keniano':'Kenya','marocchino':'Marocco','tunisino':'Tunisia','qatariota':'Qatar','emiratino':'Emirati Arabi','saudita':'Arabia Saudita','libanese':'Libano','iraniano':'Iran','pakistano':'Pakistan','bangladese':'Bangladesh','coreano':'Corea del Sud','thailandese':'Thailandia','singaporiano':'Singapore','malese':'Malesia','indonesiano':'Indonesia','filippino':'Filippine','vietnamita':'Vietnam','neozelandese':'Nuova Zelanda'};
+  return map[naz]||null;
+}
+function estraiDominio(extract,title){
+  const urls=extract.match(/https?:\/\/[^\s\)\]"']+/g)||[];
+  for(const u of urls){
+    try{
+      const h=new URL(u).hostname.replace(/^www\./,'');
+      if(/wikipedia|wikimedia|wikidata|archive\.org|google|facebook|twitter|youtube|instagram/.test(h))continue;
+      if(/\.(com|org|net|it|fr|de|es|uk|co\.uk|ru|jp|cn|in|br|ar|mx|au|ca|ch|at|be|nl|pt|gr|pl|hu|ro|se|no|dk|fi|tr|ua|il|eg|za|ng|ke|ma|tn|qa|ae|sa|lb|ir|pk|bd|kr|th|sg|my|id|ph|vn|nz|fj|eu)$/i.test(h))return h;
+    }catch(e){}
+  }
+  const slug=title.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
+  if(slug.length>=3&&slug.length<=25)return slug+'.com';
+  return '';
+}
+async function cercaWikipedia(q){
+  const nq=norm(q.trim());
+  if(nq.length<3)return [];
+  const now=Date.now();
+  if(wikiCache[nq]&&now-wikiCache[nq].ts<WIKI_TTL)return wikiCache[nq].data;
+  if(wikiAbort)wikiAbort.abort();
+  wikiAbort=new AbortController();
+  try{
+    const url1=`https://it.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(q+' giornale OR quotidiano OR newspaper')}&srlimit=8&format=json&origin=*`;
+    const r1=await fetch(url1,{signal:wikiAbort.signal});
+    const j1=await r1.json();
+    const hits=(j1.query&&j1.query.search)||[];
+    if(!hits.length){wikiCache[nq]={ts:now,data:[]};return[]}
+    const ids=hits.slice(0,5).map(h=>h.pageid).join('|');
+    const url2=`https://it.wikipedia.org/w/api.php?action=query&pageids=${ids}&prop=extracts|info&exintro=1&explaintext=1&inprop=url&format=json&origin=*`;
+    const r2=await fetch(url2,{signal:wikiAbort.signal});
+    const j2=await r2.json();
+    const pages=j2.query&&j2.query.pages||{};
+    const out=[];
+    for(const h of hits.slice(0,5)){
+      const p=pages[h.pageid];
+      if(!p||!p.extract)continue;
+      const extract=p.extract.slice(0,500);
+      const title=p.title;
+      if(/^(Giornale|Quotidiano|Newspaper|Rivista|Testata|Lista|Elenco)/i.test(title))continue;
+      const naz=estraiNazione(extract);
+      const cont=naz?NAZ_CONT[norm(naz)]||'':'';
+      const dom=estraiDominio(extract,title);
+      out.push({fonte:'wiki',titolo:title,nazione:naz||'',continente:cont,dominio:dom,descrizione:extract.split(/\.\s/)[0].slice(0,180)+'.'});
+    }
+    wikiCache[nq]={ts:now,data:out};
+    return out;
+  }catch(e){
+    if(e.name==='AbortError')return[];
+    wikiCache[nq]={ts:now,data:[]};
+    return [];
+  }
+}
+
+/* ============================================================
+   RICERCA UNIFICATA
+   ============================================================ */
+function risultatiCatalogo(q){
+  const nq=norm(q);
+  return CAT.filter(r=>{
+    if(r.length!==5)return false;
+    if(CF.cont!=='Tutti'&&r[0]!==CF.cont)return false;
+    if(CF.naz!=='Tutti'&&r[1]!==CF.naz)return false;
+    if(!nq)return CF.cont!=='Tutti'||CF.naz!=='Tutti';
+    return norm(r[3]+' '+r[0]+' '+r[1]+' '+r[2]).includes(nq);
+  });
+}
+async function renderRicercaCatalogo(){
+  const box=$('#rc');
+  if(!box)return;
+  const nq=norm(Q.trim());
+  const filtriAttivi=CF.cont!=='Tutti'||CF.naz!=='Tutti';
+  if(!nq&&!filtriAttivi){box.innerHTML='';box.style.display='none';return}
+  box.style.display='';
+  const risCat=risultatiCatalogo(Q);
+  const have=new Set(DATI.map(d=>host(d.link)));
+  const conts=[...new Set(CAT.map(r=>r[0]))].sort();
+  const nazs=CF.cont==='Tutti'?[]:[...new Set(CAT.filter(r=>r[0]===CF.cont).map(r=>r[1]))].sort();
+  let h=`<div class="fh" style="margin-top:1rem"><h3 class="serif" style="font-size:1.1rem">🌍 Altre testate nel mondo</h3></div>`;
+  h+=`<div class="chips">${['Tutti',...conts].map(c=>`<button class="chip ${CF.cont===c?'on':''}" data-cc="${esc(c)}">${c==='Tutti'?'🌐 Tutti':esc(c)}</button>`).join('')}</div>`;
+  if(nazs.length>1){
+    h+=`<div class="chips">${['Tutti',...nazs].map(z=>`<button class="chip ${CF.naz===z?'on':''}" data-cn="${esc(z)}">${z==='Tutti'?'Tutte le nazioni':esc(z)}</button>`).join('')}</div>`;
+  }
+  if(filtriAttivi)h+=`<div class="world"><button data-creset>✕ Rimuovi filtri</button></div>`;
+  if(risCat.length){
+    const gruppi={};
+    risCat.forEach(r=>{gruppi[r[0]]=gruppi[r[0]]||{};gruppi[r[0]][r[1]]=gruppi[r[0]][r[1]]||[];gruppi[r[0]][r[1]].push(r)});
+    Object.keys(gruppi).sort().forEach(c=>{
+      h+=`<div class="dsep" style="border-radius:12px;margin-top:.6rem">${esc(c)}</div>`;
+      Object.keys(gruppi[c]).sort().forEach(n=>{
+        h+=`<div class="fh" style="margin:.5rem 0 .3rem"><h3 class="serif" style="font-size:.92rem">📍 ${esc(n)}</h3></div>`;
+        gruppi[c][n].forEach(r=>{
+          const idx=CAT.indexOf(r);
+          const già=have.has(r[4]);
+          h+=`<div class="lt" style="padding:.6rem .9rem"><div class="x"><strong>${esc(r[3])}${già?' <span class="già">✓ già aggiunta</span>':''}</strong><div class="sub">${esc(r[2])} · ${esc(r[4])}</div></div><button class="btn p" data-ct="${idx}" style="flex:none" ${già?'disabled':''}>${già?'✓':'➕'}</button></div>`;
+        });
+      });
+    });
+  }
+  if(nq.length>=3){
+    const wiki=await cercaWikipedia(Q);
+    const catTitles=new Set(CAT.map(r=>norm(r[3])));
+    const wikiFiltrati=wiki.filter(w=>{
+      if(catTitles.has(norm(w.titolo)))return false;
+      if(w.dominio&&have.has(w.dominio))return false;
+      return true;
+    });
+    if(wikiFiltrati.length){
+      h+=`<div class="dsep" style="border-radius:12px;margin-top:.8rem">🌐 Da Wikipedia</div>`;
+      wikiFiltrati.forEach(w=>{
+        const idx=`wiki:${w.titolo}`;
+        const dom=w.dominio||'';
+        h+=`<div class="lt" style="padding:.6rem .9rem"><div class="x"><strong>${esc(w.titolo)} <span class="wiki">wiki</span></strong><div class="sub">${esc(w.continente||'?')}${w.nazione?' · '+esc(w.nazione):''}${dom?' · '+esc(dom):''}</div>${w.descrizione?`<div class="sub" style="margin-top:.2rem;font-style:italic">${esc(w.descrizione)}</div>`:''}</div><button class="btn p" data-wk="${esc(idx)}" style="flex:none">➕</button></div>`;
+        if(!window.__wikiStore)window.__wikiStore={};
+        window.__wikiStore[idx]=w;
+      });
+    }
+  }
+  if(nq.length>=2){
+    h+=`<div class="manual"><p>Non trovi <strong>«${esc(Q.trim())}»</strong>? Aggiungilo manualmente.</p><button class="btn p" data-manual="${esc(Q.trim())}">➕ Aggiungi manualmente</button></div>`;
+  }
+  box.innerHTML=h;
+}
+
+/* ============================================================
+   VISTA MONDO
+   ============================================================ */
+function renderMondo(){
+  const have=new Set(DATI.map(d=>host(d.link)));
+  const gruppi={};
+  CAT.forEach(r=>{gruppi[r[0]]=gruppi[r[0]]||{};gruppi[r[0]][r[1]]=gruppi[r[0]][r[1]]||[];gruppi[r[0]][r[1]].push(r)});
+  const conti=Object.keys(gruppi).sort();
+  let h=`<div class="vh"><h2 class="serif">🌍 Sfoglia il mondo</h2>${CL}</div>`;
+  h+=`<p class="ds">Tutte le testate disponibili, divise per continente e nazione.</p>`;
+  conti.forEach(c=>{
+    const nazioni=Object.keys(gruppi[c]).sort();
+    const tot=nazioni.reduce((s,n)=>s+gruppi[c][n].length,0);
+    h+=`<details class="mondo-c"><summary>${esc(c)} <span style="margin-left:auto;font-weight:600;font-size:.85rem;opacity:.8">${tot} testate</span></summary><div class="content">`;
+    nazioni.forEach(n=>{
+      h+=`<div class="mondo-n">${esc(n)}</div>`;
+      gruppi[c][n].forEach(r=>{
+        const idx=CAT.indexOf(r);
+        const già=have.has(r[4]);
+        h+=`<div class="mondo-row"><div class="x"><strong>${esc(r[3])}${già?' <span class="già">✓</span>':''}</strong><div class="sub">${esc(r[2])}</div></div><button class="btn p" data-ct="${idx}" ${già?'disabled':''}>${già?'✓':'➕'}</button></div>`;
+      });
+    });
+    h+=`</div></details>`;
+  });
+  $('#v-mondo').innerHTML=h;
+}
+
+/* ============================================================
+   HOME
+   ============================================================ */
 function renderDr(){
   const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
   const nz=S.filtro==='Tutti'?[]:[...new Set(DATI.filter(d=>d.continente===S.filtro).map(d=>d.nazione))];
@@ -297,78 +756,106 @@ function renderDr(){
   $('#up').textContent=updTxt();
 }
 const nazChips=()=>{if(S.filtro==='Tutti'||orgMode)return'';const n=[...new Set(DATI.filter(d=>d.continente===S.filtro).map(d=>d.nazione))];return n.length<2?'':`<div class="chips">${['Tutti',...n].map(z=>`<button class="chip ${S.naz===z?'on':''}" data-z="${esc(z)}">${z==='Tutti'?'Tutte le nazioni':esc(z)}</button>`).join('')}</div>`};
-function applicaQ(){const q=norm(Q.trim());let v=0;$$('#v-home [data-id]').forEach(e=>{const d=DATI.find(x=>x.id===e.dataset.id);const ok=!d||orgMode||!q||norm(d.nome+' '+d.nazione+' '+d.continente+' '+d.tipo).includes(q);e.style.display=ok?'':'none';if(ok)v++});const nr=$('#nr');if(nr)nr.style.display=v?'none':'block'}
-/* ---------- HOME ---------- */
+
+function applicaQ(){
+  const q=norm(Q.trim());
+  let v=0;
+  $$('#v-home [data-id]').forEach(e=>{
+    const d=DATI.find(x=>x.id===e.dataset.id);
+    const ok=!d||orgMode||!q||norm(d.nome+' '+d.nazione+' '+d.continente+' '+d.tipo).includes(q);
+    e.style.display=ok?'':'none';
+    if(ok)v++;
+  });
+  const nr=$('#nr');if(nr)nr.style.display=v?'none':'block';
+}
+
 function renderHome(){
   const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
   const lista=ordinati().filter(visibile);
   const gr=true,an=S.vista!=='titoli';
-  let h=`${ricerca()}<div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
+  let h=`${onlineBanner()}${ricerca()}<div id="rc" style="display:none"></div><div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
   const cards=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione)+(d.tipo&&d.tipo!=='Quotidiano'?' · '+esc(d.tipo):'');
     const tit=t?t.slice(0,an?(gr?1:2):(gr?2:3)).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
-    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><div class="mv"><button class="btn pin" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn pin" data-pdn="${d.id}" aria-label="Sposta giù di una posizione">▼</button></div><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button></div></div></article>`
-    :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?`<button class="xx" data-rm="${d.id}" aria-label="Elimina giornale">✕</button>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button></div>`:''}</div>`;
+    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><div class="mv"><button class="btn pin" data-pin="${d.id}">▲</button><button class="btn pin" data-pdn="${d.id}">▼</button></div><button class="btn st" data-s="${d.id}">${fv?'⭐':'☆'}</button></div>${!orgMode?`<div style="display:flex;justify-content:flex-end;margin-top:.4rem">${azioni(d)}</div>`:''}</div></article>`
+    :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?`<button class="xx" data-rm="${d.id}">✕</button>`:''}${!orgMode?azioni(d):''}${d.tipo&&d.tipo!=='Quotidiano'?`<span class="badge" style="right:auto;left:.5rem">${esc(d.tipo)}</span>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button></div>`:''}</div>`;
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
   h+=gr?'<div class="grid">'+cards+'</div>':cards;
-  h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata.</div>';$('#v-home').innerHTML=h;applicaQ();renderDr();
+  h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata in home. Prova a cercare nel mondo qui sopra 👆</div>';
+  $('#v-home').innerHTML=h;
+  applicaQ();renderDr();renderRicercaCatalogo();
+  requestAnimationFrame(()=>{const on=$('#v-home .chip.on');if(on)on.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})});
+}
+
+/* ---------- RSS ---------- */
+async function fetchRSS(rssUrl){
+  const proxies=[
+    'https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rssUrl),
+    'https://api.allorigins.win/raw?url='+encodeURIComponent(rssUrl)
+  ];
+  for(const p of proxies){
+    try{
+      const r=await fetch(p);if(!r.ok)continue;
+      if(p.includes('allorigins')){
+        const txt=await r.text();
+        const xml=new DOMParser().parseFromString(txt,'text/xml');
+        const items=[...xml.querySelectorAll('item,entry')].slice(0,3).map(i=>{
+          const t=i.querySelector('title')?.textContent?.trim();
+          const enc=i.querySelector('enclosure')?.getAttribute('url');
+          const media=i.getElementsByTagName('media:content')[0]?.getAttribute('url');
+          return {title:t,thumbnail:enc||media,content:i.querySelector('description,content')?.textContent||''};
+        }).filter(x=>x.title);
+        if(items.length)return {items};
+      }else{
+        const j=await r.json();
+        if(j.items&&j.items.length)return j;
+      }
+    }catch(e){continue}
+  }
+  throw new Error('Nessun proxy');
 }
 async function caricaTitoli(){
-  const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&'img' in T[d.id]&&Date.now()-T[d.id].ts<18e5));
+  const TTL=10*60*1000;
+  const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&'img' in T[d.id]&&Date.now()-T[d.id].ts<TTL));
   const lavora=async()=>{while(coda.length){const d=coda.shift();
     try{
-      const r=await fetch('https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(d.rss));
-      const j=await r.json();
+      const j=await fetchRSS(d.rss);
       if(j.items&&j.items.length){
-        const nuovi=j.items.slice(0,3).map(i=>i.title.trim());
+        const nuovi=j.items.slice(0,3).map(i=>(i.title||'').trim()).filter(Boolean);
         const vecchio=T[d.id]&&T[d.id].t&&T[d.id].t[0];
         const it=j.items[0];let im=it.thumbnail||'';
         if(!im&&it.enclosure&&it.enclosure.link&&/image|\.(jpe?g|png|webp)/i.test((it.enclosure.type||'')+it.enclosure.link))im=it.enclosure.link;
         if(!im){const m=(it.content||it.description||'').match(/<img[^>]+src=["']([^"']+)/i);if(m)im=m[1]}
         if(im)im=im.replace(/^http:/i,'https:');
         T[d.id]={t:nuovi,ts:Date.now(),img:im};sv('tm_t',T);if(im)setImg(d.id,im);
-        document.querySelectorAll(`[data-tt="${d.id}"]`).forEach(e=>e.innerHTML=nuovi.slice(0,1).map(x=>`<p class="ti">${esc(x)}</p>`).join(''));
         if(S.notif&&F.fav[d.id]!==undefined&&vecchio&&vecchio!==nuovi[0])notifica(d,nuovi[0]);
       }
-    }catch(e){document.querySelectorAll(`[data-ti="${d.id}"]`).forEach(x=>x.textContent=navigator.onLine?'Titoli non disponibili ora':'Offline: titoli non aggiornati')}
+    }catch(e){document.querySelectorAll(`[data-ti="${d.id}"]`).forEach(x=>x.textContent=navigator.onLine?'Titoli non disponibili ora':'Offline')}
   }};
   await Promise.all([lavora(),lavora(),lavora()]);
-  try{localStorage.setItem('tm_u',Date.now())}catch(e){}const u=$('#up');if(u)u.textContent=updTxt();
+  try{localStorage.setItem('tm_u',Date.now())}catch(e){}
+  const u=$('#up');if(u)u.textContent=updTxt();
 }
 async function notifica(d,t){
-  try{const reg=await navigator.serviceWorker.ready;reg.showNotification(d.nome,{body:t,icon:'./icons/icon-192.png',tag:d.id})}catch(e){}
+  try{
+    const reg=await Promise.race([navigator.serviceWorker.ready,new Promise((_,rj)=>setTimeout(()=>rj(new Error('timeout')),2500))]);
+    reg.showNotification(d.nome,{body:t,icon:'./icons/icon-192.png',tag:d.id});
+  }catch(e){}
 }
 
 /* ---------- PREFERITI ---------- */
 function renderPref(){
   const ids=Object.keys(F.fav);
-  if(!ids.length&&!F.cartelle.length){$('#v-pref').innerHTML='<div class="vh"><h2 class="serif">Preferiti</h2>'+CL+'</div><div class="vuoto"><h2 class="serif">Nessun preferito</h2><p>Tocca la stellina ☆ su una testata per salvarla in una cartella.</p></div>';return}
+  if(!ids.length&&!F.cartelle.length){$('#v-pref').innerHTML='<div class="vh"><h2 class="serif">Preferiti</h2>'+CL+'</div><div class="vuoto"><h2 class="serif">Nessun preferito</h2><p>Tocca la stellina ☆ su una testata per salvarla.</p></div>';return}
   const nomi=[...new Set([...F.cartelle,...ids.map(i=>F.fav[i]).filter(Boolean)])];
-  let h='<div class="vh"><h2 class="serif">Preferiti</h2>${CL}</div><div class="bar"><button class="btn p" data-nc>📁 Nuova cartella</button></div>';
+  let h='<div class="vh"><h2 class="serif">Preferiti</h2>'+CL+'</div><div class="bar"><button class="btn p" data-nc>📁 Nuova cartella</button></div>';
   [...nomi,''].forEach(c=>{
     const it=ids.filter(i=>(F.fav[i]||'')===c).map(i=>DATI.find(d=>d.id===i)).filter(Boolean);
     if(!c&&!it.length)return;
     h+=`<div class="fh"><h3 class="serif">📁 ${esc(c||'Senza cartella')} (${it.length})</h3>${c?`<button class="btn" data-rc="${esc(c)}">✏️</button><button class="btn d" data-dc="${esc(c)}">🗑️</button>`:''}</div>`;
-    h+=it.length?`<div>${it.map(d=>`<div class="lt"><div class="x" data-o="${d.id}" role="link" tabindex="0"><h3 class="nm serif">${esc(d.nome)}</h3><div class="sub">${esc(d.continente)} · ${esc(d.nazione)}</div></div><button class="btn" data-ed="${d.id}" aria-label="Modifica">✏️</button><button class="btn d" data-del="${d.id}" aria-label="Elimina">🗑️</button></div>`).join('')}</div>`:'<p class="ds">Cartella vuota.</p>';
+    h+=it.length?`<div>${it.map(d=>`<div class="lt"><div class="x" data-o="${d.id}" role="link" tabindex="0"><h3 class="nm serif">${esc(d.nome)}</h3><div class="sub">${esc(d.continente)} · ${esc(d.nazione)}</div></div>${azioni(d)}<button class="btn" data-ed="${d.id}">📁</button></div>`).join('')}</div>`:'<p class="ds">Cartella vuota.</p>';
   });
   $('#v-pref').innerHTML=h;
-}
-
-/* ---------- ORGANIZZA ---------- */
-function renderOrg(){
-  const l=ordinati();
-  $('#v-org').innerHTML=`<h2 class="serif">Organizza la home</h2><p class="ds">Scegli quale giornale mettere in cima e in che ordine mostrarli.</p><div class="bar"><button class="btn" data-ro>↩️ Ripristina ordine originale</button></div>`+l.map((d,i)=>`<div class="lt"><div class="org"><button data-up="${d.id}" ${i?'':'disabled'} aria-label="Su">▲</button><button data-dn="${d.id}" ${i<l.length-1?'':'disabled'} aria-label="Giù">▼</button></div><div class="x"><h3 class="nm serif">${esc(d.nome)}</h3><div class="sub">${esc(d.nazione)}</div></div><button class="btn" data-top="${d.id}" ${i?'':'disabled'}>🔝 In cima</button></div>`).join('');
-}
-function muovi(id,m){
-  const ids=ordinati().map(d=>d.id);
-  if(m==='top'){ids.splice(ids.indexOf(id),1);ids.unshift(id)}
-  else{
-    const pool=ids.filter(i=>{const d=DATI.find(x=>x.id===i);return visibile(d)&&(!Q.trim()||norm(d.nome+' '+d.nazione+' '+d.continente+' '+d.tipo).includes(norm(Q.trim())))});
-    const n=pool[pool.indexOf(id)+m];if(!n)return toast(m<0?'È già in cima':'È già in fondo');
-    const a=ids.indexOf(id),b=ids.indexOf(n);[ids[a],ids[b]]=[ids[b],ids[a]];
-  }
-  S.ordine=ids;sv('tm_s',S);view==='home'?renderHome():renderOrg();
-  const el=document.querySelector('[data-id="'+id+'"]');if(el)el.scrollIntoView({block:'center'});
 }
 
 /* ---------- IMPOSTAZIONI / GUIDA / INFO ---------- */
@@ -378,230 +865,424 @@ function renderImp(){
   <div class="set"><h3>Tema</h3><div class="pl">${P('t','auto','Automatico',S.tema)}${P('t','chiaro','Chiaro',S.tema)}${P('t','scuro','Scuro',S.tema)}</div></div>
   <div class="set"><h3>Sfondo a gradiente</h3><div class="gt">${Object.entries(GRAD).map(([k,g])=>`<button class="${S.grad===k?'on':''}" data-g="${k}" style="background:linear-gradient(135deg,${g[0]},${g[1]})">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div></div>
   <div class="set"><h3>Dimensione del testo</h3><div class="pl">${P('fs',90,'A−',S.font)}${P('fs',100,'A',S.font)}${P('fs',115,'A+',S.font)}${P('fs',130,'A++',S.font)}</div><button class="chk" data-an>${S.anim?'☑':'☐'} Riduci le animazioni</button></div>
-  <div class="set"><h3>Apertura dei link</h3><p class="ds">Per usare il traduttore apri le testate nel browser esterno.</p><div class="pl">${P('b','default','Browser predefinito',S.browser)}${P('b','opera','Opera',S.browser)}</div></div>
-  <div class="set"><h3>Notifiche nuovi titoli</h3><p class="ds">Controllo dei preferiti quando apri l'app.</p><div class="pl">${P('n','1','Attive',S.notif?'1':'0')}${P('n','0','Disattive',S.notif?'1':'0')}</div></div>
+  <div class="set"><h3>Apertura dei link</h3><div class="pl">${P('b','default','Browser predefinito',S.browser)}${P('b','opera','Opera',S.browser)}</div></div>
+  <div class="set"><h3>Notifiche nuovi titoli</h3><div class="pl">${P('n','1','Attive',S.notif?'1':'0')}${P('n','0','Disattive',S.notif?'1':'0')}</div></div>
   <div class="set"><h3>Dati</h3><div class="bar"><button class="btn" id="ex">⬆️ Esporta dati</button><button class="btn" id="im">⬇️ Importa dati</button><button class="btn" data-rs>♻️ Ripristina testate eliminate</button></div></div>
-  <div class="set"><h3>Archivio offline</h3><button class="btn d" data-cc>Svuota titoli salvati</button></div>`;
+  <div class="set"><h3>Archivio offline</h3><button class="btn d" data-clear-cache>Svuota titoli salvati</button></div>`;
 }
 function renderGuida(){
-  const p=[['☰','Menu laterale','Tocca ☰ in alto a sinistra, oppure scorri dal bordo sinistro, per aprire Home, Preferiti, Organizza, Impostazioni, Guida e Info.'],['🖼️','Anteprime o Titoli','In Home scegli Anteprime (copertine con immagine di prima pagina, due per riga) oppure Titoli (solo nome, continente e nazione). La scelta resta salvata.'],['🌍','Filtra per continente','Usa le etichette sotto lo switch per vedere solo Europa, Asia, Russia e così via.'],['☆','Salva nei preferiti','Tocca la stellina ☆ nella vista Anteprime, scegli una cartella (per esempio la nazione) o creane una nuova, poi premi Salva.'],['✏️','Modifica o elimina','In Preferiti sposta una testata in un\'altra cartella, rinomina le cartelle o eliminale. Ogni azione chiede conferma con Sì o No.'],['↕️','Organizza la home','Dal menu laterale scegli Organizza la home: usa ▲ ▼ su ogni testata per decidere l\'ordine, poi premi Fatto.'],['🌐','Apri e traduci','Il pulsante Apri testata usa il browser esterno: in Impostazioni puoi scegliere Opera per usare il traduttore.'],['↩️','Tasto indietro','Il tasto indietro del telefono ti riporta sempre alla Home, come toccare il titolo TestateMondiali in alto.'],['📶','Offline e notifiche','I titoli già visti restano disponibili senza rete. Attiva le notifiche in Impostazioni per i nuovi titoli dei preferiti.'],['🔎','Cerca e filtra','Cerca per nome. Continente e nazione sono anche nel menu laterale, dove trovi il tipo (quotidiano, sport, economia, agenzia). Il pulsante 🔄 aggiorna i titoli.'],['📚','Catalogo','Dal menu laterale scegli Catalogo testate per aggiungere testate già pronte con un tocco, oppure Aggiungi un giornale per inserirne uno a mano.']];
+  const p=[
+    ['☰','Menu laterale','Tocca ☰ in alto a sinistra.'],
+    ['🔎','Cerca nel mondo','Cerca in home + catalogo + Wikipedia.'],
+    ['✏️','Modifica','Pulsante ✏️ su ogni testata per modificarne i campi.'],
+    ['🗑️','Elimina','Pulsante 🗑️ su ogni testata con popup di conferma.'],
+    ['🏠','Torna alla Home','Tocca "TestateMondiali" in alto per tornare in Home da qualsiasi schermata.'],
+    ['📚','Catalogo','~180 testate divise per continente e nazione.'],
+    ['🌐','Wikipedia','Ricerca su Wikipedia per testate fuori catalogo.'],
+    ['➕','Aggiungi','Tocca ➕ per aggiungere una testata.'],
+    ['🌍','Sfoglia il mondo','Vista con tutte le testate del catalogo.'],
+    ['🖼️','Anteprime o Titoli','Due modalità di visualizzazione.'],
+    ['☆','Preferiti','Salva in una cartella.'],
+    ['↕️','Organizza','Ordina le testate.'],
+    ['📶','Offline','I titoli già visti restano disponibili.'],
+    ['👇','Pull-to-refresh','Trascina in cima per aggiornare.']
+  ];
   $('#v-guida').innerHTML='<div class="vh"><h2 class="serif">Guida di come funziona</h2>'+CL+'</div>'+p.map(s=>`<div class="step"><b>${s[0]}</b><div><strong>${s[1]}</strong><p>${s[2]}</p></div></div>`).join('');
 }
 function renderInfo(){
-  $('#v-info').innerHTML=`<div class="vh"><h2 class="serif">Info App Creata da Miki</h2>${CL}</div><div class="card"><div class="pv"><div class="logo">TM</div><div><h3 class="nm" style="color:#fff">TestateMondiali</h3><div style="opacity:.9">Versione <span id="app-version">${VER}</span></div></div></div><div class="cb"><p><strong>Scopo.</strong> Raccogliere in un'unica app le principali testate giornalistiche del mondo, divise per continente e nazione, con titoli aggiornati e link diretti alle fonti.</p><p><strong>Creatore.</strong> App Creata da Miki by Claude.</p><p class="ds">Funziona anche offline per i contenuti già visti. I titoli provengono dai feed pubblici delle testate; i marchi appartengono ai rispettivi editori.</p></div></div>`;
+  $('#v-info').innerHTML=`<div class="vh"><h2 class="serif">Info App Creata da Miki</h2>${CL+'</div>'}<div class="card"><div class="pv"><div class="logo">TM</div><div><h3 class="nm" style="color:#fff">TestateMondiali</h3><div style="opacity:.9">Versione ${VER}</div></div></div><div class="cb"><p><strong>Scopo.</strong> Le principali testate del mondo in un'unica app.</p><p><strong>Creatore.</strong> App Creata da Miki by Claude.</p></div></div>`;
 }
 
-/* ---------- DIALOGHI ---------- */
+/* ============================================================
+   DIALOGHI
+   ============================================================ */
 function sheet(h){$('#sh').innerHTML=h;$('#sh').classList.add('on');$('#ov').classList.add('on')}
 function chiudi(){$('#sh').classList.remove('on');$('#dr').classList.remove('on');$('#m3').classList.remove('on');$('#ov').classList.remove('on')}
-function conferma(msg,si){
-  sheet(`<h3 class="serif">${msg}</h3><div class="row"><button class="btn" id="no">No</button><button class="btn p" id="si">Sì</button></div>`);
-  $('#no').onclick=chiudi;$('#si').onclick=()=>{chiudi();si()};
+
+let azioneConferma=null;
+function conferma(msg,azione){
+  azioneConferma=azione;
+  sheet(`<h3 class="serif">${msg}</h3><div class="row" style="margin-top:1rem"><button class="btn" id="btn-no">No</button><button class="btn p" id="btn-si">Sì</button></div>`);
 }
-function scegliCartella(id){
-  const d=DATI.find(x=>x.id===id),att=F.fav[id];
-  const nomi=[...new Set([...F.cartelle,d.nazione])];
-  let sel=att!==undefined?att:d.nazione;
-  const draw=()=>{
-    sheet(`<h3 class="serif">${att!==undefined?'Modifica':'Salva'} · ${esc(d.nome)}</h3><p class="ds">Scegli la cartella:</p><div class="chips" style="flex-wrap:wrap;overflow:visible">${nomi.map(n=>`<button class="chip ${sel===n?'on':''}" data-c="${esc(n)}">📁 ${esc(n)}</button>`).join('')}<button class="chip ${sel===''?'on':''}" data-c="">Senza cartella</button></div><p class="ds">Oppure crea una nuova cartella (nazione o altro):</p><div class="row"><input type="text" id="nc" placeholder="Nome cartella" maxlength="40"><button class="btn" id="ac" style="flex:none">Crea</button></div><div class="row" style="margin-top:1rem"><button class="btn" id="an">Annulla</button><button class="btn p" id="ok">Salva</button></div>`);
-    $$('#sh [data-c]').forEach(b=>b.onclick=()=>{sel=b.dataset.c;draw()});
-    $('#ac').onclick=()=>{const v=$('#nc').value.trim();if(!v)return toast('Scrivi un nome');if(!nomi.includes(v))nomi.push(v);sel=v;draw()};
-    $('#an').onclick=chiudi;
-    $('#ok').onclick=()=>{
-      const go=()=>{if(sel&&!F.cartelle.includes(sel))F.cartelle.push(sel);F.fav[id]=sel;sv('tm_f',F);chiudi();toast('Salvato nei preferiti');refresh()};
-      att!==undefined?conferma('Salvare le modifiche?',go):go();
-    };
+
+/* ---------- MODIFICA ---------- */
+function modifica(id){
+  const d=DATI.find(x=>x.id===id);
+  if(!d){toast('Testata non trovata');return}
+  const dl=(id2,a)=>`<datalist id="${id2}">${[...new Set(a)].map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`;
+  const conti=['Europa','Nord America','America Latina','Asia','Africa e Medio Oriente','Oceania'];
+  const tipi=['Quotidiano','Sport','Economia','Agenzia'];
+  sheet(`<h3 class="serif">✏️ Modifica · ${esc(d.nome)}</h3>
+  <label class="sub" style="display:block;margin-top:.8rem">Nome</label>
+  <input type="text" id="m-nome" class="in" value="${esc(d.nome)}" maxlength="60">
+  <label class="sub" style="display:block;margin-top:.8rem">Link</label>
+  <input type="text" id="m-link" class="in" value="${esc(d.link)}" inputmode="url">
+  <label class="sub" style="display:block;margin-top:.8rem">Continente</label>
+  <input type="text" id="m-cont" class="in" list="mc" value="${esc(d.continente)}">
+  <label class="sub" style="display:block;margin-top:.8rem">Nazione</label>
+  <input type="text" id="m-naz" class="in" list="mn" value="${esc(d.nazione)}">
+  <label class="sub" style="display:block;margin-top:.8rem">Tipo</label>
+  <select id="m-tipo" class="in" style="width:100%">${tipi.map(t=>`<option ${t===d.tipo?'selected':''}>${t}</option>`).join('')}</select>
+  <label class="sub" style="display:block;margin-top:.8rem">Descrizione</label>
+  <input type="text" id="m-desc" class="in" value="${esc(d.descrizione||'')}" maxlength="180">
+  <label class="sub" style="display:block;margin-top:.8rem">RSS (facoltativo)</label>
+  <input type="text" id="m-rss" class="in" value="${esc(d.rss||'')}" inputmode="url">
+  ${dl('mc',conti)}${dl('mn',DATI.map(x=>x.nazione))}
+  <div class="save-bar">
+    <button class="btn del" data-del-in-dialog="${id}">🗑️ Elimina</button>
+    <button class="btn ok" data-save-edit="${id}">💾 Salva</button>
+  </div>
+  <div class="row" style="margin-top:.6rem"><button class="btn" data-x>Annulla</button></div>`);
+}
+function salvaModifica(id){
+  const d=DATI.find(x=>x.id===id);
+  if(!d){toast('Testata non trovata');return}
+  const nuovo={
+    nome:(document.getElementById('m-nome')?.value||'').trim(),
+    link:(document.getElementById('m-link')?.value||'').trim(),
+    continente:(document.getElementById('m-cont')?.value||'').trim(),
+    nazione:(document.getElementById('m-naz')?.value||'').trim(),
+    tipo:(document.getElementById('m-tipo')?.value||'Quotidiano'),
+    descrizione:(document.getElementById('m-desc')?.value||'').trim(),
+    rss:(document.getElementById('m-rss')?.value||'').trim()
   };
-  draw();
+  if(!nuovo.nome||!nuovo.link||!nuovo.continente||!nuovo.nazione){toast('Nome, link, continente e nazione sono obbligatori');return}
+  if(!/^https?:\/\//i.test(nuovo.link))nuovo.link='https://'+nuovo.link;
+  try{new URL(nuovo.link)}catch(e){toast('Il link non è valido');return}
+  X.edit[id]=Object.assign({},X.edit[id]||{},nuovo);
+  const ok=sv('tm_x',X);
+  if(!ok){toast('❌ Errore: memoria piena');return}
+  rebuild();
+  if(T[id]){delete T[id];sv('tm_t',T)}
+  chiudi();
+  refresh();
+  toast('✅ Modifiche salvate');
+  if(nuovo.rss)caricaTitoli();
 }
-const CAT=`Europa|Regno Unito|Quotidiano|The Times|thetimes.co.uk
-Europa|Regno Unito|Quotidiano|The Telegraph|telegraph.co.uk
-Europa|Regno Unito|Quotidiano|The Independent|independent.co.uk
-Europa|Regno Unito|Quotidiano|BBC News|bbc.com
-Europa|Regno Unito|Agenzia|Reuters|reuters.com
-Europa|Francia|Quotidiano|Le Figaro|lefigaro.fr
-Europa|Francia|Quotidiano|Libération|liberation.fr
-Europa|Francia|Economia|Les Echos|lesechos.fr
-Europa|Francia|Sport|L'Équipe|lequipe.fr
-Europa|Germania|Quotidiano|Süddeutsche Zeitung|sueddeutsche.de
-Europa|Germania|Quotidiano|Die Welt|welt.de
-Europa|Germania|Quotidiano|Der Spiegel|spiegel.de
-Europa|Germania|Economia|Handelsblatt|handelsblatt.com
-Europa|Spagna|Quotidiano|El Mundo|elmundo.es
-Europa|Spagna|Quotidiano|ABC|abc.es
-Europa|Spagna|Quotidiano|La Vanguardia|lavanguardia.com
-Europa|Spagna|Sport|Marca|marca.com
-Europa|Italia|Economia|Il Sole 24 Ore|ilsole24ore.com
-Europa|Italia|Quotidiano|La Stampa|lastampa.it
-Europa|Italia|Quotidiano|Il Messaggero|ilmessaggero.it
-Europa|Italia|Quotidiano|Il Giornale|ilgiornale.it
-Europa|Italia|Quotidiano|Avvenire|avvenire.it
-Europa|Italia|Agenzia|ANSA|ansa.it
-Europa|Italia|Sport|La Gazzetta dello Sport|gazzetta.it
-Europa|Italia|Sport|Corriere dello Sport|corrieredellosport.it
-Europa|Svizzera|Quotidiano|Neue Zürcher Zeitung|nzz.ch
-Europa|Svizzera|Quotidiano|Le Temps|letemps.ch
-Europa|Svizzera|Quotidiano|Corriere del Ticino|cdt.ch
-Europa|Grecia|Quotidiano|Kathimerini|ekathimerini.com
-Europa|Portogallo|Quotidiano|Público|publico.pt
-Europa|Portogallo|Quotidiano|Diário de Notícias|dn.pt
-Europa|Belgio|Quotidiano|Le Soir|lesoir.be
-Europa|Belgio|Quotidiano|De Standaard|standaard.be
-Europa|Irlanda|Quotidiano|The Irish Times|irishtimes.com
-Europa|Polonia|Quotidiano|Gazeta Wyborcza|wyborcza.pl
-Europa|Polonia|Quotidiano|Rzeczpospolita|rp.pl
-Europa|Olanda|Quotidiano|de Volkskrant|volkskrant.nl
-Europa|Olanda|Quotidiano|NRC|nrc.nl
-Europa|Austria|Quotidiano|Der Standard|derstandard.at
-Europa|Turchia|Quotidiano|Hürriyet Daily News|hurriyetdailynews.com
-Europa|Turchia|Quotidiano|Daily Sabah|dailysabah.com
-Europa|Ucraina|Quotidiano|The Kyiv Independent|kyivindependent.com
-Europa|Ucraina|Quotidiano|Ukrainska Pravda|pravda.com.ua
-Europa|Svezia|Quotidiano|Dagens Nyheter|dn.se
-Europa|Norvegia|Quotidiano|Aftenposten|aftenposten.no
-Europa|Danimarca|Quotidiano|Politiken|politiken.dk
-Europa|Finlandia|Quotidiano|Helsingin Sanomat|hs.fi
-Nord America|USA|Economia|Bloomberg|bloomberg.com
-Nord America|USA|Agenzia|Associated Press|apnews.com
-Nord America|USA|Quotidiano|USA Today|usatoday.com
-Nord America|USA|Quotidiano|Los Angeles Times|latimes.com
-Asia|Giappone|Quotidiano|The Japan Times|japantimes.co.jp
-Asia|India|Quotidiano|The Hindu|thehindu.com
-Africa e Medio Oriente|Israele|Quotidiano|Haaretz|haaretz.com`.split('\n');
-const host=l=>{try{return new URL(l).hostname.replace(/^www\./,'')}catch(e){return''}};
+
+/* ---------- ELIMINA ---------- */
+function elimina(id){
+  const d=DATI.find(x=>x.id===id);
+  if(!d){toast('Testata non trovata');return}
+  conferma('🗑️ Eliminare «'+esc(d.nome)+'»?<br><span class="ds" style="font-weight:400">La testata verrà rimossa. Potrai ripristinarla da Impostazioni → "Ripristina testate eliminate".</span>',()=>{
+    if(X.add.some(a=>a.id===id))X.add=X.add.filter(a=>a.id!==id);
+    else if(!X.del.includes(id))X.del.push(id);
+    delete F.fav[id];
+    S.ordine=S.ordine.filter(i=>i!==id);
+    delete X.edit[id];
+    sv('tm_x',X);sv('tm_f',F);sv('tm_s',S);
+    rebuild();
+    chiudi();
+    refresh();
+    toast('🗑️ '+d.nome+' eliminato');
+  });
+}
+
+/* ---------- AGGIUNGI ---------- */
 function salva(d,top){
   X.add.push(d);sv('tm_x',X);rebuild();
   if(top)S.ordine=[d.id,...ordinati().map(x=>x.id).filter(i=>i!==d.id)];
-  S.filtro='Tutti';S.naz='Tutti';S.tipo='Tutti';sv('tm_s',S);Q='';show('home');toast('Giornale aggiunto');
+  sv('tm_s',S);Q='';CF={cont:'Tutti',naz:'Tutti'};sv('tm_cf',CF);
+  show('home');toast('✅ '+d.nome+' aggiunto');
 }
-function aggiungi(){
-  const dl=(id,a)=>`<datalist id="${id}">${[...new Set(a)].map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`;
-  sheet(`<h3 class="serif">Aggiungi un giornale</h3>
-  <button class="btn p" id="cat" style="width:100%;margin-bottom:.8rem">📚 Scegli dal catalogo</button>
-  <p class="ds">Oppure inseriscilo a mano:</p>
-  <input type="text" id="a1" class="in" placeholder="Nome del giornale" maxlength="60">
-  <input type="text" id="a2" class="in" placeholder="Link (https://…)" inputmode="url" style="margin-top:.5rem">
-  <input type="text" id="a3" class="in" list="d3" placeholder="Continente (scegli o scrivi)" style="margin-top:.5rem">
-  <input type="text" id="a4" class="in" list="d4" placeholder="Nazione" style="margin-top:.5rem">
-  <select id="a6" class="in" style="width:100%;margin-top:.5rem" aria-label="Tipo"><option>Quotidiano</option><option>Sport</option><option>Economia</option><option>Agenzia</option></select>
-  <input type="text" id="a5" class="in" placeholder="Breve descrizione (facoltativa)" maxlength="160" style="margin-top:.5rem">
-  ${dl('d3',DATI.map(d=>d.continente))}${dl('d4',DATI.map(d=>d.nazione))}
-  <div class="row" style="margin-top:1rem"><button class="btn" id="an">Annulla</button><button class="btn p" id="ok">Aggiungi</button></div>`);
-  $('#an').onclick=chiudi;$('#cat').onclick=catalogo;
-  $('#ok').onclick=()=>{
-    const n=$('#a1').value.trim();let l=$('#a2').value.trim();const c=$('#a3').value.trim(),z=$('#a4').value.trim(),ds=$('#a5').value.trim(),tp=$('#a6').value;
-    if(!n||!l||!c||!z)return toast('Compila nome, link, continente e nazione');
+function aggiungi(pre){
+  pre=pre||{};
+  const dl=(id2,a)=>`<datalist id="${id2}">${[...new Set(a)].map(x=>`<option value="${esc(x)}">`).join('')}</datalist>`;
+  sheet(`<h3 class="serif">➕ Aggiungi un giornale</h3>
+  <button class="btn p" id="btn-cat" style="width:100%;margin-bottom:.8rem">📚 Scegli dal catalogo</button>
+  <button class="btn" id="btn-mondo" style="width:100%;margin-bottom:.8rem">🌍 Sfoglia il mondo</button>
+  <input type="text" id="a-nome" class="in" placeholder="Nome del giornale" maxlength="60" value="${esc(pre.nome||'')}" style="margin-top:.5rem">
+  <input type="text" id="a-link" class="in" placeholder="Link (https://…)" inputmode="url" style="margin-top:.5rem" value="${esc(pre.link||'')}">
+  <input type="text" id="a-cont" class="in" list="d3" placeholder="Continente" style="margin-top:.5rem" value="${esc(pre.continente||'')}">
+  <input type="text" id="a-naz" class="in" list="d4" placeholder="Nazione" style="margin-top:.5rem" value="${esc(pre.nazione||'')}">
+  <select id="a-tipo" class="in" style="width:100%;margin-top:.5rem"><option>Quotidiano</option><option>Sport</option><option>Economia</option><option>Agenzia</option></select>
+  <input type="text" id="a-desc" class="in" placeholder="Descrizione (facoltativa)" maxlength="160" style="margin-top:.5rem" value="${esc(pre.descrizione||'')}">
+  <input type="text" id="a-rss" class="in" placeholder="RSS (facoltativo)" inputmode="url" style="margin-top:.5rem" value="${esc(pre.rss||'')}">
+  ${dl('d3',['Europa','Nord America','America Latina','Asia','Africa e Medio Oriente','Oceania'])}
+  ${dl('d4',DATI.map(d=>d.nazione))}
+  <div class="save-bar">
+    <button class="btn ok" id="btn-add-ok">➕ Aggiungi</button>
+  </div>
+  <div class="row" style="margin-top:.6rem"><button class="btn" data-x>Annulla</button></div>`);
+  document.getElementById('btn-cat').onclick=()=>{chiudi();catalogo()};
+  document.getElementById('btn-mondo').onclick=()=>{chiudi();show('mondo')};
+  document.getElementById('btn-add-ok').onclick=()=>{
+    const n=(document.getElementById('a-nome')?.value||'').trim();
+    let l=(document.getElementById('a-link')?.value||'').trim();
+    const c=(document.getElementById('a-cont')?.value||'').trim();
+    const z=(document.getElementById('a-naz')?.value||'').trim();
+    const ds=(document.getElementById('a-desc')?.value||'').trim();
+    const tp=(document.getElementById('a-tipo')?.value||'Quotidiano');
+    const rss=(document.getElementById('a-rss')?.value||'').trim();
+    if(!n||!l||!c||!z){toast('Compila nome, link, continente e nazione');return}
     if(!/^https?:\/\//i.test(l))l='https://'+l;
-    let u;try{u=new URL(l)}catch(e){return toast('Il link non è valido')}
-    conferma('Aggiungere «'+esc(n)+'» alla home?',()=>salva({...N('c'+Date.now(),n,u.hostname,c,z,ds||'Testata aggiunta da te.','',l),tipo:tp},true));
+    let u;try{u=new URL(l)}catch(e){toast('Il link non è valido');return}
+    salva({...N('c'+Date.now(),n,u.hostname,c,z,ds||'Testata aggiunta da te.',rss,l),tipo:tp},true);
   };
 }
 function catalogo(){
   const have=new Set(DATI.map(d=>host(d.link)));
-  const l=CAT.map(r=>r.split('|')).filter(r=>!have.has(r[4])).sort((a,b)=>(a[0]+a[1]).localeCompare(b[0]+b[1]));
-  let h='<div class="vh"><h3 class="serif" style="margin:0;flex:1">Catalogo testate</h3><button class="cl" id="cx">✕ Chiudi</button></div>';
+  const l=CAT.filter(r=>r.length===5&&!have.has(r[4])).sort((a,b)=>(a[0]+'|'+a[1]).localeCompare(b[0]+'|'+b[1]));
+  let h='<div class="vh"><h3 class="serif" style="margin:0;flex:1">Catalogo testate</h3>'+CLS+'</div>';
   if(!l.length)h+='<p class="ds">Hai già aggiunto tutte le testate del catalogo.</p>';
-  let last='';
-  l.forEach((r,i)=>{if(r[1]!==last){last=r[1];h+=`<div class="fh"><h3 class="serif">${esc(r[1])}</h3></div>`}h+=`<div class="lt"><div class="x"><strong>${esc(r[3])}</strong><div class="sub">${esc(r[0])} · ${esc(r[2])}</div></div><button class="btn p" data-ct="${i}" style="flex:none" aria-label="Aggiungi">➕</button></div>`});
+  let lastC='',lastN='';
+  l.forEach(r=>{
+    if(r[0]!==lastC){lastC=r[0];lastN='';h+=`<div class="dsep" style="border-radius:12px">${esc(r[0])}</div>`}
+    if(r[1]!==lastN){lastN=r[1];h+=`<div class="fh" style="margin:.6rem 0 .3rem"><h3 class="serif" style="font-size:.95rem">📍 ${esc(r[1])}</h3></div>`}
+    const idx=CAT.indexOf(r);
+    h+=`<div class="lt" style="padding:.6rem .9rem"><div class="x"><strong>${esc(r[3])}</strong><div class="sub">${esc(r[2])}</div></div><button class="btn p" data-ct="${idx}" style="flex:none">➕</button></div>`;
+  });
   sheet(h);
-  $('#cx').onclick=chiudi;
-  $$('#sh [data-ct]').forEach(b=>b.onclick=()=>{const r=l[+b.dataset.ct];conferma('Aggiungere «'+esc(r[3])+'» alla home?',()=>salva({...N('k_'+r[4],r[3],r[4],r[0],r[1],'Testata aggiunta dal catalogo.',''),tipo:r[2]}))});
 }
 function nuovaCartella(){
-  sheet(`<h3 class="serif">Nuova cartella</h3><input type="text" id="nc" placeholder="Es. Italia" maxlength="40"><div class="row" style="margin-top:1rem"><button class="btn" id="an">Annulla</button><button class="btn p" id="ok">Crea</button></div>`);
-  $('#an').onclick=chiudi;$('#ok').onclick=()=>{const v=$('#nc').value.trim();if(!v)return toast('Scrivi un nome');if(!F.cartelle.includes(v))F.cartelle.push(v);sv('tm_f',F);chiudi();renderPref()};
+  sheet(`<h3 class="serif">Nuova cartella</h3><input type="text" id="nc" placeholder="Es. Italia" maxlength="40"><div class="save-bar"><button class="btn ok" id="btn-nc-ok">Crea</button></div><div class="row" style="margin-top:.6rem"><button class="btn" data-x>Annulla</button></div>`);
+  document.getElementById('btn-nc-ok').onclick=()=>{
+    const v=(document.getElementById('nc')?.value||'').trim();
+    if(!v){toast('Scrivi un nome');return}
+    if(!F.cartelle.includes(v))F.cartelle.push(v);
+    sv('tm_f',F);chiudi();renderPref();
+  };
 }
 function rinomina(c){
-  sheet(`<h3 class="serif">Rinomina cartella</h3><input type="text" id="nc" value="${esc(c)}" maxlength="40"><div class="row" style="margin-top:1rem"><button class="btn" id="an">Annulla</button><button class="btn p" id="ok">Salva</button></div>`);
-  $('#an').onclick=chiudi;
-  $('#ok').onclick=()=>{const v=$('#nc').value.trim();if(!v)return toast('Scrivi un nome');
-    conferma('Rinominare la cartella?',()=>{F.cartelle=[...new Set(F.cartelle.map(x=>x===c?v:x))];if(!F.cartelle.includes(v))F.cartelle.push(v);Object.keys(F.fav).forEach(k=>{if(F.fav[k]===c)F.fav[k]=v});sv('tm_f',F);renderPref()})};
+  sheet(`<h3 class="serif">Rinomina cartella</h3><input type="text" id="nc" value="${esc(c)}" maxlength="40"><div class="save-bar"><button class="btn ok" id="btn-rn-ok">Salva</button></div><div class="row" style="margin-top:.6rem"><button class="btn" data-x>Annulla</button></div>`);
+  document.getElementById('btn-rn-ok').onclick=()=>{
+    const v=(document.getElementById('nc')?.value||'').trim();
+    if(!v){toast('Scrivi un nome');return}
+    F.cartelle=[...new Set(F.cartelle.map(x=>x===c?v:x))];
+    if(!F.cartelle.includes(v))F.cartelle.push(v);
+    Object.keys(F.fav).forEach(k=>{if(F.fav[k]===c)F.fav[k]=v});
+    sv('tm_f',F);chiudi();renderPref();toast('Cartella rinominata');
+  };
+}
+function scegliCartella(id){
+  const d=DATI.find(x=>x.id===id);
+  const att=F.fav[id];
+  const nomi=[...new Set([...F.cartelle,d.nazione])];
+  let sel=att!==undefined?att:d.nazione;
+  const draw=()=>{
+    sheet(`<h3 class="serif">${att!==undefined?'Modifica':'Salva'} · ${esc(d.nome)}</h3><p class="ds">Scegli la cartella:</p><div class="chips" style="flex-wrap:wrap;overflow:visible">${nomi.map(n=>`<button class="chip ${sel===n?'on':''}" data-sc="${esc(n)}">📁 ${esc(n)}</button>`).join('')}<button class="chip ${sel===''?'on':''}" data-sc="">Senza cartella</button></div><div class="save-bar"><button class="btn ok" id="btn-sc-ok">💾 Salva</button></div><div class="row" style="margin-top:.6rem"><button class="btn" data-x>Annulla</button></div>`);
+    document.querySelectorAll('#sh [data-sc]').forEach(b=>b.onclick=()=>{sel=b.dataset.sc;draw()});
+    document.getElementById('btn-sc-ok').onclick=()=>{
+      if(sel&&!F.cartelle.includes(sel))F.cartelle.push(sel);
+      F.fav[id]=sel;sv('tm_f',F);
+      chiudi();refresh();toast('⭐ Salvato nei preferiti');
+    };
+  };
+  draw();
 }
 
 /* ---------- NAVIGAZIONE ---------- */
-const TIT={home:'TestateMondiali',pref:'Preferiti',org:'Organizza',imp:'Impostazioni',guida:'Guida',info:'Info'};
+const TIT={home:'TestateMondiali',pref:'Preferiti',mondo:'Sfoglia il mondo',imp:'Impostazioni',guida:'Guida',info:'Info'};
 function show(v){
   view=v;orgMode=false;chiudi();
+  if(v!=='home'){CF={cont:'Tutti',naz:'Tutti'};sv('tm_cf',CF)}
   $$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
-  $('#tt').textContent=TIT[v];
-  ({home:renderHome,pref:renderPref,org:renderOrg,imp:renderImp,guida:renderGuida,info:renderInfo})[v]();
+  $('#tt').textContent=TIT[v]||'TestateMondiali';
+  ({home:renderHome,pref:renderPref,mondo:renderMondo,imp:renderImp,guida:renderGuida,info:renderInfo})[v]();
   scrollTo(0,0);
 }
-const refresh=()=>show(view);
+function refresh(){
+  ({home:renderHome,pref:renderPref,mondo:renderMondo,imp:renderImp,guida:renderGuida,info:renderInfo})[view]();
+}
 history.replaceState({r:1},'');history.pushState({t:1},'');
 addEventListener('popstate',()=>{show('home');history.pushState({t:1},'')});
 
-/* ---------- EVENTI ---------- */
+function apriMenu(){
+  const m=$('#m3'),b=$('#b3');
+  if(m.classList.contains('on')){m.classList.remove('on');$('#ov').classList.remove('on');return}
+  const r=b.getBoundingClientRect();
+  m.style.top=(r.bottom+8)+'px';
+  m.style.right=Math.max(8,window.innerWidth-r.right)+'px';
+  m.classList.add('on');$('#ov').classList.add('on');
+}
+function muovi(id,m){
+  const ids=ordinati().map(d=>d.id);
+  if(m==='top'){ids.splice(ids.indexOf(id),1);ids.unshift(id)}
+  else{
+    const pool=ids.filter(i=>{
+      const d=DATI.find(x=>x.id===i);
+      if(orgMode)return true;
+      return visibile(d)&&(!Q.trim()||norm(d.nome+' '+d.nazione+' '+d.continente+' '+d.tipo).includes(norm(Q.trim())));
+    });
+    const idx=pool.indexOf(id);if(idx<0)return;
+    const n=pool[idx+m];if(!n)return toast(m<0?'È già in cima':'È già in fondo');
+    const a=ids.indexOf(id),b=ids.indexOf(n);[ids[a],ids[b]]=[ids[b],ids[a]];
+  }
+  S.ordine=ids;sv('tm_s',S);
+  if(view==='home')renderHome();
+  requestAnimationFrame(()=>{const el=document.querySelector('[data-id="'+id+'"]');if(el)el.scrollIntoView({block:'center'})});
+}
+function ordinaAlfabetico(){
+  const ids=[...ordinati()].sort((a,b)=>a.nome.localeCompare(b.nome,'it')).map(d=>d.id);
+  S.ordine=ids;sv('tm_s',S);renderHome();toast('Ordinamento alfabetico applicato');
+}
+let debTimer=null;
+function debounceRicerca(){if(debTimer)clearTimeout(debTimer);debTimer=setTimeout(()=>renderRicercaCatalogo(),500)}
+
+/* ============================================================
+   CLICK HANDLER GLOBALE
+   ============================================================ */
 document.addEventListener('click',e=>{
+  // Bottoni No/Sì del dialog di conferma
+  if(e.target.id==='btn-no'){chiudi();azioneConferma=null;return}
+  if(e.target.id==='btn-si'){
+    const az=azioneConferma;
+    azioneConferma=null;
+    if(az)az();
+    return;
+  }
+
   const t=e.target.closest('button,a,[data-o]');
   if(!t)return;
   const D=t.dataset;
   if(t.tagName==='A')e.preventDefault();
   if(t.id==='bm'){$('#dr').classList.add('on');$('#ov').classList.add('on');return}
-  if(t.id==='b3'){const o=$('#m3').classList.toggle('on');$('#ov').classList.toggle('on',o);return}
+  if(t.id==='b3'){apriMenu();return}
   if(t.id==='ov')return;
-  if(D.v==='org'){show('home');orgMode=true;return renderHome()}
-  if(D.v)return show(D.v);
-  if('om' in D){orgMode=!orgMode;return renderHome()}
+
+  // CHIUDI / TORNA ALLA HOME (priorità alta, prima di tutto il resto)
+  if('home' in D){e.stopPropagation();return show('home')}
+  if('x' in D){e.stopPropagation();return chiudi()}
+
+  // MODIFICA
+  if(D.edit!==undefined){e.stopPropagation();return modifica(D.edit)}
+  if(D.saveEdit!==undefined){e.stopPropagation();return salvaModifica(D.saveEdit)}
+  if(D.delInDialog!==undefined){e.stopPropagation();const id=D.delInDialog;chiudi();setTimeout(()=>elimina(id),150);return}
+
+  // AZIONI
   if(D.pin)return muovi(D.pin,-1);
   if(D.pdn)return muovi(D.pdn,1);
-  if('add' in D)return aggiungi();
-  if(D.rm){const d=DATI.find(x=>x.id===D.rm);return conferma('Eliminare «'+esc(d.nome)+'» dall\'app?',()=>{
-    if(X.add.some(a=>a.id===d.id))X.add=X.add.filter(a=>a.id!==d.id);else X.del.push(d.id);
-    delete F.fav[d.id];S.ordine=S.ordine.filter(i=>i!==d.id);sv('tm_x',X);sv('tm_f',F);sv('tm_s',S);rebuild();renderHome();toast('Giornale eliminato')})}
-  if('rs' in D)return conferma('Ripristinare le testate eliminate?',()=>{X.del=[];sv('tm_x',X);rebuild();toast('Testate ripristinate')});
+  if(D.up)return muovi(D.up,-1);
+  if(D.dn)return muovi(D.dn,1);
+  if(D.top)return muovi(D.top,'top');
+  if(D.rm){e.stopPropagation();return elimina(D.rm)}
+  if(D.rem!==undefined){e.stopPropagation();return elimina(D.rem)}
+  if(D.s)return scegliCartella(D.s);
+  if(D.ed)return scegliCartella(D.ed);
+
+  // NAVIGAZIONE
+  if(D.v==='org'){view='home';orgMode=true;chiudi();
+    $$('.view').forEach(el=>el.classList.toggle('on',el.id==='v-home'));
+    $('#tt').textContent='Organizza';renderHome();scrollTo(0,0);return}
+  if(D.v)return show(D.v);
+  if('om' in D){orgMode=false;return renderHome()}
+
+  // FILTRI CATALOGO
+  if(D.cc!==undefined){CF.cont=D.cc;CF.naz='Tutti';sv('tm_cf',CF);renderRicercaCatalogo();return}
+  if(D.cn!==undefined){CF.naz=D.cn;sv('tm_cf',CF);renderRicercaCatalogo();return}
+  if('creset' in D){CF={cont:'Tutti',naz:'Tutti'};sv('tm_cf',CF);renderRicercaCatalogo();return}
+
+  // AGGIUNTA DAL CATALOGO
+  if(D.ct!==undefined){
+    const r=CAT[+D.ct];
+    if(!r||r.length!==5)return;
+    salva({...N('k_'+r[4],r[3],r[4],r[0],r[1],'Testata aggiunta dal catalogo.',''),tipo:r[2]});
+    return;
+  }
+  if(D.wk!==undefined){
+    const w=window.__wikiStore&&window.__wikiStore[D.wk];
+    if(!w)return;
+    const slug=w.dominio||'';
+    aggiungi({nome:w.titolo,link:slug?'https://'+slug:'',continente:w.continente||'',nazione:w.nazione||'',descrizione:w.descrizione||''});
+    return;
+  }
+  if(D.manual!==undefined){
+    const testo=D.manual;
+    const slug=norm(testo).replace(/[^a-z0-9]/g,'').slice(0,30);
+    aggiungi({nome:testo,link:slug.length>=3?'https://'+slug+'.com':''});
+    return;
+  }
+
+  // ALTRE AZIONI
+  if('add' in D){chiudi();return aggiungi()}
+  if('rs' in D)return conferma('Ripristinare le testate eliminate?',()=>{X.del=[];sv('tm_x',X);rebuild();refresh();toast('Testate ripristinate')});
   if(D.a){chiudi();
-    if(D.a==='inst'){if(deferred){deferred.prompt();deferred=null}else toast('Dal menu del browser scegli “Aggiungi a schermata Home”')}
+    if(D.a==='inst'){if(deferred){deferred.prompt();deferred=null}else toast('Dal menu del browser scegli "Aggiungi a schermata Home"')}
     else if(D.a==='tema'){S.tema=eff()==='chiaro'?'scuro':'chiaro';sv('tm_s',S);applica();if(view==='imp')renderImp()}
     else show(D.a);return}
   if(D.vi){S.vista=D.vi;sv('tm_s',S);return renderHome()}
   if(D.f){S.filtro=D.f;S.naz='Tutti';sv('tm_s',S);return rh()}
   if(D.z){S.naz=D.z;sv('tm_s',S);return rh()}
-  if(D.col){S.col=+D.col;sv('tm_s',S);return renderHome()}
   if(D.ty){S.tipo=D.ty;sv('tm_s',S);return rh()}
-  if('ad' in D){chiudi();return aggiungi()}
   if('cg' in D){chiudi();return catalogo()}
   if('ag' in D){toast('Aggiornamento in corso…');Object.values(T).forEach(x=>x.ts=0);return caricaTitoli().then(()=>toast('Titoli aggiornati'))}
   if(D.o)return apri(DATI.find(d=>d.id===D.o).link);
-  if(D.s)return scegliCartella(D.s);
-  if(D.ed)return scegliCartella(D.ed);
-  if(D.del)return conferma('Eliminare questa testata dai preferiti?',()=>{delete F.fav[D.del];sv('tm_f',F);renderPref()});
+  if(D.del)return conferma('Rimuovere dai preferiti?',()=>{delete F.fav[D.del];sv('tm_f',F);refresh()});
   if('nc' in D)return nuovaCartella();
   if(D.rc)return rinomina(D.rc);
-  if(D.dc)return conferma('Eliminare la cartella? Le testate resteranno nei preferiti, senza cartella.',()=>{F.cartelle=F.cartelle.filter(x=>x!==D.dc);Object.keys(F.fav).forEach(k=>{if(F.fav[k]===D.dc)F.fav[k]=''});sv('tm_f',F);renderPref()});
-  if(D.up)return muovi(D.up,-1);
-  if(D.dn)return muovi(D.dn,1);
-  if(D.top)return muovi(D.top,'top');
-  if('ro' in D)return conferma('Ripristinare l\'ordine originale?',()=>{S.ordine=[];sv('tm_s',S);renderOrg()});
+  if(D.dc)return conferma('Eliminare la cartella? Le testate resteranno nei preferiti, senza cartella.',()=>{
+    F.cartelle=F.cartelle.filter(x=>x!==D.dc);
+    Object.keys(F.fav).forEach(k=>{if(F.fav[k]===D.dc)F.fav[k]=''});
+    sv('tm_f',F);refresh();
+  });
+  if('alf' in D)return ordinaAlfabetico();
+  if('ro' in D)return conferma('Ripristinare l\'ordine originale?',()=>{S.ordine=[];sv('tm_s',S);renderHome()});
   if(D.g){S.grad=D.g;sv('tm_s',S);applica();return renderImp()}
   if(D.t){S.tema=D.t;sv('tm_s',S);applica();return renderImp()}
   if(D.fs){S.font=+D.fs;sv('tm_s',S);applica();return renderImp()}
   if('an' in D){S.anim=!S.anim;sv('tm_s',S);applica();return renderImp()}
-  if('x' in D)return show('home');
   if(D.b){S.browser=D.b;sv('tm_s',S);return renderImp()}
   if(D.n!==undefined){
-    if(D.n==='1'){if(!('Notification' in window))return toast('Notifiche non supportate');
-      Notification.requestPermission().then(p=>{S.notif=p==='granted';sv('tm_s',S);renderImp();if(!S.notif)toast('Permesso negato dal browser')})}
-    else{S.notif=false;sv('tm_s',S);renderImp()}return}
-  if('cc' in D)return conferma('Svuotare i titoli salvati?',()=>{T={};sv('tm_t',T);toast('Archivio svuotato')});
+    if(D.n==='1'){
+      if(!('Notification' in window))return toast('Notifiche non supportate');
+      Notification.requestPermission().then(p=>{S.notif=p==='granted';sv('tm_s',S);renderImp();toast(p==='granted'?'Notifiche attivate':'Permesso non concesso')});
+      return;
+    }else{S.notif=false;sv('tm_s',S);renderImp();return}
+  }
+  if('clearCache' in D)return conferma('Svuotare i titoli salvati?',()=>{T={};sv('tm_t',T);toast('Archivio svuotato')});
   if(t.id==='ex'){const b=new Blob([JSON.stringify({app:'TestateMondiali',v:VER,S,F,X},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='TestateMondiali-dati.json';a.click();return toast('Dati esportati')}
   if(t.id==='im')return $('#fi').click();
 });
 $('#ov').onclick=chiudi;
-document.addEventListener('keydown',e=>{if((e.key==='Enter')&&e.target.dataset.o)apri(DATI.find(d=>d.id===e.target.dataset.o).link)});
 document.addEventListener('change',e=>{if(e.target.id==='ty'){S.tipo=e.target.value;sv('tm_s',S);renderHome()}});
-document.addEventListener('input',e=>{if(e.target.id==='q'){Q=e.target.value;applicaQ()}if(e.target.id==='fr'){S.font=+e.target.value;sv('tm_s',S);applica()}});
+document.addEventListener('input',e=>{
+  if(e.target.id==='q'){Q=e.target.value;applicaQ();debounceRicerca()}
+});
+
+/* ---------- IMPORT ---------- */
 $('#fi').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=()=>{try{const j=JSON.parse(r.result);if(j.app!=='TestateMondiali')throw 0;
-    conferma('Importare i dati? Quelli attuali verranno sostituiti.',()=>{Object.assign(S,j.S||{});F=Object.assign({cartelle:[],fav:{}},j.F||{});X=Object.assign({add:[],del:[]},j.X||{});sv('tm_x',X);rebuild();sv('tm_s',S);sv('tm_f',F);applica();show('imp');toast('Dati importati')})}
-    catch(x){toast('File non valido')}};
+  r.onload=()=>{
+    try{
+      const j=JSON.parse(r.result);
+      if(j.app!=='TestateMondiali')throw new Error('app-mismatch');
+      const Sdef={vista:'anteprime',tema:'chiaro',grad:'tramonto',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti',naz:'Tutti',tipo:'Tutti',col:1};
+      const Snew=Object.assign({},Sdef);
+      Object.keys(Sdef).forEach(k=>{if(j.S&&k in j.S){const v=j.S[k];if(k==='font'&&typeof v==='number'&&v>=80&&v<=150)Snew[k]=v;else if(k==='ordine'&&Array.isArray(v))Snew[k]=v.filter(x=>typeof x==='string');else if(k==='tema'&&['auto','chiaro','scuro'].includes(v))Snew[k]=v;else if(k==='grad'&&GRAD[v])Snew[k]=v;else if(typeof Sdef[k]===typeof v)Snew[k]=v}});
+      const Fnew={cartelle:Array.isArray(j.F?.cartelle)?j.F.cartelle.filter(x=>typeof x==='string'):[],fav:(j.F&&typeof j.F.fav==='object'&&j.F.fav)?j.F.fav:{}};
+      const Xnew={add:Array.isArray(j.X?.add)?j.X.add.filter(d=>d&&d.id&&d.nome):[],del:Array.isArray(j.X?.del)?j.X.del.filter(x=>typeof x==='string'):[],edit:(j.X&&typeof j.X.edit==='object'&&j.X.edit)?j.X.edit:{}};
+      conferma('Importare i dati? Quelli attuali verranno sostituiti.',()=>{
+        S=Snew;F=Fnew;X=Xnew;sv('tm_s',S);sv('tm_f',F);sv('tm_x',X);rebuild();applica();show('imp');toast('Dati importati');
+      });
+    }catch(x){toast('File non valido o corrotto')}
+  };
   r.readAsText(f);e.target.value='';
 };
+
+/* ---------- PWA / SW ---------- */
 addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferred=e});
 if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
-$('#tt').onclick=()=>show('home');$('#tt').onkeydown=e=>{if(e.key==='Enter')show('home')};
+
+/* ---------- PULL TO REFRESH ---------- */
+(function(){
+  let sy=0,pulling=false;
+  addEventListener('touchstart',e=>{if(scrollY===0&&e.touches.length===1){sy=e.touches[0].clientY;pulling=true}},{passive:true});
+  addEventListener('touchend',e=>{
+    if(!pulling)return;pulling=false;
+    const dy=(e.changedTouches[0]?.clientY||0)-sy;
+    if(dy>80&&scrollY===0&&view==='home'){toast('Aggiornamento…');Object.values(T).forEach(x=>x.ts=0);caricaTitoli().then(()=>toast('Titoli aggiornati'))}
+  });
+})();
+
+/* ---------- ONLINE/OFFLINE ---------- */
+addEventListener('online',()=>{toast('Connessione ripristinata');caricaTitoli()});
+addEventListener('offline',()=>{toast('Sei offline');if(view==='home')renderHome()});
+
+$('#tt').onclick=()=>{chiudi();azioneConferma=null;show('home')};
+$('#tt').onkeydown=e=>{if(e.key==='Enter'){chiudi();azioneConferma=null;show('home')}};
+addEventListener('resize',()=>{if($('#m3').classList.contains('on'))apriMenu()});
+
 applica();show('home');caricaTitoli();
 </script>
 </body>
