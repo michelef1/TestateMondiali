@@ -1,4 +1,4 @@
-const CACHE='testatemondiali-v15';
+const CACHE='testatemondiali-v16';
 const CACHE_IMG='testatemondiali-img-v15';
 const SHELL=[
   './',
