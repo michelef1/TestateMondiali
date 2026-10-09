@@ -354,7 +354,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.21';
+const VER='1.22';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -1308,7 +1308,9 @@ document.addEventListener('click',e=>{
   }
 
   // ALTRE AZIONI
-  if('add' in D){chiudi();return aggiungi()}
+  // Il link del menu usa data-ad, quindi dataset.ad (non dataset.add).
+  // Manteniamo anche il vecchio alias data-add per compatibilità.
+  if('ad' in D || 'add' in D){e.stopPropagation();chiudi();return aggiungi()}
   if('rs' in D)return conferma('Ripristinare le testate eliminate?',()=>{X.del=[];sv('tm_x',X);rebuild();refresh();toast('Testate ripristinate')});
   if(D.a){chiudi();
     if(D.a==='inst'){if(deferred){deferred.prompt();deferred=null}else toast('Dal menu del browser scegli "Aggiungi a schermata Home"')}
