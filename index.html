@@ -216,6 +216,10 @@ input.in{width:100%}
 .newsbtn{display:flex;align-items:center;gap:.6rem;width:100%;padding:.85rem 1rem;border-radius:16px;background:linear-gradient(135deg,#d7263d,#ff5a5f);color:#fff;font-weight:800;font-size:1.05rem;margin:.1rem 0 .7rem;box-shadow:0 4px 14px rgba(215,38,61,.35)}
 .newsbtn span:last-child{margin-left:auto;font-size:1.4rem}
 .nor{font-size:.82rem;color:var(--mu);font-style:italic;line-height:1.3}
+.dsep,.dfl h4{background:#1f2230;color:#ffd54a;font-weight:700}
+#fab{position:fixed;right:1rem;bottom:calc(env(safe-area-inset-bottom) + 1rem);width:58px;height:58px;border-radius:50%;background:#1e88e5;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(30,136,229,.55);z-index:30}
+#fab:active{background:#1565c0;transform:scale(.95)}
+#v-home{padding-bottom:4rem}
 </style>
 </head>
 <body>
@@ -354,7 +358,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.22';
+const VER='1.23';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -805,7 +809,7 @@ function renderHome(){
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
   h+=gr?'<div class="grid">'+cards+'</div>':cards;
   h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata in home. Prova a cercare nel mondo qui sopra 👆</div>';
-  $('#v-home').innerHTML=h;
+  h+='<button id="fab" data-ad aria-label="Aggiungi un giornale"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/></svg></button>';$('#v-home').innerHTML=h;
   applicaQ();renderDr();renderRicercaCatalogo();
   requestAnimationFrame(()=>{const on=$('#v-home .chip.on');if(on)on.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})});
 }
@@ -993,7 +997,7 @@ function renderGuida(){
     ['🏠','Torna alla Home','Tocca "TestateMondiali" in alto per tornare in Home da qualsiasi schermata.'],
     ['📚','Catalogo','~180 testate divise per continente e nazione.'],
     ['🌐','Wikipedia','Ricerca su Wikipedia per testate fuori catalogo.'],
-    ['➕','Aggiungi','Tocca ➕ per aggiungere una testata.'],
+    ['➕','Aggiungi un giornale','Tocca il pulsante blu ➕ in basso a destra nella home, oppure la voce nel menu laterale. Puoi scegliere dal catalogo o inserire nome e link a mano.'],
     ['🌍','Sfoglia il mondo','Vista con tutte le testate del catalogo.'],
     ['🖼️','Anteprime o Titoli','Due modalità di visualizzazione.'],
     ['☆','Preferiti','Salva in una cartella.'],
