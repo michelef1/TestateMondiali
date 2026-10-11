@@ -8,7 +8,7 @@
 
 <br>
 
-![Versione](https://img.shields.io/badge/versione-1.23-d9487a?style=for-the-badge)
+![Versione](https://img.shields.io/badge/versione-1.24-d9487a?style=for-the-badge)
 ![PWA](https://img.shields.io/badge/PWA-installabile-1e88e5?style=for-the-badge)
 ![Lingua](https://img.shields.io/badge/lingua-italiano-2f9e5e?style=for-the-badge)
 ![Offline](https://img.shields.io/badge/offline-supportato-6d3df0?style=for-the-badge)
@@ -140,7 +140,7 @@ flowchart LR
 ```
 
 - I **titoli** arrivano dai feed RSS delle testate, tramite servizi gratuiti
-- Le **anteprime** usano la foto dell'ultimo articolo, oppure uno screenshot della homepage
+- Le **anteprime** usano la foto dell'ultimo articolo, poi l'immagine di condivisione della homepage, poi uno screenshot; se nessuna funziona compare una copertina con il nome della testata
 - La **traduzione** usa il traduttore del browser, se presente, altrimenti MyMemory; le traduzioni già fatte vengono ricordate
 - Tutti i **tuoi dati** restano nel telefono
 
@@ -192,6 +192,7 @@ Quando modifichi il codice:
 | **1.21** | 🌐 Traduzione dei titoli |
 | **1.22** | Correzione di "Aggiungi un giornale" dal menu laterale |
 | **1.23** | Etichette del menu in giallo e pulsante blu **➕** in home |
+| **1.24** | Anteprime sempre presenti: foto articolo, immagine della homepage, screenshot o copertina con il nome |
 
 ---
 

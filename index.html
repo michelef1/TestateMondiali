@@ -220,6 +220,11 @@ input.in{width:100%}
 #fab{position:fixed;right:1rem;bottom:calc(env(safe-area-inset-bottom) + 1rem);width:58px;height:58px;border-radius:50%;background:#1e88e5;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(30,136,229,.55);z-index:30}
 #fab:active{background:#1565c0;transform:scale(.95)}
 #v-home{padding-bottom:4rem}
+.pic img{position:absolute;inset:0;opacity:0;transition:opacity .3s}
+.pic img.ok{opacity:1}
+.pic .cap{display:none}.pic img.ok+.cap{display:block}
+.pcv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem;text-align:center;font:700 .9rem/1.2 Georgia,serif;color:var(--mu);background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 22%,var(--card)),color-mix(in srgb,var(--g2) 22%,var(--card)))}
+.pcl{font-size:2.2rem;font-weight:800;color:var(--g1);opacity:.55}
 </style>
 </head>
 <body>
@@ -358,7 +363,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.23';
+const VER='1.24';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -388,9 +393,54 @@ const sigla=n=>n.split(/\s+/).filter(w=>/^[A-Za-zÀ-ÿ]/.test(w)).slice(0,2).map
 const logo=d=>`<div class="logo"><img src="${d.immagine_anteprima}" alt="" loading="lazy" onerror="this.parentNode.textContent='${esc(sigla(d.nome))}'"></div>`;
 const titoli=d=>{const t=T[d.id];return t&&t.t&&t.t.length?t.t:null};
 const shot=d=>'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(d.link)+'?w=640&h=360';
-const pic=d=>{const im=T[d.id]&&T[d.id].img;return `<div class="pic"><img data-im="${d.id}" src="${esc(im||shot(d))}" alt="Anteprima" loading="lazy" referrerpolicy="no-referrer" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${im?'📰 Ultima notizia':'🖥️ Homepage'}</span></div>`};
-function imgFail(el,id){const d=DATI.find(x=>x.id===id);if(!d||el.dataset.f){el.parentNode.style.display='none';return}el.dataset.f=1;el.src=shot(d);const c=document.querySelector(`[data-cp="${id}"]`);if(c)c.textContent='🖥️ Homepage'}
-function setImg(id,u){document.querySelectorAll(`[data-im="${id}"]`).forEach(e=>{e.dataset.f='';e.src=u});document.querySelectorAll(`[data-cp="${id}"]`).forEach(c=>c.textContent='📰 Ultima notizia')}
+let OG=ld('tm_og',{});
+function srcsDi(d){
+  const a=[],t=T[d.id],o=OG[d.id];
+  if(t&&t.img)a.push([t.img,'📰 Ultima notizia']);
+  if(o&&o.u)a.push([o.u,'🏠 Dal sito']);
+  a.push([shot(d),'🖥️ Homepage']);
+  return a;
+}
+const pic=d=>{
+  const o=OG[d.id],t=T[d.id],pronto=(t&&t.img)||(o&&o.ts);
+  const a=srcsDi(d)[0];
+  return `<div class="pic"><div class="pcv"><span class="pcl">${esc(sigla(d.nome))}</span>${esc(d.nome)}</div><img data-im="${d.id}" alt="Anteprima" loading="lazy" referrerpolicy="no-referrer" ${pronto?`src="${esc(a[0])}"`:''} onload="this.classList.add('ok')" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${pronto?a[1]:''}</span></div>`;
+};
+function imgFail(el,id){
+  const d=DATI.find(x=>x.id===id);if(!d)return;
+  const a=srcsDi(d),i=+(el.dataset.i||0)+1;
+  el.classList.remove('ok');
+  if(i>=a.length)return;
+  el.dataset.i=i;el.src=a[i][0];
+  const c=document.querySelector(`[data-cp="${id}"]`);if(c)c.textContent=a[i][1];
+}
+function setImg(id){
+  const d=DATI.find(x=>x.id===id);if(!d)return;
+  const a=srcsDi(d)[0];
+  document.querySelectorAll(`[data-im="${id}"]`).forEach(e=>{e.dataset.i=0;e.src=a[0]});
+  document.querySelectorAll(`[data-cp="${id}"]`).forEach(c=>c.textContent=a[1]);
+}
+const OGB=new Set();
+async function ogUno(d){
+  if(OGB.has(d.id))return;OGB.add(d.id);
+  let u='';
+  try{
+    const c=new AbortController(),tm=setTimeout(()=>c.abort(),9000);
+    const r=await fetch('https://api.allorigins.win/raw?url='+encodeURIComponent(d.link),{signal:c.signal});
+    clearTimeout(tm);
+    const h=(await r.text()).slice(0,300000);
+    const m=h.match(/<meta[^>]+(?:property|name)=["'](?:og:image(?::secure_url)?|twitter:image(?::src)?)["'][^>]*content=["']([^"']+)["']/i)||h.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["'](?:og:image|twitter:image)["']/i);
+    if(m)u=new URL(m[1].replace(/&amp;/g,'&'),d.link).href.replace(/^http:/i,'https:');
+  }catch(e){}
+  OG[d.id]={u,ts:Date.now()};sv('tm_og',OG);OGB.delete(d.id);
+  setImg(d.id);
+}
+function ogCarica(){
+  if(S.vista==='titoli'||!navigator.onLine)return;
+  const q=DATI.filter(d=>visibile(d)&&!OGB.has(d.id)&&!(T[d.id]&&T[d.id].img)).filter(d=>{const o=OG[d.id];return !(o&&Date.now()-o.ts<(o.u?864e5:108e5))});
+  const w=async()=>{while(q.length){await ogUno(q.shift())}};
+  Promise.all([w(),w(),w()]);
+}
 let Q='';
 const norm=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const visibile=d=>orgMode||((S.filtro==='Tutti'||d.continente===S.filtro)&&(S.naz==='Tutti'||d.nazione===S.naz)&&(S.tipo==='Tutti'||d.tipo===S.tipo));
@@ -810,7 +860,7 @@ function renderHome(){
   h+=gr?'<div class="grid">'+cards+'</div>':cards;
   h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata in home. Prova a cercare nel mondo qui sopra 👆</div>';
   h+='<button id="fab" data-ad aria-label="Aggiungi un giornale"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path d="M12 5v14M5 12h14" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/></svg></button>';$('#v-home').innerHTML=h;
-  applicaQ();renderDr();renderRicercaCatalogo();
+  applicaQ();renderDr();ogCarica();renderRicercaCatalogo();
   requestAnimationFrame(()=>{const on=$('#v-home .chip.on');if(on)on.scrollIntoView({block:'nearest',inline:'center',behavior:'smooth'})});
 }
 
