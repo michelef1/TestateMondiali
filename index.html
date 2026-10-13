@@ -363,7 +363,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.24';
+const VER='1.27';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -865,57 +865,81 @@ function renderHome(){
 }
 
 /* ---------- RSS ---------- */
+async function fetchConTimeout(url, ms=9000){
+  const c=new AbortController();
+  const timer=setTimeout(()=>c.abort(),ms);
+  try{return await fetch(url,{signal:c.signal,cache:'no-store'})}
+  finally{clearTimeout(timer)}
+}
 async function fetchRSS(rssUrl){
+  let feed;
+  try{feed=new URL(rssUrl)}catch(e){throw new Error('Indirizzo RSS non valido')}
+  if(!['http:','https:'].includes(feed.protocol))throw new Error('Protocollo RSS non valido');
   const proxies=[
-    'https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(rssUrl),
-    'https://api.allorigins.win/raw?url='+encodeURIComponent(rssUrl)
+    {url:'https://api.rss2json.com/v1/api.json?rss_url='+encodeURIComponent(feed.href),kind:'json'},
+    {url:'https://api.allorigins.win/raw?url='+encodeURIComponent(feed.href),kind:'xml'}
   ];
   for(const p of proxies){
     try{
-      const r=await fetch(p);if(!r.ok)continue;
-      if(p.includes('allorigins')){
+      const r=await fetchConTimeout(p.url,10000);if(!r.ok)continue;
+      if(p.kind==='xml'){
         const txt=await r.text();
+        if(!txt.trim())continue;
         const xml=new DOMParser().parseFromString(txt,'text/xml');
+        if(xml.querySelector('parsererror'))continue;
         const items=[...xml.querySelectorAll('item,entry')].slice(0,3).map(i=>{
           const t=i.querySelector('title')?.textContent?.trim();
           const enc=i.querySelector('enclosure')?.getAttribute('url');
           const media=i.getElementsByTagName('media:content')[0]?.getAttribute('url');
-          return {title:t,thumbnail:enc||media,content:i.querySelector('description,content')?.textContent||'',link:(i.querySelector('link')?.getAttribute('href'))||i.querySelector('link')?.textContent?.trim()||'',pubDate:i.querySelector('pubDate,published,updated')?.textContent||''};
+          const linkEl=i.querySelector('link');
+          return {title:t,thumbnail:enc||media,content:i.querySelector('description,content,summary')?.textContent||'',link:linkEl?.getAttribute('href')||linkEl?.textContent?.trim()||'',pubDate:i.querySelector('pubDate,published,updated')?.textContent||i.getElementsByTagName('dc:date')[0]?.textContent||''};
         }).filter(x=>x.title);
         if(items.length)return {items};
       }else{
         const j=await r.json();
-        if(j.items&&j.items.length)return j;
+        if(j.status==='ok'&&Array.isArray(j.items)&&j.items.length)return j;
       }
     }catch(e){continue}
   }
-  throw new Error('Nessun proxy');
+  throw new Error('Feed non disponibile o nessun proxy raggiungibile');
 }
 async function caricaTitoli(){
   const TTL=10*60*1000;
   const coda=DATI.filter(d=>d.rss&&!(T[d.id]&&'img' in T[d.id]&&T[d.id].l&&Date.now()-T[d.id].ts<TTL));
+  const totale=coda.length;
+  let riusciti=0,falliti=0;
   const lavora=async()=>{while(coda.length){const d=coda.shift();
     try{
       const j=await fetchRSS(d.rss);
-      if(j.items&&j.items.length){
-        const its=j.items.slice(0,3).filter(i=>(i.title||'').trim());
-        const nuovi=its.map(i=>i.title.trim());
-        const ls=its.map(i=>i.link||i.url||'');
-        const ps=its.map(i=>pd(i.pubDate||i.published));
-        const vecchio=T[d.id]&&T[d.id].t&&T[d.id].t[0];
-        const it=j.items[0];let im=it.thumbnail||'';
-        if(!im&&it.enclosure&&it.enclosure.link&&/image|\.(jpe?g|png|webp)/i.test((it.enclosure.type||'')+it.enclosure.link))im=it.enclosure.link;
-        if(!im){const m=(it.content||it.description||'').match(/<img[^>]+src=["']([^"']+)/i);if(m)im=m[1]}
-        if(im)im=im.replace(/^http:/i,'https:');
-        T[d.id]={t:nuovi,l:ls,p:ps,ts:Date.now(),img:im};sv('tm_t',T);if(im)setImg(d.id,im);
-        if(S.notif&&F.fav[d.id]!==undefined&&vecchio&&vecchio!==nuovi[0])notifica(d,nuovi[0]);
-      }
-    }catch(e){document.querySelectorAll(`[data-ti="${d.id}"]`).forEach(x=>x.textContent=navigator.onLine?'Titoli non disponibili ora':'Offline')}
+      const its=Array.isArray(j.items)?j.items.slice(0,3).filter(i=>i&&typeof i.title==='string'&&i.title.trim()):[];
+      if(!its.length)throw new Error('Il feed non contiene titoli validi');
+      const nuovi=its.map(i=>i.title.trim());
+      const ls=its.map(i=>typeof (i.link||i.url)==='string'?(i.link||i.url):'');
+      const ps=its.map(i=>pd(i.pubDate||i.published));
+      const vecchio=T[d.id]&&T[d.id].t&&T[d.id].t[0];
+      const it=its[0];let im=it.thumbnail||'';
+      if(!im&&it.enclosure&&it.enclosure.link&&/image|\.(jpe?g|png|webp)/i.test((it.enclosure.type||'')+it.enclosure.link))im=it.enclosure.link;
+      if(!im){const m=(it.content||it.description||'').match(/<img[^>]+src=["']([^"']+)/i);if(m)im=m[1]}
+      if(im)im=im.replace(/^http:/i,'https:');
+      T[d.id]={t:nuovi,l:ls,p:ps,ts:Date.now(),img:im};
+      if(!sv('tm_t',T))toast('Attenzione: memoria locale piena, alcuni titoli potrebbero non essere salvati');
+      if(im)setImg(d.id,im);
+      if(S.notif&&F.fav[d.id]!==undefined&&vecchio&&vecchio!==nuovi[0])notifica(d,nuovi[0]);
+      riusciti++;
+    }catch(e){falliti++;document.querySelectorAll(`[data-ti="${d.id}"]`).forEach(x=>x.textContent=navigator.onLine?'Titoli non disponibili ora':'Offline')}
   }};
   await Promise.all([lavora(),lavora(),lavora()]);
-  try{localStorage.setItem('tm_u',Date.now())}catch(e){}
+  if(riusciti>0){try{localStorage.setItem('tm_u',Date.now())}catch(e){toast('Memoria piena: impossibile salvare l’orario di aggiornamento')}}
   const u=$('#up');if(u)u.textContent=updTxt();
   if(view==='ultime')renderUltime(true);
+  const stato=$('#feedStatus');
+  if(stato){
+    if(!totale)stato.textContent='I titoli salvati sono recenti: nessun aggiornamento necessario.';
+    else if(riusciti&&falliti)stato.textContent=`Aggiornamento parziale: ${riusciti} feed aggiornati, ${falliti} non disponibili. I titoli salvati sono conservati.`;
+    else if(riusciti)stato.textContent=`Aggiornamento completato: ${riusciti} feed aggiornati.`;
+    else stato.textContent=`Nessun feed aggiornato su ${totale}. Mantengo gli ultimi titoli salvati; riprova più tardi.`;
+  }
+  return {totale,riusciti,falliti};
 }
 async function notifica(d,t){
   try{
@@ -941,7 +965,8 @@ async function trad(txt,lang){
     }
   }catch(e){out=''}
   if(!out){
-    const r=await fetch('https://api.mymemory.translated.net/get?q='+encodeURIComponent(txt)+'&langpair='+lang+'|it&de=app@testatemondiali.it');
+    const r=await fetchConTimeout('https://api.mymemory.translated.net/get?q='+encodeURIComponent(txt)+'&langpair='+lang+'|it&de=app@testatemondiali.it',8000);
+    if(!r.ok)throw new Error('Servizio di traduzione non disponibile');
     const j=await r.json();
     out=(j&&j.responseData&&j.responseData.translatedText)||'';
     if(j&&j.quotaFinished||/MYMEMORY WARNING|INVALID|QUERY LENGTH/i.test(out))out='';
@@ -992,6 +1017,7 @@ function renderUltime(noload){
   let h=`<div class="vh"><h2 class="serif">🔴 Ultime notizie</h2>${CL}</div>
   <div class="bar" style="justify-content:space-between"><span class="ds" style="margin:0">${ora}</span><button class="btn" data-ag>🔄 Aggiorna</button></div>
   <div class="bar"><button class="btn ${S.utr?'p':''}" data-ultr style="flex:1">🌐 ${S.utr?'Traduzione attiva (tocca per spegnere)':'Traduci titoli'}</button></div>
+  <div class="ds" id="feedStatus" role="status" aria-live="polite" style="margin:-.2rem 0 .5rem">Controllo dei feed…</div>
   <div class="ds" id="trinfo" style="margin:-.2rem 0 .5rem"></div>
   <div class="chips">${fl.map(f=>`<button class="chip ${UF===f?'on':''}" data-uf="${f}">${f.toUpperCase()}</button>`).join('')}</div>
   <div class="chips"><button class="chip ${S.upref?'on':''}" data-upref>⭐ Solo preferiti</button></div>`;
@@ -1185,7 +1211,11 @@ function aggiungi(pre){
     if(!n||!l||!c||!z){toast('Compila nome, link, continente e nazione');return}
     if(!/^https?:\/\//i.test(l))l='https://'+l;
     let u;try{u=new URL(l)}catch(e){toast('Il link non è valido');return}
-    salva({...N('c'+Date.now(),n,u.hostname,c,z,ds||'Testata aggiunta da te.',rss,l),tipo:tp},true);
+    if(!['http:','https:'].includes(u.protocol)||!u.hostname.includes('.')){toast('Inserisci un indirizzo web valido (https://…)');return}
+    l=u.href;
+    const ru=rss?(()=>{try{const x=new URL(rss);return ['http:','https:'].includes(x.protocol)?x.href:null}catch(e){return null}})():'';
+    if(rss&&!ru){toast('L’indirizzo RSS non è valido');return}
+    salva({...N('c'+Date.now(),n,u.hostname,c,z,ds||'Testata aggiunta da te.',ru||'',l),tipo:tp},true);
   };
 }
 function catalogo(){
@@ -1404,7 +1434,7 @@ document.addEventListener('click',e=>{
     }else{S.notif=false;sv('tm_s',S);renderImp();return}
   }
   if('clearCache' in D)return conferma('Svuotare i titoli salvati?',()=>{T={};sv('tm_t',T);toast('Archivio svuotato')});
-  if(t.id==='ex'){const b=new Blob([JSON.stringify({app:'TestateMondiali',v:VER,S,F,X},null,1)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='TestateMondiali-dati.json';a.click();return toast('Dati esportati')}
+  if(t.id==='ex'){try{const b=new Blob([JSON.stringify({app:'TestateMondiali',v:VER,S,F,X,CF},null,2)],{type:'application/json'});const url=URL.createObjectURL(b);const a=document.createElement('a');a.href=url;a.download='TestateMondiali-backup-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);return toast('Backup esportato')}catch(e){return toast('Esportazione non riuscita')}}
   if(t.id==='im')return $('#fi').click();
 });
 $('#ov').onclick=chiudi;
@@ -1416,18 +1446,30 @@ document.addEventListener('input',e=>{
 /* ---------- IMPORT ---------- */
 $('#fi').onchange=e=>{
   const f=e.target.files[0];if(!f)return;
+  if(f.size>5*1024*1024){toast('File troppo grande: massimo 5 MB');e.target.value='';return}
   const r=new FileReader();
   r.onload=()=>{
     try{
       const j=JSON.parse(r.result);
-      if(j.app!=='TestateMondiali')throw new Error('app-mismatch');
+      if(!j||j.app!=='TestateMondiali'||typeof j!=='object')throw new Error('app-mismatch');
+      if(j.X&&((j.X.add&&!Array.isArray(j.X.add))||(j.X.del&&!Array.isArray(j.X.del))||(j.X.add&&j.X.add.length>1000)||(j.X.del&&j.X.del.length>2000)))throw new Error('invalid-data');
+      if(j.F&&(j.F.cartelle&&!Array.isArray(j.F.cartelle)||j.F.cartelle&&j.F.cartelle.length>500||j.F.fav&&(typeof j.F.fav!=='object'||Array.isArray(j.F.fav))))throw new Error('invalid-data');
+      if(j.CF&&(typeof j.CF!=='object'||Array.isArray(j.CF)))throw new Error('invalid-data');
       const Sdef={vista:'anteprime',tema:'chiaro',grad:'tramonto',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti',naz:'Tutti',tipo:'Tutti',col:1};
       const Snew=Object.assign({},Sdef);
       Object.keys(Sdef).forEach(k=>{if(j.S&&k in j.S){const v=j.S[k];if(k==='font'&&typeof v==='number'&&v>=80&&v<=150)Snew[k]=v;else if(k==='ordine'&&Array.isArray(v))Snew[k]=v.filter(x=>typeof x==='string');else if(k==='tema'&&['auto','chiaro','scuro'].includes(v))Snew[k]=v;else if(k==='grad'&&GRAD[v])Snew[k]=v;else if(typeof Sdef[k]===typeof v)Snew[k]=v}});
-      const Fnew={cartelle:Array.isArray(j.F?.cartelle)?j.F.cartelle.filter(x=>typeof x==='string'):[],fav:(j.F&&typeof j.F.fav==='object'&&j.F.fav)?j.F.fav:{}};
-      const Xnew={add:Array.isArray(j.X?.add)?j.X.add.filter(d=>d&&d.id&&d.nome):[],del:Array.isArray(j.X?.del)?j.X.del.filter(x=>typeof x==='string'):[],edit:(j.X&&typeof j.X.edit==='object'&&j.X.edit)?j.X.edit:{}};
-      conferma('Importare i dati? Quelli attuali verranno sostituiti.',()=>{
-        S=Snew;F=Fnew;X=Xnew;sv('tm_s',S);sv('tm_f',F);sv('tm_x',X);rebuild();applica();show('imp');toast('Dati importati');
+      const favRaw=(j.F&&typeof j.F.fav==='object'&&j.F.fav&&!Array.isArray(j.F.fav))?j.F.fav:{};
+      const favClean={};Object.entries(favRaw).slice(0,2000).forEach(([k,v])=>{if(typeof k==='string'&&k.length<=120&&(typeof v==='string'&&v.length<=100||v===true))favClean[k]=v===true?'':v});
+      const Fnew={cartelle:Array.isArray(j.F?.cartelle)?j.F.cartelle.filter(x=>typeof x==='string'&&x.length<=100).slice(0,500):[],fav:favClean};
+      const editRaw=(j.X&&typeof j.X.edit==='object'&&j.X.edit&&!Array.isArray(j.X.edit))?j.X.edit:{};const editClean={};
+      Object.entries(editRaw).slice(0,2000).forEach(([id,v])=>{if(typeof id!=='string'||id.length>120||!v||typeof v!=='object'||Array.isArray(v))return;const e={};['nome','link','rss','continente','nazione','descrizione','tipo'].forEach(k=>{if(typeof v[k]==='string'&&v[k].length<=(k==='descrizione'?1000:500))e[k]=v[k].trim()});if(e.link){try{const u=new URL(e.link);if(!['http:','https:'].includes(u.protocol)||!u.hostname)return}catch(_){return}}if(e.rss){try{const u=new URL(e.rss);if(!['http:','https:'].includes(u.protocol)||!u.hostname)return}catch(_){return}}editClean[id]=e});
+      const Xnew={add:Array.isArray(j.X?.add)?j.X.add.filter(d=>{if(!d||typeof d.id!=='string'||typeof d.nome!=='string'||typeof d.link!=='string'||d.id.length>120||d.nome.trim().length<1||d.nome.length>100)return false;try{const u=new URL(d.link);if(!['http:','https:'].includes(u.protocol)||!u.hostname)return false;if(d.rss){const r=new URL(d.rss);if(!['http:','https:'].includes(r.protocol)||!r.hostname)return false}return true}catch(e){return false}}).slice(0,1000):[],del:Array.isArray(j.X?.del)?j.X.del.filter(x=>typeof x==='string'&&x.length<=120).slice(0,2000):[],edit:editClean};
+      const CFnew={cont:['Tutti','Europa','Asia','Africa e Medio Oriente','Nord America','America Latina','Oceania'].includes(j.CF?.cont)?j.CF.cont:'Tutti',naz:typeof j.CF?.naz==='string'&&j.CF.naz.length<=100?j.CF.naz:'Tutti'};
+      conferma('Importare il backup? Impostazioni e personalizzazioni attuali verranno sostituite.',()=>{
+        const keys=['tm_s','tm_f','tm_x','tm_cf'];const old=keys.map(k=>localStorage.getItem(k));
+        const ok=[sv('tm_s',Snew),sv('tm_f',Fnew),sv('tm_x',Xnew),sv('tm_cf',CFnew)].every(Boolean);
+        if(!ok){keys.forEach((k,i)=>{try{if(old[i]===null)localStorage.removeItem(k);else localStorage.setItem(k,old[i])}catch(_){}});toast('Importazione annullata: impossibile salvare i dati');return}
+        S=Snew;F=Fnew;X=Xnew;CF=CFnew;rebuild();applica();show('imp');toast('Backup importato correttamente');
       });
     }catch(x){toast('File non valido o corrotto')}
   };
@@ -1445,7 +1487,7 @@ if('serviceWorker' in navigator)addEventListener('load',()=>navigator.serviceWor
   addEventListener('touchend',e=>{
     if(!pulling)return;pulling=false;
     const dy=(e.changedTouches[0]?.clientY||0)-sy;
-    if(dy>80&&scrollY===0&&view==='home'){toast('Aggiornamento…');Object.values(T).forEach(x=>x.ts=0);caricaTitoli().then(()=>toast('Titoli aggiornati'))}
+    if(dy>80&&scrollY===0&&view==='home'){toast('Aggiornamento…');Object.values(T).forEach(x=>x.ts=0);caricaTitoli().then(r=>{if(!r.totale)toast('Nessun feed da aggiornare');else if(!r.riusciti)toast('Aggiornamento non riuscito: controlla la connessione');else if(r.falliti)toast(`Aggiornate ${r.riusciti} testate; ${r.falliti} non disponibili`);else toast(`Aggiornamento completato: ${r.riusciti} testate`) }).catch(()=>toast('Errore durante l’aggiornamento'))}
   });
 })();
 

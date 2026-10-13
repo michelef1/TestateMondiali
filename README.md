@@ -8,7 +8,7 @@
 
 <br>
 
-![Versione](https://img.shields.io/badge/versione-1.24-d9487a?style=for-the-badge)
+![Versione](https://img.shields.io/badge/versione-1.27-d9487a?style=for-the-badge)
 ![PWA](https://img.shields.io/badge/PWA-installabile-1e88e5?style=for-the-badge)
 ![Lingua](https://img.shields.io/badge/lingua-italiano-2f9e5e?style=for-the-badge)
 ![Offline](https://img.shields.io/badge/offline-supportato-6d3df0?style=for-the-badge)
@@ -45,7 +45,7 @@ Nasce da un elenco di testate in PDF ed è cresciuta fino a diventare un piccolo
 | ↕️ | **Organizza la home** | Sposta le testate di una posizione alla volta, oppure ordine alfabetico |
 | 🎨 | **Temi a gradiente** | Chiaro, scuro o automatico, con 6 sfondi e 4 dimensioni del testo |
 | 📶 | **Offline** | I contenuti già visti restano disponibili, con avviso quando sei senza rete |
-| 💾 | **Esporta e importa** | Salva e ripristina preferiti, ordine e impostazioni in un file |
+| 💾 | **Esporta e importa** | Backup datato con controlli sui dati e ripristino verificato di preferiti, ordine e impostazioni |
 
 ---
 

@@ -1,66 +1,65 @@
-const CACHE='testatemondiali-v18';
-const CACHE_IMG='testatemondiali-img-v18';
-const SHELL=[
-  './',
-  './index.html',
-  './manifest.json',
-  './icons/icon-192.png',
-  './icons/icon-512.png'
-];
+const CACHE='testatemondiali-v21';
+const CACHE_IMG='testatemondiali-img-v21';
+const PREFIX='testatemondiali-';
+const SHELL=['./','./index.html','./manifest.json','./icons/icon-192.png','./icons/icon-512.png'];
 const NO_CACHE_HOSTS=['api.rss2json.com','api.allorigins.win','www.google.com','api.mymemory.translated.net'];
 
-self.addEventListener('install',e=>{
-  e.waitUntil(
-    caches.open(CACHE).then(c=>c.addAll(SHELL)).then(()=>self.skipWaiting())
-  );
+self.addEventListener('install',event=>{
+  event.waitUntil((async()=>{
+    const cache=await caches.open(CACHE);
+    // La shell è importante, ma un'icona mancante non deve impedire l'aggiornamento.
+    await Promise.all(SHELL.map(async url=>{try{const response=await fetch(url,{cache:'reload'});if(response.ok)await cache.put(url,response)}catch(_){}}));
+    await self.skipWaiting();
+  })());
 });
 
-self.addEventListener('activate',e=>{
-  e.waitUntil(
-    caches.keys().then(keys=>Promise.all(
-      keys.filter(k=>k!==CACHE&&k!==CACHE_IMG).map(k=>caches.delete(k))
-    )).then(()=>self.clients.claim())
-  );
+self.addEventListener('activate',event=>{
+  event.waitUntil((async()=>{
+    const keys=await caches.keys();
+    await Promise.all(keys.filter(key=>key.startsWith(PREFIX)&&key!==CACHE&&key!==CACHE_IMG).map(key=>caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
 
-self.addEventListener('fetch',e=>{
-  const r=e.request;
-  if(r.method!=='GET')return;
-  const u=new URL(r.url);
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET')return;
+  let url;try{url=new URL(request.url)}catch(_){return}
+  if(NO_CACHE_HOSTS.includes(url.hostname))return;
 
-  // Screenshot homepage: prima la rete (così non resta una schermata di attesa),
-  // la copia salvata serve solo se sei offline
-  if(u.hostname==='s.wordpress.com'){
-    e.respondWith(
-      fetch(r).then(res=>{
-        if(res&&(res.ok||res.type==='opaque')){
-          const cp=res.clone();
-          caches.open(CACHE_IMG).then(c=>c.put(r,cp));
-        }
-        return res;
-      }).catch(()=>caches.match(r).then(h=>h||Response.error()))
-    );
+  if(request.mode==='navigate'){
+    event.respondWith((async()=>{
+      try{
+        const response=await fetch(request);
+        if(response&&response.ok){const cache=await caches.open(CACHE);await cache.put('./index.html',response.clone()).catch(()=>{});}
+        return response;
+      }catch(_){return (await caches.match(request))||(await caches.match('./index.html'))||new Response('Sei offline e la pagina non è ancora disponibile in cache.',{status:503,headers:{'Content-Type':'text/plain; charset=utf-8'}})}
+    })());
     return;
   }
 
-  // Non cachare API/proxy/favicon esterni
-  if(NO_CACHE_HOSTS.includes(u.hostname))return;
+  if(url.hostname==='s.wordpress.com'){
+    event.respondWith((async()=>{
+      try{const response=await fetch(request);if(response&&(response.ok||response.type==='opaque'))caches.open(CACHE_IMG).then(c=>c.put(request,response.clone())).catch(()=>{});return response}
+      catch(_){return (await caches.match(request))||Response.error()}
+    })());
+    return;
+  }
 
-  e.respondWith(
-    caches.match(r,{ignoreSearch:false}).then(hit=>{
-      const net=fetch(r).then(res=>{
-        if(res&&(res.ok||res.type==='opaque')){
-          const cp=res.clone();
-          caches.open(CACHE).then(c=>c.put(r,cp));
-        }
-        return res;
-      }).catch(()=>hit||caches.match('./index.html'));
-      return hit||net;
-    })
-  );
+  if(url.origin!==self.location.origin)return;
+  event.respondWith((async()=>{
+    const cache=await caches.open(CACHE);
+    const cached=await cache.match(request);
+    if(cached)return cached;
+    try{const response=await fetch(request);if(response&&response.ok)cache.put(request,response.clone()).catch(()=>{});return response}
+    catch(_){return request.destination==='document'?(await cache.match('./index.html'))||Response.error():Response.error()}
+  })());
 });
 
-self.addEventListener('notificationclick',e=>{
-  e.notification.close();
-  e.waitUntil(clients.openWindow('./'));
+self.addEventListener('notificationclick',event=>{
+  event.notification.close();
+  event.waitUntil(clients.matchAll({type:'window',includeUncontrolled:true}).then(windows=>{
+    for(const client of windows){if('focus' in client)return client.focus()}
+    return clients.openWindow('./');
+  }));
 });
