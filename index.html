@@ -225,6 +225,57 @@ input.in{width:100%}
 .pic .cap{display:none}.pic img.ok+.cap{display:block}
 .pcv{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.3rem;padding:.6rem;text-align:center;font:700 .9rem/1.2 Georgia,serif;color:var(--mu);background:linear-gradient(135deg,color-mix(in srgb,var(--g1) 22%,var(--card)),color-mix(in srgb,var(--g2) 22%,var(--card)))}
 .pcl{font-size:2.2rem;font-weight:800;color:var(--g1);opacity:.55}
+/* ---- v1.28: struttura home ---- */
+.srow{display:flex;gap:.5rem;align-items:center;margin-bottom:.7rem}
+.srow .srch{flex:1;min-width:0;margin-bottom:0}
+.si{display:grid;place-items:center;color:var(--mu)}
+.rbtn{flex:none;width:48px;height:48px;border-radius:50%;display:grid;place-items:center;color:var(--ac);border:1.5px solid color-mix(in srgb,var(--ac) 55%,transparent);background:color-mix(in srgb,var(--card) 80%,transparent)}
+.seg3 button{display:flex;align-items:center;justify-content:center;gap:.45rem}
+.newsbtn{text-align:left}
+.nbt{display:flex;flex-direction:column;min-width:0;flex:1;line-height:1.25}
+.nbt b{font-size:.95rem}
+.newsbtn .nbt .nbh{margin-left:0;font-size:.85rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wm{display:none}
+.pcv.hl{align-items:stretch;justify-content:flex-start;text-align:left;gap:.3rem;padding:.55rem .65rem;font:600 .78rem/1.25 system-ui,sans-serif;color:var(--tx)}
+.pcv .ln{display:flex;gap:.45rem;align-items:flex-start}
+.pcv .ln i{flex:none;width:6px;height:6px;border-radius:50%;background:var(--ac);margin-top:.38rem}
+.pcv .ln span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+/* ---- v1.28: tema Classico (blu e oro) ---- */
+html.classico{--gold:#d6b25e;--gold2:#e6c97a;--gold3:#a67c2e;--nv1:#1d3a66;--nv2:#0f2140}
+html.classico[data-theme=scuro]{--bg:#0b1830;--card:#13294a;--tx:#f1e9d6;--mu:#a9b4c6;--ln:rgba(214,178,94,.25);--ac:#e6c97a;--sh:0 6px 18px rgba(0,0,0,.45)}
+html.classico[data-theme=chiaro]{--bg:#f5efe0;--card:#fffaf0;--tx:#14213d;--mu:#6b6a63;--ln:#e3d6b5;--ac:#9a7424;--sh:0 4px 14px rgba(60,45,10,.12)}
+html.classico body{background:var(--bg)}
+html.classico header{background:linear-gradient(180deg,#14284a,#0c1b34);border-bottom:1px solid var(--gold);box-shadow:0 3px 0 #0c1b34,0 4px 0 var(--gold),0 8px 16px rgba(0,0,0,.35)}
+html.classico header h1{color:var(--gold2);text-align:center;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+html.classico .ib{color:var(--gold2)}
+html.classico .btn{background:color-mix(in srgb,var(--card) 90%,transparent);border:1px solid var(--ln);color:var(--tx)}
+html.classico .btn.p,html.classico .cl,html.classico .orgc .btn{background:linear-gradient(135deg,var(--gold2),var(--gold3));color:#14213d;border:0;font-weight:800}
+html.classico .orgc .btn[data-rm]{color:#fff}
+html.classico .btn.st{color:var(--ac)}
+html.classico .seg3{background:rgba(255,255,255,.05);border:1px solid color-mix(in srgb,var(--gold) 40%,transparent)}
+html.classico .seg3 button{color:var(--mu)}
+html.classico .seg3 .on{background:linear-gradient(135deg,#2f6bb8,#16386b);color:#f4e3ad;box-shadow:0 0 12px rgba(80,140,230,.45)}
+html.classico .chip{background:transparent;border:1px solid color-mix(in srgb,var(--gold) 45%,transparent);color:var(--tx)}
+html.classico .chip.on{background:color-mix(in srgb,var(--gold) 16%,transparent);border-color:var(--gold);color:var(--ac);box-shadow:0 0 10px color-mix(in srgb,var(--gold) 35%,transparent)}
+html.classico .srch{background:color-mix(in srgb,var(--card) 85%,transparent);border:1px solid color-mix(in srgb,var(--gold) 45%,transparent)}
+html.classico .srch:focus-within{border-color:var(--gold)}
+html.classico .newsbtn{background:linear-gradient(135deg,#b9795a,#8a4d38);color:#fff2e0;box-shadow:0 4px 14px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.25)}
+html.classico .card{background:var(--card);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);box-shadow:var(--sh)}
+html.classico .pv{background:linear-gradient(135deg,var(--nv1),var(--nv2));border-bottom:1px solid color-mix(in srgb,var(--gold) 55%,transparent);color:#f1e9d6}
+html.classico .pv .nm{color:#f1e9d6!important;text-decoration-color:rgba(230,201,122,.6)}
+html.classico .wm{display:block;position:absolute;right:.5rem;bottom:-1rem;font:900 4.6rem/1 Georgia,serif;color:rgba(230,201,122,.10);pointer-events:none;z-index:0}
+html.classico .pv>*:not(.wm){position:relative;z-index:1}
+html.classico .pic{background:color-mix(in srgb,var(--nv1) 60%,var(--card))}
+html.classico .pcv{background:linear-gradient(160deg,color-mix(in srgb,var(--nv1) 70%,var(--card)),var(--card));color:var(--tx)}
+html.classico .pcl{color:var(--gold2)}
+html.classico .cap{left:50%;transform:translateX(-50%);bottom:.45rem;background:linear-gradient(135deg,var(--gold2),var(--gold3));color:#14213d;font-weight:800;text-transform:uppercase;letter-spacing:.06em;font-size:.62rem;padding:.2rem .7rem;border-radius:999px;box-shadow:0 2px 6px rgba(0,0,0,.4);white-space:nowrap}
+html.classico .g2 .pic{height:120px}
+html.classico .tile{background:var(--card);border:1px solid color-mix(in srgb,var(--gold) 35%,transparent);box-shadow:var(--sh)}
+html.classico .tz{color:var(--ac);opacity:1}
+html.classico #fab{background:linear-gradient(145deg,#2a5fa8,#10264a);border:2px solid var(--gold);box-shadow:0 6px 18px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.25)}
+html.classico #fab path{stroke:var(--gold2)}
+html.classico .dh{background:linear-gradient(135deg,var(--nv1),var(--nv2));color:var(--gold2);border-bottom:1px solid var(--gold)}
+html.classico .nrow{border-color:color-mix(in srgb,var(--gold) 30%,transparent)}
 </style>
 </head>
 <body>
@@ -315,13 +366,14 @@ N('smh','The Sydney Morning Herald','www.smh.com.au','Oceania','Australia','Il q
 N('nzh','The New Zealand Herald','www.nzherald.co.nz','Oceania','Nuova Zelanda','La testata principale e più diffusa del paese.')
 ];
 
-const GRAD={oceano:['#1b5fb3','#3aa0f0'],aurora:['#6d3df0','#d070b8'],foresta:['#146c43','#2f9e5e'],tramonto:['#b8324a','#f0944a'],rubino:['#a01f33','#ef5a4a'],notte:['#141d2e','#2f4c63']};
+const GRAD={classico:['#e2c46f','#a67c2e'],oceano:['#1b5fb3','#3aa0f0'],aurora:['#6d3df0','#d070b8'],foresta:['#146c43','#2f9e5e'],tramonto:['#b8324a','#f0944a'],rubino:['#a01f33','#ef5a4a'],notte:['#141d2e','#2f4c63']};
 
 const ld=(k,d)=>{try{const v=JSON.parse(localStorage.getItem(k));return v?Object.assign({},d,v):d}catch(e){return d}};
 const sv=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){console.error('Storage error',e);return false}};
 
-let S=ld('tm_s',{vista:'anteprime',tema:'chiaro',grad:'tramonto',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti',naz:'Tutti',tipo:'Tutti',col:1});
+let S=ld('tm_s',{vista:'anteprime',tema:'chiaro',grad:'classico',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti',naz:'Tutti',tipo:'Tutti',col:1});
 if(S.vista==='griglia'){S.vista='anteprime';S.col=2}
+if(!S.v28){S.grad='classico';S.v28=1;sv('tm_s',S)}
 let F=ld('tm_f',{cartelle:[],fav:{}});
 let T=ld('tm_t',{});
 let X=ld('tm_x',{add:[],del:[],edit:{}});
@@ -362,8 +414,8 @@ const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 let view='home',deferred=null,orgMode=false;
 
-const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.27';
+const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-edit="${d.id}" style="flex:none;padding:.65rem .9rem" aria-label="Modifica">✏️</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
+const VER='1.28';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -373,8 +425,8 @@ const CLS='<button class="cl" data-x>✕ Chiudi</button>';
 const eff=()=>S.tema==='auto'?(matchMedia('(prefers-color-scheme:dark)').matches?'scuro':'chiaro'):S.tema;
 function applica(){
   const r=document.documentElement,g=GRAD[S.grad]||GRAD.tramonto;
-  r.dataset.theme=eff();r.classList.toggle('riduci',!!S.anim);r.style.setProperty('--g1',g[0]);r.style.setProperty('--g2',g[1]);r.style.setProperty('--fs',S.font);
-  $('meta[name=theme-color]').content=g[0];
+  r.dataset.theme=eff();r.classList.toggle('classico',S.grad==='classico');r.classList.toggle('riduci',!!S.anim);r.style.setProperty('--g1',g[0]);r.style.setProperty('--g2',g[1]);r.style.setProperty('--fs',S.font);
+  $('meta[name=theme-color]').content=S.grad==='classico'?(eff()==='scuro'?'#0b1830':'#14274a'):g[0];
   $('#mt').textContent=eff()==='chiaro'?'🌙 Tema Scuro':'☀️ Tema Chiaro';
 }
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.i);toast.i=setTimeout(()=>t.classList.remove('on'),2400)}
@@ -401,10 +453,12 @@ function srcsDi(d){
   a.push([shot(d),'🖥️ Homepage']);
   return a;
 }
+const pcvHtml=d=>{const t=titoli(d);return t?t.slice(0,3).map(x=>`<span class="ln"><i></i><span>${esc(x)}</span></span>`).join(''):`<span class="pcl">${esc(sigla(d.nome))}</span>${esc(d.nome)}`};
+function aggiornaPcv(id){const d=DATI.find(x=>x.id===id);if(!d)return;document.querySelectorAll(`[data-pcv="${id}"]`).forEach(e=>{e.innerHTML=pcvHtml(d);e.classList.toggle('hl',!!titoli(d))})}
 const pic=d=>{
   const o=OG[d.id],t=T[d.id],pronto=(t&&t.img)||(o&&o.ts);
   const a=srcsDi(d)[0];
-  return `<div class="pic"><div class="pcv"><span class="pcl">${esc(sigla(d.nome))}</span>${esc(d.nome)}</div><img data-im="${d.id}" alt="Anteprima" loading="lazy" referrerpolicy="no-referrer" ${pronto?`src="${esc(a[0])}"`:''} onload="this.classList.add('ok')" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${pronto?a[1]:''}</span></div>`;
+  return `<div class="pic"><div class="pcv${titoli(d)?' hl':''}" data-pcv="${d.id}">${pcvHtml(d)}</div><img data-im="${d.id}" alt="Anteprima" loading="lazy" referrerpolicy="no-referrer" ${pronto?`src="${esc(a[0])}"`:''} onload="this.classList.add('ok')" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${pronto?a[1]:''}</span></div>`;
 };
 function imgFail(el,id){
   const d=DATI.find(x=>x.id===id);if(!d)return;
@@ -445,7 +499,19 @@ let Q='';
 const norm=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const visibile=d=>orgMode||((S.filtro==='Tutti'||d.continente===S.filtro)&&(S.naz==='Tutti'||d.nazione===S.naz)&&(S.tipo==='Tutti'||d.tipo===S.tipo));
 const updTxt=()=>{const t=+localStorage.getItem('tm_u');return t?'Titoli aggiornati alle '+new Date(t).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):''};
-const ricerca=()=>`<div class="srch"><span>🔎</span><input type="search" id="q" placeholder="Cerca una testata nel mondo…" value="${esc(Q)}" autocomplete="off"><button data-ag>🔄</button></div>`;
+const ICO={
+ search:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
+ refresh:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4"/></svg>',
+ eye:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+ list:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg>'};
+const ricerca=()=>`<div class="srow"><div class="srch"><span class="si">${ICO.search}</span><input type="search" id="q" placeholder="Cerca una testata nel mondo…" value="${esc(Q)}" autocomplete="off"></div><button class="rbtn" data-ag aria-label="Aggiorna titoli">${ICO.refresh}</button></div>`;
+function ultimaNotizia(){
+  let best=null;
+  DATI.forEach(d=>{const t=T[d.id];if(!d.rss||!t||!t.t||!t.t[0])return;const p=(t.p&&t.p[0])||0;if(!best||p>best.p)best={d,t:t.t[0],p}});
+  return best;
+}
+const bannerTxt=()=>{const b=ultimaNotizia();if(!b)return'Tocca per vedere le ultime notizie';const lg=langDi(b.d),tr=S.utr&&lg!=='it'?TR[lg+'|'+b.t]:'';return b.d.nome+': '+(tr||b.t)};
+function aggiornaBanner(){const e=document.getElementById('nbh');if(e)e.textContent=bannerTxt()}
 const rh=()=>view==='home'?renderHome():show('home');
 const onlineBanner=()=>navigator.onLine?'':'<div class="offline-banner">📶 Sei offline — mostro i titoli già salvati</div>';
 const azioni=d=>`<div class="acts"><button class="ab" data-edit="${d.id}" title="Modifica">✏️</button><button class="ab d" data-rem="${d.id}" title="Elimina">🗑️</button></div>`;
@@ -850,12 +916,12 @@ function renderHome(){
   const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
   const lista=ordinati().filter(visibile);
   const gr=true,an=S.vista!=='titoli';
-  let h=`${onlineBanner()}${ricerca()}<div id="rc" style="display:none"></div><button class="newsbtn" data-v="ultime"><span>🔴</span><span>Ultime notizie</span><span>›</span></button><div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">🖼️ Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">📰 Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
+  let h=`${onlineBanner()}${ricerca()}<div id="rc" style="display:none"></div><button class="newsbtn" data-v="ultime"><span class="nbt"><b>Ultime notizie</b><span class="nbh" id="nbh">${esc(bannerTxt())}</span></span><span class="nbc">›</span></button><div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">${ICO.eye} Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">${ICO.list} Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
   const cards=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione)+(d.tipo&&d.tipo!=='Quotidiano'?' · '+esc(d.tipo):'');
     const tit=t?t.slice(0,an?(gr?1:2):(gr?2:3)).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
-    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv">${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><div class="mv"><button class="btn pin" data-pin="${d.id}">▲</button><button class="btn pin" data-pdn="${d.id}">▼</button></div><button class="btn st" data-s="${d.id}">${fv?'⭐':'☆'}</button></div>${!orgMode?`<div style="display:flex;justify-content:flex-end;margin-top:.4rem">${azioni(d)}</div>`:''}</div></article>`
-    :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?`<button class="xx" data-rm="${d.id}">✕</button>`:''}${!orgMode?azioni(d):''}${d.tipo&&d.tipo!=='Quotidiano'?`<span class="badge" style="right:auto;left:.5rem">${esc(d.tipo)}</span>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button></div>`:''}</div>`;
+    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv"><span class="wm" aria-hidden="true">${esc(sigla(d.nome))}</span>${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st" data-s="${d.id}">${fv?'⭐':'☆'}</button></div></div></article>`
+    :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?`<button class="xx" data-rm="${d.id}">✕</button>`:''}${d.tipo&&d.tipo!=='Quotidiano'?`<span class="badge" style="right:auto;left:.5rem">${esc(d.tipo)}</span>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button><button class="btn" data-edit="${d.id}" aria-label="Modifica">✏️</button></div>`:''}</div>`;
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
   h+=gr?'<div class="grid">'+cards+'</div>':cards;
   h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata in home. Prova a cercare nel mondo qui sopra 👆</div>';
@@ -921,7 +987,7 @@ async function caricaTitoli(){
       if(!im&&it.enclosure&&it.enclosure.link&&/image|\.(jpe?g|png|webp)/i.test((it.enclosure.type||'')+it.enclosure.link))im=it.enclosure.link;
       if(!im){const m=(it.content||it.description||'').match(/<img[^>]+src=["']([^"']+)/i);if(m)im=m[1]}
       if(im)im=im.replace(/^http:/i,'https:');
-      T[d.id]={t:nuovi,l:ls,p:ps,ts:Date.now(),img:im};
+      T[d.id]={t:nuovi,l:ls,p:ps,ts:Date.now(),img:im};aggiornaPcv(d.id);
       if(!sv('tm_t',T))toast('Attenzione: memoria locale piena, alcuni titoli potrebbero non essere salvati');
       if(im)setImg(d.id,im);
       if(S.notif&&F.fav[d.id]!==undefined&&vecchio&&vecchio!==nuovi[0])notifica(d,nuovi[0]);
@@ -932,6 +998,7 @@ async function caricaTitoli(){
   if(riusciti>0){try{localStorage.setItem('tm_u',Date.now())}catch(e){toast('Memoria piena: impossibile salvare l’orario di aggiornamento')}}
   const u=$('#up');if(u)u.textContent=updTxt();
   if(view==='ultime')renderUltime(true);
+  aggiornaBanner();
   const stato=$('#feedStatus');
   if(stato){
     if(!totale)stato.textContent='I titoli salvati sono recenti: nessun aggiornamento necessario.';
@@ -1455,7 +1522,7 @@ $('#fi').onchange=e=>{
       if(j.X&&((j.X.add&&!Array.isArray(j.X.add))||(j.X.del&&!Array.isArray(j.X.del))||(j.X.add&&j.X.add.length>1000)||(j.X.del&&j.X.del.length>2000)))throw new Error('invalid-data');
       if(j.F&&(j.F.cartelle&&!Array.isArray(j.F.cartelle)||j.F.cartelle&&j.F.cartelle.length>500||j.F.fav&&(typeof j.F.fav!=='object'||Array.isArray(j.F.fav))))throw new Error('invalid-data');
       if(j.CF&&(typeof j.CF!=='object'||Array.isArray(j.CF)))throw new Error('invalid-data');
-      const Sdef={vista:'anteprime',tema:'chiaro',grad:'tramonto',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti',naz:'Tutti',tipo:'Tutti',col:1};
+      const Sdef={vista:'anteprime',tema:'chiaro',grad:'classico',font:100,anim:false,browser:'default',notif:false,ordine:[],filtro:'Tutti',naz:'Tutti',tipo:'Tutti',col:1,v28:1};
       const Snew=Object.assign({},Sdef);
       Object.keys(Sdef).forEach(k=>{if(j.S&&k in j.S){const v=j.S[k];if(k==='font'&&typeof v==='number'&&v>=80&&v<=150)Snew[k]=v;else if(k==='ordine'&&Array.isArray(v))Snew[k]=v.filter(x=>typeof x==='string');else if(k==='tema'&&['auto','chiaro','scuro'].includes(v))Snew[k]=v;else if(k==='grad'&&GRAD[v])Snew[k]=v;else if(typeof Sdef[k]===typeof v)Snew[k]=v}});
       const favRaw=(j.F&&typeof j.F.fav==='object'&&j.F.fav&&!Array.isArray(j.F.fav))?j.F.fav:{};

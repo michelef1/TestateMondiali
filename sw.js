@@ -1,5 +1,5 @@
-const CACHE='testatemondiali-v21';
-const CACHE_IMG='testatemondiali-img-v21';
+const CACHE='testatemondiali-v22';
+const CACHE_IMG='testatemondiali-img-v22';
 const PREFIX='testatemondiali-';
 const SHELL=['./','./index.html','./manifest.json','./icons/icon-192.png','./icons/icon-512.png'];
 const NO_CACHE_HOSTS=['api.rss2json.com','api.allorigins.win','www.google.com','api.mymemory.translated.net'];
