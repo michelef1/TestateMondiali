@@ -276,6 +276,18 @@ html.classico #fab{background:linear-gradient(145deg,#2a5fa8,#10264a);border:2px
 html.classico #fab path{stroke:var(--gold2)}
 html.classico .dh{background:linear-gradient(135deg,var(--nv1),var(--nv2));color:var(--gold2);border-bottom:1px solid var(--gold)}
 html.classico .nrow{border-color:color-mix(in srgb,var(--gold) 30%,transparent)}
+/* ---- v1.29: azioni a scomparsa sulla testata ---- */
+.row .btn.tg{flex:none!important;width:46px;padding:0!important;display:grid;place-items:center;border-radius:12px}
+.tg svg{transition:transform .2s}
+.tg.on svg{transform:rotate(180deg)}
+.tg.tgt{position:absolute;right:.3rem;top:.3rem;width:34px!important;height:34px;border-radius:10px}
+.xp{display:flex;gap:.4rem;margin-top:.55rem}
+.xp[hidden]{display:none}
+.xp .btn{flex:1;padding:.55rem 0;font-size:1rem}
+.xp .btn[data-rm]{color:#e5484d}
+.tile .xp{width:100%;margin-top:.6rem}
+.tile .xp .btn{padding:.45rem 0;font-size:.9rem}
+html.classico .tg.on{border-color:var(--gold);color:var(--ac)}
 </style>
 </head>
 <body>
@@ -415,7 +427,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-edit="${d.id}" style="flex:none;padding:.65rem .9rem" aria-label="Modifica">✏️</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.28';
+const VER='1.29';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -499,12 +511,21 @@ let Q='';
 const norm=t=>String(t).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
 const visibile=d=>orgMode||((S.filtro==='Tutti'||d.continente===S.filtro)&&(S.naz==='Tutti'||d.nazione===S.naz)&&(S.tipo==='Tutti'||d.tipo===S.tipo));
 const updTxt=()=>{const t=+localStorage.getItem('tm_u');return t?'Titoli aggiornati alle '+new Date(t).toLocaleTimeString('it-IT',{hour:'2-digit',minute:'2-digit'}):''};
+let XP=null;
 const ICO={
+ chev:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>',
  search:'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>',
  refresh:'<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 0 0-14.5-4M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.5 4M20 20v-4h-4"/></svg>',
  eye:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
  list:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6h12M9 12h12M9 18h12"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/></svg>'};
 const ricerca=()=>`<div class="srow"><div class="srch"><span class="si">${ICO.search}</span><input type="search" id="q" placeholder="Cerca una testata nel mondo…" value="${esc(Q)}" autocomplete="off"></div><button class="rbtn" data-ag aria-label="Aggiorna titoli">${ICO.refresh}</button></div>`;
+const xpHtml=d=>`<div class="xp" data-xp="${d.id}"${XP===d.id?'':' hidden'}><button class="btn" data-pin="${d.id}" aria-label="Sposta su di una posizione">▲</button><button class="btn" data-pdn="${d.id}" aria-label="Sposta giù di una posizione">▼</button><button class="btn" data-edit="${d.id}" aria-label="Modifica">✏️</button><button class="btn" data-rm="${d.id}" aria-label="Elimina">🗑️</button></div>`;
+const tgBtn=(d,t)=>`<button class="btn tg${t?' tgt':''}${XP===d.id?' on':''}" data-tg="${d.id}" aria-expanded="${XP===d.id}" aria-label="Altre azioni">${ICO.chev}</button>`;
+function togliXp(id){
+  XP=XP===id?null:id;
+  document.querySelectorAll('[data-xp]').forEach(e=>{e.hidden=e.dataset.xp!==XP});
+  document.querySelectorAll('[data-tg]').forEach(b=>{const on=b.dataset.tg===XP;b.classList.toggle('on',on);b.setAttribute('aria-expanded',on)});
+}
 function ultimaNotizia(){
   let best=null;
   DATI.forEach(d=>{const t=T[d.id];if(!d.rss||!t||!t.t||!t.t[0])return;const p=(t.p&&t.p[0])||0;if(!best||p>best.p)best={d,t:t.t[0],p}});
@@ -920,8 +941,8 @@ function renderHome(){
   const cards=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione)+(d.tipo&&d.tipo!=='Quotidiano'?' · '+esc(d.tipo):'');
     const tit=t?t.slice(0,an?(gr?1:2):(gr?2:3)).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
-    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv"><span class="wm" aria-hidden="true">${esc(sigla(d.nome))}</span>${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st" data-s="${d.id}">${fv?'⭐':'☆'}</button></div></div></article>`
-    :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?`<button class="xx" data-rm="${d.id}">✕</button>`:''}${d.tipo&&d.tipo!=='Quotidiano'?`<span class="badge" style="right:auto;left:.5rem">${esc(d.tipo)}</span>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button><button class="btn" data-edit="${d.id}" aria-label="Modifica">✏️</button></div>`:''}</div>`;
+    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv"><span class="wm" aria-hidden="true">${esc(sigla(d.nome))}</span>${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st" data-s="${d.id}">${fv?'⭐':'☆'}</button>${orgMode?'':tgBtn(d)}</div>${orgMode?'':xpHtml(d)}</div></article>`
+    :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?'':tgBtn(d,1)}${orgMode?`<button class="xx" data-rm="${d.id}">✕</button>`:''}${d.tipo&&d.tipo!=='Quotidiano'?`<span class="badge" style="right:auto;left:.5rem">${esc(d.tipo)}</span>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?'':xpHtml(d)}${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button><button class="btn" data-edit="${d.id}" aria-label="Modifica">✏️</button></div>`:''}</div>`;
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
   h+=gr?'<div class="grid">'+cards+'</div>':cards;
   h+='<div id="nr" class="vuoto" style="display:none">Nessuna testata trovata in home. Prova a cercare nel mondo qui sopra 👆</div>';
@@ -1144,7 +1165,8 @@ function renderGuida(){
     ['🌍','Sfoglia il mondo','Vista con tutte le testate del catalogo.'],
     ['🖼️','Anteprime o Titoli','Due modalità di visualizzazione.'],
     ['☆','Preferiti','Salva in una cartella.'],
-    ['↕️','Organizza','Ordina le testate.'],
+    ['⌄','Azioni sulla testata','Tocca il pulsante con la freccia ⌄ su una testata per ▲ ▼ ✏️ 🗑️: sposta su o giù, modifica, elimina.'],
+    ['↕️','Organizza','Dal menu laterale: mostra i comandi su tutte le testate insieme.'],
     ['📶','Offline','I titoli già visti restano disponibili.'],
     ['👇','Pull-to-refresh','Trascina in cima per aggiornare.']
   ];
@@ -1339,7 +1361,7 @@ function scegliCartella(id){
 /* ---------- NAVIGAZIONE ---------- */
 const TIT={home:'TestateMondiali',pref:'Preferiti',mondo:'Sfoglia il mondo',ultime:'Ultime notizie',imp:'Impostazioni',guida:'Guida',info:'Info'};
 function show(v){
-  view=v;orgMode=false;chiudi();
+  view=v;XP=null;orgMode=false;chiudi();
   if(v!=='home'){CF={cont:'Tutti',naz:'Tutti'};sv('tm_cf',CF)}
   $$('.view').forEach(e=>e.classList.toggle('on',e.id==='v-'+v));
   $('#tt').textContent=TIT[v]||'TestateMondiali';
@@ -1473,6 +1495,7 @@ document.addEventListener('click',e=>{
   if(D.ty){S.tipo=D.ty;sv('tm_s',S);return rh()}
   if('cg' in D){chiudi();return catalogo()}
   if('ag' in D){toast('Aggiornamento in corso…');Object.values(T).forEach(x=>x.ts=0);return caricaTitoli().then(()=>toast('Titoli aggiornati'))}
+  if(D.tg)return togliXp(D.tg);
   if(D.uf){S.uf=D.uf;sv('tm_s',S);return renderUltime(true)}
   if('ultr' in D){S.utr=!S.utr;sv('tm_s',S);return renderUltime(true)}
   if('upref' in D){S.upref=!S.upref;sv('tm_s',S);return renderUltime(true)}
