@@ -8,7 +8,7 @@
 
 <br>
 
-![Versione](https://img.shields.io/badge/versione-1.30-d6b25e?style=for-the-badge&labelColor=14274a)
+![Versione](https://img.shields.io/badge/versione-1.31-d6b25e?style=for-the-badge&labelColor=14274a)
 ![PWA](https://img.shields.io/badge/PWA-installabile-1e88e5?style=for-the-badge&labelColor=14274a)
 ![Lingua](https://img.shields.io/badge/lingua-italiano-2f9e5e?style=for-the-badge&labelColor=14274a)
 ![Offline](https://img.shields.io/badge/offline-supportato-6d3df0?style=for-the-badge&labelColor=14274a)
@@ -47,7 +47,7 @@ Il tema **Classico** ha uno stile da giornale elegante, ispirato all'immagine di
 | **Ricerca** | Barra grande con il pulsante di aggiornamento accanto |
 | **Ultime notizie** | Banner rame che mostra il titolo più recente |
 | **Anteprime / Titoli** | Interruttore con le icone dell'occhio e della lista |
-| **Schede** | Intestazione blu bassa con logo, nome, stella e ⌄ sulla stessa riga, lettera sfumata dietro il nome, etichetta dorata sull'immagine |
+| **Schede** | Intestazione blu con il nome in alto, il logo con stella e ⌄ al centro e la nazione con la bandierina sotto, lettera sfumata e etichetta dorata sull'immagine |
 | **Pulsante ➕** | Rotondo, blu scuro con bordo oro |
 
 Dalle **Impostazioni** si può scegliere anche uno degli altri sei sfondi a gradiente, in tema chiaro, scuro o automatico.
@@ -202,7 +202,7 @@ flowchart LR
 Quando modifichi il codice:
 
 1. aumenta il numero di versione (`VER` dentro `index.html`)
-2. aumenta di pari passo il nome della cache nel file `sw.js` (per esempio `testatemondiali-v24` diventa `testatemondiali-v25`)
+2. aumenta di pari passo il nome della cache nel file `sw.js` (per esempio `testatemondiali-v25` diventa `testatemondiali-v26`)
 3. carica sul repository **solo i file modificati**
 4. sul telefono **chiudi e riapri l'app due volte** per vedere la nuova versione
 
@@ -227,6 +227,7 @@ Quando modifichi il codice:
 | **1.28** | 🎨 Tema **Classico** blu e oro, banner Ultime notizie con titolo, titoli al posto della copertina vuota |
 | **1.29** | ⌄ Azioni a scomparsa su ogni testata: **▲ ▼ ✏️ 🗑️** |
 | **1.30** | Schede più corte, stella che toglie dai preferiti con conferma, pulsante ⭐ in home |
+| **1.31** | Nome della testata sopra il logo e nazione con bandierina sotto |
 
 ---
 
