@@ -288,6 +288,20 @@ html.classico .nrow{border-color:color-mix(in srgb,var(--gold) 30%,transparent)}
 .tile .xp{width:100%;margin-top:.6rem}
 .tile .xp .btn{padding:.45rem 0;font-size:.9rem}
 html.classico .tg.on{border-color:var(--gold);color:var(--ac)}
+/* ---- v1.30: schede corte, pulsante Preferiti ---- */
+.g2 .pv{height:auto;min-height:0;flex-direction:row;align-items:center;gap:.5rem;padding:.55rem .6rem}
+.g2 .pv>div:not(.logo){width:auto;flex:1;min-width:0}
+.g2 .logo{width:36px;height:36px;border-radius:10px;flex:none}
+.g2 .logo img{width:22px;height:22px}
+.pva{display:flex;gap:.3rem;flex:none}
+.pva .btn{width:36px;height:36px;padding:0!important;display:grid;place-items:center;border-radius:10px;font-size:1rem;flex:none}
+.card>.xp{margin:.5rem .6rem}
+.pic[data-o]{cursor:pointer}
+html.classico .g2 .wm{font-size:3rem;bottom:-.5rem}
+.nws{display:flex;gap:.5rem;align-items:stretch;margin:.1rem 0 .7rem}
+.nws .newsbtn{margin:0;flex:1;min-width:0;width:auto}
+.favbtn{flex:none;width:58px;border-radius:16px;font-size:1.5rem;display:grid;place-items:center;background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:var(--sh)}
+html.classico .favbtn{background:linear-gradient(145deg,#2a5fa8,#10264a);border:1.5px solid var(--gold)}
 </style>
 </head>
 <body>
@@ -427,7 +441,7 @@ const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'
 let view='home',deferred=null,orgMode=false;
 
 const ctl=d=>`<div class="orgc"><button class="btn" data-up="${d.id}">▲ Su</button><button class="btn" data-dn="${d.id}">▼ Giù</button><button class="btn" data-edit="${d.id}" style="flex:none;padding:.65rem .9rem" aria-label="Modifica">✏️</button><button class="btn" data-rm="${d.id}" style="background:#d33;flex:none;padding:.65rem .9rem">🗑️</button></div>`;
-const VER='1.29';
+const VER='1.30';
 
 /* Chiudi → torna alla Home (usato nelle viste) */
 const CL='<button class="cl" data-home>✕ Chiudi</button>';
@@ -470,7 +484,7 @@ function aggiornaPcv(id){const d=DATI.find(x=>x.id===id);if(!d)return;document.q
 const pic=d=>{
   const o=OG[d.id],t=T[d.id],pronto=(t&&t.img)||(o&&o.ts);
   const a=srcsDi(d)[0];
-  return `<div class="pic"><div class="pcv${titoli(d)?' hl':''}" data-pcv="${d.id}">${pcvHtml(d)}</div><img data-im="${d.id}" alt="Anteprima" loading="lazy" referrerpolicy="no-referrer" ${pronto?`src="${esc(a[0])}"`:''} onload="this.classList.add('ok')" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${pronto?a[1]:''}</span></div>`;
+  return `<div class="pic" data-o="${d.id}" role="link" tabindex="0" aria-label="Apri la testata"><div class="pcv${titoli(d)?' hl':''}" data-pcv="${d.id}">${pcvHtml(d)}</div><img data-im="${d.id}" alt="Anteprima" loading="lazy" referrerpolicy="no-referrer" ${pronto?`src="${esc(a[0])}"`:''} onload="this.classList.add('ok')" onerror="imgFail(this,'${d.id}')"><span class="cap" data-cp="${d.id}">${pronto?a[1]:''}</span></div>`;
 };
 function imgFail(el,id){
   const d=DATI.find(x=>x.id===id);if(!d)return;
@@ -937,11 +951,11 @@ function renderHome(){
   const conts=['Tutti',...new Set(DATI.map(d=>d.continente))];
   const lista=ordinati().filter(visibile);
   const gr=true,an=S.vista!=='titoli';
-  let h=`${onlineBanner()}${ricerca()}<div id="rc" style="display:none"></div><button class="newsbtn" data-v="ultime"><span class="nbt"><b>Ultime notizie</b><span class="nbh" id="nbh">${esc(bannerTxt())}</span></span><span class="nbc">›</span></button><div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">${ICO.eye} Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">${ICO.list} Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
+  let h=`${onlineBanner()}${ricerca()}<div id="rc" style="display:none"></div><div class="nws"><button class="newsbtn" data-v="ultime"><span class="nbt"><b>Ultime notizie</b><span class="nbh" id="nbh">${esc(bannerTxt())}</span></span><span class="nbc">›</span></button><button class="favbtn" data-v="pref" aria-label="Preferiti">⭐</button></div><div class="seg3" role="tablist"><button class="${an?'on':''}" data-vi="anteprime">${ICO.eye} Anteprime</button><button class="${an?'':'on'}" data-vi="titoli">${ICO.list} Titoli</button></div>${orgMode?'<div class="bar" style="margin-top:.6rem"><p class="ds" style="flex:1;margin:0">Usa ▲ ▼ su ogni testata per decidere l\'ordine.</p><button class="btn p" data-om>✅ Fatto</button></div>':''}<div class="chips" style="margin-top:.7rem">${conts.map(c=>`<button class="chip ${S.filtro===c?'on':''}" data-f="${esc(c)}">${esc(c)}</button>`).join('')}</div>${nazChips()}`;
   const cards=lista.map(d=>{
     const t=titoli(d),fv=F.fav[d.id]!==undefined,sub=esc(d.continente)+' · '+esc(d.nazione)+(d.tipo&&d.tipo!=='Quotidiano'?' · '+esc(d.tipo):'');
     const tit=t?t.slice(0,an?(gr?1:2):(gr?2:3)).map(x=>`<p class="ti">${esc(x)}</p>`).join(''):`<p class="ds" data-ti="${d.id}">${d.rss?'Titoli in caricamento…':'Titoli non disponibili per questa testata'}</p>`;
-    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv"><span class="wm" aria-hidden="true">${esc(sigla(d.nome))}</span>${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div></div>${pic(d)}<div class="cb">${orgMode?ctl(d):''}<div class="row"><button class="btn p" data-o="${d.id}">Apri testata</button><button class="btn st" data-s="${d.id}">${fv?'⭐':'☆'}</button>${orgMode?'':tgBtn(d)}</div>${orgMode?'':xpHtml(d)}</div></article>`
+    return an?`<article class="card${gr?' g2':''}" data-id="${d.id}"><div class="pv"><span class="wm" aria-hidden="true">${esc(sigla(d.nome))}</span>${logo(d)}<div><h2 class="nm serif" style="color:#fff" data-o="${d.id}" role="link" tabindex="0">${esc(d.nome)}</h2><div style="opacity:.9;font-size:.85rem">${sub}</div></div><span class="pva"><button class="btn st" data-s="${d.id}" aria-label="Preferito">${fv?'⭐':'☆'}</button>${orgMode?'':tgBtn(d)}</span></div>${orgMode?'':xpHtml(d)}${pic(d)}${orgMode?`<div class="cb">${ctl(d)}</div>`:''}</article>`
     :`<div class="tile${orgMode?' o':''}" data-id="${d.id}" data-o="${d.id}" role="link" tabindex="0">${orgMode?'':tgBtn(d,1)}${orgMode?`<button class="xx" data-rm="${d.id}">✕</button>`:''}${d.tipo&&d.tipo!=='Quotidiano'?`<span class="badge" style="right:auto;left:.5rem">${esc(d.tipo)}</span>`:''}<div class="tn">${esc(d.nome)}</div><div class="tc">${esc(d.continente)}</div><div class="tz">${esc(d.nazione)}</div>${orgMode?'':xpHtml(d)}${orgMode?`<div class="orgc"><button class="btn" data-up="${d.id}">▲</button><button class="btn" data-dn="${d.id}">▼</button><button class="btn" data-edit="${d.id}" aria-label="Modifica">✏️</button></div>`:''}</div>`;
   }).join('')||'<div class="vuoto">Nessuna testata in questa categoria.</div>';
   h+=gr?'<div class="grid">'+cards+'</div>':cards;
@@ -1164,7 +1178,8 @@ function renderGuida(){
     ['➕','Aggiungi un giornale','Tocca il pulsante blu ➕ in basso a destra nella home, oppure la voce nel menu laterale. Puoi scegliere dal catalogo o inserire nome e link a mano.'],
     ['🌍','Sfoglia il mondo','Vista con tutte le testate del catalogo.'],
     ['🖼️','Anteprime o Titoli','Due modalità di visualizzazione.'],
-    ['☆','Preferiti','Salva in una cartella.'],
+    ['☆','Preferiti','Tocca la stella per salvare in una cartella. Se la testata è già salvata, la stella chiede conferma e la toglie. Il pulsante ⭐ in home apre i preferiti.'],
+    ['👆','Aprire una testata','Tocca il nome della testata oppure la sua immagine per aprirla nel browser.'],
     ['⌄','Azioni sulla testata','Tocca il pulsante con la freccia ⌄ su una testata per ▲ ▼ ✏️ 🗑️: sposta su o giù, modifica, elimina.'],
     ['↕️','Organizza','Dal menu laterale: mostra i comandi su tutte le testate insieme.'],
     ['📶','Offline','I titoli già visti restano disponibili.'],
@@ -1444,7 +1459,11 @@ document.addEventListener('click',e=>{
   if(D.top)return muovi(D.top,'top');
   if(D.rm){e.stopPropagation();return elimina(D.rm)}
   if(D.rem!==undefined){e.stopPropagation();return elimina(D.rem)}
-  if(D.s)return scegliCartella(D.s);
+  if(D.s){
+    const sid=D.s,dd=DATI.find(x=>x.id===sid);
+    if(dd&&F.fav[sid]!==undefined)return conferma('Togliere «'+esc(dd.nome)+'» dai preferiti?',()=>{delete F.fav[sid];sv('tm_f',F);toast('Tolta dai preferiti');if(view==='home')renderHome()});
+    return scegliCartella(sid);
+  }
   if(D.ed)return scegliCartella(D.ed);
 
   // NAVIGAZIONE
