@@ -8,11 +8,17 @@
 
 <br>
 
-![Versione](https://img.shields.io/badge/versione-1.27-d9487a?style=for-the-badge)
-![PWA](https://img.shields.io/badge/PWA-installabile-1e88e5?style=for-the-badge)
-![Lingua](https://img.shields.io/badge/lingua-italiano-2f9e5e?style=for-the-badge)
-![Offline](https://img.shields.io/badge/offline-supportato-6d3df0?style=for-the-badge)
-![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-f0944a?style=for-the-badge)
+![Versione](https://img.shields.io/badge/versione-1.29-d6b25e?style=for-the-badge&labelColor=14274a)
+![PWA](https://img.shields.io/badge/PWA-installabile-1e88e5?style=for-the-badge&labelColor=14274a)
+![Lingua](https://img.shields.io/badge/lingua-italiano-2f9e5e?style=for-the-badge&labelColor=14274a)
+![Offline](https://img.shields.io/badge/offline-supportato-6d3df0?style=for-the-badge&labelColor=14274a)
+![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-f0944a?style=for-the-badge&labelColor=14274a)
+
+<br>
+
+<img src="docs/riferimento-grafico.jpg" alt="Immagine di riferimento grafico di TestateMondiali: blu notte con dettagli oro e rame" width="340">
+
+<sub>*Immagine di riferimento dello stile grafico (blu notte e oro). È un concept: testi e loghi sono indicativi e non corrispondono ad una schermata reale dell'app.*</sub>
 
 <br>
 
@@ -30,20 +36,38 @@ Nasce da un elenco di testate in PDF ed è cresciuta fino a diventare un piccolo
 
 ---
 
+## 🎨 Stile grafico
+
+Il tema **Classico** ha uno stile da giornale elegante, ispirato all'immagine di riferimento qui sopra:
+
+| Elemento | Com'è |
+|---|---|
+| **Colori** | Blu notte con dettagli **oro** e **rame**. Esiste anche la versione chiara, su carta crema |
+| **Intestazione** | Titolo dorato in carattere con grazie e doppia linea sottile |
+| **Ricerca** | Barra grande con il pulsante di aggiornamento accanto |
+| **Ultime notizie** | Banner rame che mostra il titolo più recente |
+| **Anteprime / Titoli** | Interruttore con le icone dell'occhio e della lista |
+| **Schede** | Intestazione blu con il logo e la lettera sfumata dietro il nome, etichetta dorata sull'immagine |
+| **Pulsante ➕** | Rotondo, blu scuro con bordo oro |
+
+Dalle **Impostazioni** si può scegliere anche uno degli altri sei sfondi a gradiente, in tema chiaro, scuro o automatico.
+
+---
+
 ## 🚀 Funzioni principali
 
 | | Funzione | Cosa fa |
 |:-:|---|---|
 | 🏠 | **Home a copertine** | Anteprime con immagine, due per riga, oppure tessere compatte con solo nome, continente e nazione |
-| 🔴 | **Ultime notizie** | L'ultimo titolo di ogni testata con feed, ordinato per novità, con bandierina e orario |
+| 🔴 | **Ultime notizie** | L'ultimo titolo di ogni testata con feed, ordinato per novità, con bandierina e orario. Il banner in home mostra il più recente |
 | 🌐 | **Traduci titoli** | Traduzione in italiano dei titoli stranieri, con l'originale sotto in corsivo |
 | 🔎 | **Cerca nel mondo** | Ricerca tra le tue testate, nel catalogo e su Wikipedia |
 | 🌍 | **Sfoglia il mondo** | Tutte le testate del catalogo, per continente e nazione |
 | 📚 | **Catalogo** | **175 testate in 71 nazioni** da aggiungere con un tocco |
-| ➕ | **Aggiungi e modifica** | Aggiungi, modifica o elimina una testata, sempre con conferma Sì/No |
+| ⌄ | **Azioni a scomparsa** | Su ogni testata il pulsante con la freccia apre **▲ ▼ ✏️ 🗑️**: sposta su o giù, modifica, elimina, sempre con conferma Sì/No |
 | ⭐ | **Preferiti in cartelle** | Salva le testate in cartelle con il nome della nazione o quello che vuoi |
-| ↕️ | **Organizza la home** | Sposta le testate di una posizione alla volta, oppure ordine alfabetico |
-| 🎨 | **Temi a gradiente** | Chiaro, scuro o automatico, con 6 sfondi e 4 dimensioni del testo |
+| ↕️ | **Organizza la home** | Mostra i comandi su tutte le testate insieme, oppure ordine alfabetico |
+| 🎨 | **Temi** | Classico (blu e oro) più 6 gradienti, chiaro, scuro o automatico, con 4 dimensioni del testo |
 | 📶 | **Offline** | I contenuti già visti restano disponibili, con avviso quando sei senza rete |
 | 💾 | **Esporta e importa** | Backup datato con controlli sui dati e ripristino verificato di preferiti, ordine e impostazioni |
 
@@ -83,7 +107,8 @@ Nasce da un elenco di testate in PDF ed è cresciuta fino a diventare un piccolo
 - Tocca il titolo **TestateMondiali** per tornare alla home e svuotare la ricerca
 - Il tasto **indietro** del telefono riporta sempre alla home
 - Tira la schermata verso il basso per aggiornare i titoli
-- Il pulsante blu **➕** in basso a destra aggiunge un giornale
+- Il pulsante rotondo **➕** in basso a destra aggiunge un giornale
+- Il pulsante **⌄** su una testata apre le azioni **▲ ▼ ✏️ 🗑️**, una testata alla volta
 - Dall'icona dell'app, tieni premuto per le scorciatoie **Preferiti**, **Organizza** e **Catalogo**
 - Tocca il nome di una testata per aprirla nel browser esterno, per esempio Opera, e usare il suo traduttore
 
@@ -102,7 +127,7 @@ Nasce da un elenco di testate in PDF ed è cresciuta fino a diventare un piccolo
 ### Pubblicarla su GitHub Pages
 
 1. Crea un repository, per esempio `TestateMondiali`
-2. Carica i file rispettando questa struttura (le icone vanno **nella sottocartella `icons/`**)
+2. Carica i file rispettando questa struttura (le icone vanno **nella sottocartella `icons/`**, l'immagine di questo file in **`docs/`**)
 3. Vai in **Settings › Pages**, scegli il ramo `main` e la cartella `/ (root)`
 4. Dopo qualche minuto l'app è online su `https://<tuo-utente>.github.io/<repository>/`
 
@@ -116,6 +141,8 @@ TestateMondiali/
 ├── manifest.json       # nome, colori, icone e scorciatoie
 ├── sw.js               # service worker: cache e funzionamento offline
 ├── README.md           # questo file
+├── docs/
+│   └── riferimento-grafico.jpg   # immagine di riferimento dello stile
 └── icons/
     ├── icon-192.png
     ├── icon-512.png
@@ -140,7 +167,7 @@ flowchart LR
 ```
 
 - I **titoli** arrivano dai feed RSS delle testate, tramite servizi gratuiti
-- Le **anteprime** usano la foto dell'ultimo articolo, poi l'immagine di condivisione della homepage, poi uno screenshot; se nessuna funziona compare una copertina con il nome della testata
+- Le **anteprime** usano la foto dell'ultimo articolo, poi l'immagine di condivisione della homepage, poi uno screenshot; se nessuna funziona compaiono gli ultimi titoli della testata, oppure una copertina con il nome
 - La **traduzione** usa il traduttore del browser, se presente, altrimenti MyMemory; le traduzioni già fatte vengono ricordate
 - Tutti i **tuoi dati** restano nel telefono
 
@@ -156,6 +183,7 @@ flowchart LR
 | **Notifiche** | Sono locali e opzionali, senza server: non arrivano ad app chiusa |
 | **Opera** | La scelta "Opera" nelle impostazioni funziona su Android; se l'app non è installata si usa il browser predefinito |
 | **Offline** | Titoli e testi già visti restano disponibili, mentre le immagini di anteprima possono mancare |
+| **Colori dell'app installata** | Il colore della barra del telefono e della schermata di avvio cambia solo se reinstalli l'app |
 
 ---
 
@@ -172,8 +200,8 @@ flowchart LR
 Quando modifichi il codice:
 
 1. aumenta il numero di versione (`VER` dentro `index.html`)
-2. aumenta di pari passo il nome della cache nel file `sw.js` (per esempio `testatemondiali-v17` diventa `testatemondiali-v18`)
-3. carica i file sul repository
+2. aumenta di pari passo il nome della cache nel file `sw.js` (per esempio `testatemondiali-v23` diventa `testatemondiali-v24`)
+3. carica sul repository **solo i file modificati**
 4. sul telefono **chiudi e riapri l'app due volte** per vedere la nuova versione
 
 ---
@@ -193,6 +221,9 @@ Quando modifichi il codice:
 | **1.22** | Correzione di "Aggiungi un giornale" dal menu laterale |
 | **1.23** | Etichette del menu in giallo e pulsante blu **➕** in home |
 | **1.24** | Anteprime sempre presenti: foto articolo, immagine della homepage, screenshot o copertina con il nome |
+| **1.25 – 1.27** | Rinforzo: tempi massimi sulle richieste, controlli sui dati importati, stato dei feed, nuovo service worker |
+| **1.28** | 🎨 Tema **Classico** blu e oro, banner Ultime notizie con titolo, titoli al posto della copertina vuota |
+| **1.29** | ⌄ Azioni a scomparsa su ogni testata: **▲ ▼ ✏️ 🗑️** |
 
 ---
 
